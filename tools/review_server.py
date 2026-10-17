@@ -35,9 +35,32 @@ def write(p: Path, data):
     p.write_text(json.dumps(data, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
 
 
+def find_git():
+    """RoyのPCにはgitが入っていないので、Hermesに付いているgitを探す。"""
+    import glob
+    import shutil
+    g = shutil.which("git")
+    if g:
+        return g
+    base = os.path.join(os.environ.get("LOCALAPPDATA", ""), "hermes", "tools")
+    for pat in ("git-*/cmd/git.exe", "git-*/mingw64/bin/git.exe"):
+        hits = sorted(glob.glob(os.path.join(base, pat)))
+        if hits:
+            return hits[-1]
+    return None
+
+
+GIT = find_git()
+
+
 def git(*args):
-    r = subprocess.run(["git", "-C", str(ROOT), *args], capture_output=True, text=True, encoding="utf-8")
-    return r.returncode, (r.stdout + r.stderr).strip()
+    if not GIT:
+        return 1, "gitが見つかりません"
+    try:
+        r = subprocess.run([GIT, "-C", str(ROOT), *args], capture_output=True, text=True, encoding="utf-8")
+        return r.returncode, (r.stdout + r.stderr).strip()
+    except OSError as e:
+        return 1, str(e)
 
 
 def publish(body: dict) -> dict:
@@ -74,7 +97,7 @@ def publish(body: dict) -> dict:
     if published and (ROOT / ".git").exists():
         git("add", "data/news.json")
         code, out = git("commit", "-m", f"記事を{len(published)}件公開（{now[:10]}）")
-        msg = "コミットしました。"
+        msg = "コミットしました。" if code == 0 else "（記録用のコミットはできませんでしたが、公開は完了しています）"
         if code == 0 and git("remote")[1]:
             code, out = git("push")
             msg += " GitHubに反映しました。" if code == 0 else f" push失敗: {out[-200:]}"
