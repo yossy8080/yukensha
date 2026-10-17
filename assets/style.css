@@ -42,6 +42,12 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
 .logo:hover { color: var(--ink); }
 .tagline { margin: 6px 0 0; color: var(--muted); font-size: 14px; }
 .dateline { text-align: right; color: var(--muted); font-size: 13px; white-space: nowrap; }
+@media (max-width: 560px) {
+  .masthead-inner { flex-direction: column; align-items: flex-start; gap: 6px; }
+  .dateline { text-align: left; white-space: normal; }
+  .dateline br { display: none; }
+  .dateline span::after { content: "　"; }
+}
 
 .nav { border-bottom: 1px solid var(--ink); background: var(--paper); position: sticky; top: 0; z-index: 5; }
 .nav ul { list-style: none; margin: 0 auto; padding: 0 20px; max-width: var(--wrap); display: flex; gap: 4px; overflow-x: auto; }
