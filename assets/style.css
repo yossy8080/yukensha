@@ -1,0 +1,123 @@
+/* 有権者 — スタイル
+   方針：新聞のように読みやすく。色は紙・墨・朱の3つだけ。装飾より文字の大きさと余白で整理する。 */
+
+:root {
+  --paper: #f7f5f0;
+  --paper-2: #efebe2;
+  --ink: #1c1b19;
+  --muted: #625d54;
+  --rule: #d8d2c4;
+  --accent: #b23a2b;          /* 朱 */
+  --serif: "Shippori Mincho", "Yu Mincho", "YuMincho", "Hiragino Mincho ProN", serif;
+  --sans: "BIZ UDPGothic", "Yu Gothic", "Hiragino Sans", "Meiryo", sans-serif;
+  --wrap: 1120px;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.8;
+}
+a { color: inherit; text-underline-offset: 3px; }
+a:hover { color: var(--accent); }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.wrap { max-width: var(--wrap); margin: 0 auto; padding: 0 20px; }
+
+/* ── 題字（マストヘッド） ── */
+.masthead { border-bottom: 3px double var(--ink); }
+.masthead-inner {
+  display: flex; align-items: flex-end; justify-content: space-between; gap: 16px;
+  padding: 28px 0 14px;
+}
+.logo {
+  font-family: var(--serif); font-weight: 800; font-size: clamp(40px, 7vw, 64px);
+  line-height: 1; letter-spacing: .08em; text-decoration: none;
+}
+.logo:hover { color: var(--ink); }
+.tagline { margin: 6px 0 0; color: var(--muted); font-size: 14px; }
+.dateline { text-align: right; color: var(--muted); font-size: 13px; white-space: nowrap; }
+
+.nav { border-bottom: 1px solid var(--ink); background: var(--paper); position: sticky; top: 0; z-index: 5; }
+.nav ul { list-style: none; margin: 0 auto; padding: 0 20px; max-width: var(--wrap); display: flex; gap: 4px; overflow-x: auto; }
+.nav a {
+  display: block; padding: 12px 14px; text-decoration: none; font-weight: 700; font-size: 15px; white-space: nowrap;
+  border-bottom: 3px solid transparent; min-height: 44px;
+}
+.nav a[aria-current="page"] { border-bottom-color: var(--accent); color: var(--accent); }
+.nav .soon { color: var(--muted); font-weight: 400; }
+.nav .soon small { font-size: 11px; margin-left: 4px; }
+
+/* ── レイアウト ── */
+main { padding: 28px 0 64px; }
+.grid { display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 48px; }
+@media (max-width: 860px) { .grid { grid-template-columns: 1fr; gap: 32px; } }
+
+.section-title {
+  font-family: var(--serif); font-size: 15px; font-weight: 700; letter-spacing: .1em;
+  margin: 0 0 4px; padding-bottom: 8px; border-bottom: 1px solid var(--ink);
+  display: flex; justify-content: space-between; align-items: baseline;
+}
+.section-title small { font-family: var(--sans); font-weight: 400; letter-spacing: 0; color: var(--muted); font-size: 12px; }
+.page-title { font-family: var(--serif); font-size: clamp(26px, 4vw, 34px); margin: 0 0 6px; line-height: 1.4; }
+.lead { color: var(--muted); margin: 0 0 28px; max-width: 46em; }
+
+/* ── 記事 ── */
+.item { padding: 22px 0 24px; border-bottom: 1px solid var(--rule); }
+.item:target { background: linear-gradient(var(--paper-2), var(--paper-2)) no-repeat; background-size: 100% 100%; }
+.kicker { margin: 0 0 6px; font-size: 13px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 4px 12px; }
+.kicker-ministry { color: var(--accent); font-weight: 700; text-decoration: none; }
+.kicker .sep { display: none; }
+.headline { font-family: var(--serif); font-size: 22px; line-height: 1.5; margin: 0 0 10px; font-weight: 700; text-wrap: pretty; }
+.featured-first .item:first-child .headline { font-size: clamp(24px, 3.4vw, 30px); }
+.summary { margin: 0 0 10px; }
+.points { margin: 0 0 12px; padding-left: 1.2em; }
+.points li { margin: 2px 0; }
+.points li::marker { color: var(--accent); }
+.source { margin: 0; font-size: 13px; color: var(--muted); }
+.source a { color: var(--ink); }
+.tags { margin: 8px 0 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.tag { font-size: 12px; color: var(--muted); border: 1px solid var(--rule); padding: 0 8px; border-radius: 2px; }
+
+/* ── 一覧（1行） ── */
+.rows { list-style: none; margin: 0; padding: 0; }
+.row { display: grid; grid-template-columns: 7.5em 4em minmax(0, 1fr); gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--rule); font-size: 15px; }
+.row time { color: var(--muted); font-size: 13px; padding-top: 2px; }
+.row-ministry { color: var(--accent); font-weight: 700; font-size: 13px; padding-top: 2px; }
+.row a { text-decoration: none; }
+.row a:hover { text-decoration: underline; }
+@media (max-width: 560px) { .row { grid-template-columns: 1fr; gap: 0; } .row time, .row-ministry { display: inline; } }
+
+/* ── サイドバー ── */
+aside .block { margin-bottom: 36px; }
+.ministry-list { list-style: none; margin: 0; padding: 0; }
+.ministry-list a { display: flex; justify-content: space-between; padding: 9px 0; border-bottom: 1px solid var(--rule); text-decoration: none; min-height: 44px; align-items: center; }
+.ministry-list .count { color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; }
+.note { font-size: 14px; color: var(--muted); }
+.note p { margin: 10px 0; }
+
+/* ── 省庁の切り替え ── */
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 24px; }
+.chips a {
+  text-decoration: none; padding: 8px 14px; border: 1px solid var(--ink); border-radius: 999px; font-size: 14px; min-height: 40px;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.chips a[aria-current="true"] { background: var(--ink); color: var(--paper); }
+.chips .count { font-size: 12px; opacity: .7; }
+
+/* ── 準備中のページ ── */
+.placeholder { border: 1px dashed var(--rule); padding: 28px; background: var(--paper-2); }
+.placeholder h3 { font-family: var(--serif); margin: 0 0 8px; }
+
+.empty { color: var(--muted); padding: 24px 0; }
+
+/* ── フッター ── */
+footer { border-top: 3px double var(--ink); padding: 24px 0 40px; font-size: 13px; color: var(--muted); }
+footer p { margin: 4px 0; }
+
+@media (prefers-reduced-motion: no-preference) { a { transition: color .15s; } }

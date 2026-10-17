@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>有権者 — 国全体のニュース</title>
+<meta name="description" content="官邸・各府省の発表を、出典リンクつきで要約するサイト。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&family=Shippori+Mincho:wght@700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header class="masthead">
+  <div class="wrap masthead-inner">
+    <div>
+      <a class="logo" href="index.html">有権者</a>
+      <p class="tagline">官邸・各府省の発表を、出典リンクつきで要約する。</p>
+    </div>
+    <p class="dateline"><span data-today></span><br>評価は載せていません</p>
+  </div>
+</header>
+<nav class="nav" aria-label="メニュー">
+  <ul>
+    <li><a href="index.html">国全体</a></li>
+    <li><a href="ministries.html">省庁別</a></li>
+    <li><a href="pledges.html" class="soon">公約トラッカー<small>準備中</small></a></li>
+    <li><a href="local.html">地方</a></li>
+    <li><a href="opinion.html" class="soon">オピニオン<small>準備中</small></a></li>
+    <li><a href="about.html">このサイトについて</a></li>
+  </ul>
+</nav>
+<main class="wrap">
+<div class="grid">
+  <section>
+    <h2 class="section-title">いま大切なこと<small>運営者が選んだ国全体のニュース</small></h2>
+    <div id="featured" class="featured-first"></div>
+    <h2 class="section-title" style="margin-top:40px">すべての新着<small id="all-count"></small></h2>
+    <ul id="all" class="rows"></ul>
+  </section>
+  <aside>
+    <div class="block">
+      <h2 class="section-title">省庁別</h2>
+      <ul id="ministry-list" class="ministry-list"></ul>
+    </div>
+    <div class="block note">
+      <h2 class="section-title">このサイトのきまり</h2>
+      <p>政府の一次情報（官邸・各府省の発表）だけを元にしています。</p>
+      <p>すべての記事に出典リンクをつけています。</p>
+      <p>良い・悪いの評価は入れていません。評価は今後「オピニオン」として分けて載せる予定です。</p>
+    </div>
+  </aside>
+</div>
+</main>
+<footer>
+  <div class="wrap">
+    <p>有権者 — 要約はAI（Hermes）が下書きし、運営者が確認してから公開しています。誤りに気づいたらお知らせください。</p>
+    <p>各記事は、政府のウェブサイト（公共データ利用規約 PDL1.0 等）の情報をもとに、有権者が要約・加工して作成したものです。正確な内容は必ず出典をご確認ください。</p>
+  </div>
+</footer>
+<script src="assets/app.js"></script>
+<script>
+(async () => {
+  const [sources, news] = await Promise.all([Y.load("data/sources.json"), Y.load("data/news.json")]);
+  const map = Object.fromEntries(sources.map((s) => [s.id, s]));
+  news.sort(Y.byDateDesc);
+  const featured = news.filter((n) => n.featured).slice(0, 8);
+  document.getElementById("featured").innerHTML = featured.length
+    ? featured.map((n) => Y.article(n, map)).join("")
+    : Y.empty("まだ公開された記事はありません。");
+  document.getElementById("all").innerHTML = news.slice(0, 40).map((n) => Y.row(n, map)).join("");
+  document.getElementById("all-count").textContent = news.length ? `${news.length}件` : "";
+  const count = (id) => news.filter((n) => n.ministry === id || (n.also || []).includes(id)).length;
+  document.getElementById("ministry-list").innerHTML = sources.map((s) =>
+    `<li><a href="ministries.html?m=${s.id}"><span>${Y.esc(s.name)}</span><span class="count">${count(s.id)}件</span></a></li>`).join("");
+})().catch((e) => { document.getElementById("featured").innerHTML = Y.empty(e.message); });
+</script>
+</body>
+</html>

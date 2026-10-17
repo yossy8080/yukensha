@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>有権者 — 省庁別のニュース</title>
+<meta name="description" content="官邸・各府省ごとの発表の要約。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&family=Shippori+Mincho:wght@700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header class="masthead">
+  <div class="wrap masthead-inner">
+    <div>
+      <a class="logo" href="index.html">有権者</a>
+      <p class="tagline">官邸・各府省の発表を、出典リンクつきで要約する。</p>
+    </div>
+    <p class="dateline"><span data-today></span><br>評価は載せていません</p>
+  </div>
+</header>
+<nav class="nav" aria-label="メニュー">
+  <ul>
+    <li><a href="index.html">国全体</a></li>
+    <li><a href="ministries.html">省庁別</a></li>
+    <li><a href="pledges.html" class="soon">公約トラッカー<small>準備中</small></a></li>
+    <li><a href="local.html">地方</a></li>
+    <li><a href="opinion.html" class="soon">オピニオン<small>準備中</small></a></li>
+    <li><a href="about.html">このサイトについて</a></li>
+  </ul>
+</nav>
+<main class="wrap">
+<h1 class="page-title" id="title">省庁別のニュース</h1>
+<p class="lead" id="lead">見たい省庁を選んでください。</p>
+<nav class="chips" id="chips" aria-label="省庁"></nav>
+<div id="list"></div>
+</main>
+<footer>
+  <div class="wrap">
+    <p>有権者 — 要約はAI（Hermes）が下書きし、運営者が確認してから公開しています。誤りに気づいたらお知らせください。</p>
+    <p>各記事は、政府のウェブサイト（公共データ利用規約 PDL1.0 等）の情報をもとに、有権者が要約・加工して作成したものです。正確な内容は必ず出典をご確認ください。</p>
+  </div>
+</footer>
+<script src="assets/app.js"></script>
+<script>
+(async () => {
+  const [sources, news] = await Promise.all([Y.load("data/sources.json"), Y.load("data/news.json")]);
+  const map = Object.fromEntries(sources.map((s) => [s.id, s]));
+  const m = new URLSearchParams(location.search).get("m");
+  const has = (n, id) => n.ministry === id || (n.also || []).includes(id);
+  news.sort(Y.byDateDesc);
+  document.getElementById("chips").innerHTML =
+    `<a href="ministries.html" aria-current="${!m}">すべて<span class="count">${news.length}</span></a>` +
+    sources.map((s) => `<a href="ministries.html?m=${s.id}" aria-current="${m === s.id}">${Y.esc(s.name)}<span class="count">${news.filter((n) => has(n, s.id)).length}</span></a>`).join("");
+  const list = m ? news.filter((n) => has(n, m)) : news;
+  if (m && map[m]) {
+    document.getElementById("title").textContent = map[m].name + "のニュース";
+    document.getElementById("lead").innerHTML = `${Y.esc(map[m].name)}の発表を要約しています。元の情報：<a href="${Y.esc(map[m].home)}" target="_blank" rel="noopener">${Y.esc(map[m].site)}</a>`;
+    document.title = `有権者 — ${map[m].name}`;
+  }
+  document.getElementById("list").innerHTML = list.length ? list.map((n) => Y.article(n, map)).join("") : Y.empty("まだ公開された記事はありません。");
+  if (location.hash) document.querySelector(location.hash)?.scrollIntoView();
+})().catch((e) => { document.getElementById("list").innerHTML = Y.empty(e.message); });
+</script>
+</body>
+</html>
