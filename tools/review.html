@@ -3,15 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>有権者 — 下書きの確認</title>
+<title>有権者 — 管理ページ</title>
 <link rel="stylesheet" href="/assets/style.css">
 <style>
   .review-bar { position: sticky; top: 0; z-index: 6; background: var(--ink); color: var(--paper); }
-  .review-bar .wrap { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; justify-content: space-between; padding-top: 10px; padding-bottom: 10px; }
+  .review-bar .wrap { display: flex; flex-wrap: wrap; gap: 10px 20px; align-items: center; justify-content: space-between; padding-top: 10px; padding-bottom: 10px; }
   .review-bar strong { font-family: var(--serif); font-size: 18px; letter-spacing: .06em; }
   .review-bar button, .bulk button { font: inherit; font-weight: 700; padding: 10px 18px; min-height: 44px; border: 0; border-radius: 3px; cursor: pointer; }
   .review-bar .go { background: var(--accent); color: #fff; }
   .review-bar .go:disabled { opacity: .5; cursor: default; }
+  .tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--ink); margin: 18px 0 0; overflow-x: auto; }
+  .tabs button { font: inherit; font-weight: 700; background: none; border: 0; border-bottom: 3px solid transparent; padding: 12px 16px; min-height: 44px; cursor: pointer; white-space: nowrap; color: var(--muted); }
+  .tabs button[aria-selected="true"] { color: var(--accent); border-bottom-color: var(--accent); }
+  .tabs .n { font-weight: 400; font-size: 13px; margin-left: 4px; }
+  .panel[hidden] { display: none; }
   .bulk { display: flex; flex-wrap: wrap; gap: 8px; margin: 20px 0 8px; }
   .bulk button { background: var(--paper-2); border: 1px solid var(--rule); font-weight: 400; }
   .draft { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 28px; border-bottom: 1px solid var(--rule); padding: 8px 0; }
@@ -22,49 +27,83 @@
   .controls label { display: flex; align-items: center; gap: 8px; min-height: 36px; cursor: pointer; }
   .controls input { width: 18px; height: 18px; accent-color: var(--accent); }
   .controls .edit-btn { font: inherit; background: none; border: 1px solid var(--rule); padding: 6px 12px; cursor: pointer; min-height: 36px; }
-  .draft[data-state="approve"] .controls { color: var(--ink); }
   .draft[data-state="approve"] { background: linear-gradient(90deg, rgba(178,58,43,.06), transparent 60%); }
-  .draft[data-state="reject"] .item { opacity: .4; }
+  .draft[data-state="reject"] .item, .draft[data-state="unpublish"] .item { opacity: .4; }
+  .draft[data-dirty="1"] .controls::before { content: "変更あり"; display: inline-block; font-size: 12px; color: #fff; background: var(--accent); padding: 0 8px; margin-bottom: 8px; }
   .editor { display: none; margin: 0 0 22px; }
   .editor.open { display: block; }
   .editor label { display: block; font-size: 13px; color: var(--muted); margin: 10px 0 4px; }
   .editor input, .editor textarea { width: 100%; font: inherit; padding: 8px 10px; border: 1px solid var(--rule); background: #fff; }
   .editor textarea { min-height: 90px; }
   .msg { padding: 14px 16px; background: var(--paper-2); border: 1px solid var(--rule); margin: 16px 0; }
+  .filter { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 18px 0 6px; font-size: 14px; }
+  .filter input, .filter select { font: inherit; padding: 8px 10px; border: 1px solid var(--rule); background: #fff; min-height: 40px; }
+  .filter input { flex: 1 1 220px; }
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); border-top: 1px solid var(--ink); margin: 20px 0; }
+  .stats div { padding: 14px 0; border-bottom: 1px solid var(--rule); }
+  .stats b { display: block; font-family: var(--serif); font-size: 28px; }
+  .stats span { color: var(--muted); font-size: 13px; }
 </style>
 </head>
 <body>
 <div class="review-bar">
   <div class="wrap">
-    <strong>有権者　下書きの確認</strong>
-    <span id="tally">読み込み中…</span>
-    <button class="go" id="go" disabled>選んだ内容で公開する</button>
+    <strong>有権者　管理ページ</strong>
+    <span id="tally"></span>
+    <button class="go" id="go" disabled>保存して公開サイトに反映</button>
   </div>
 </div>
-<main class="wrap">
-  <p class="lead" style="margin-top:20px">AIが書いた下書きです。出典リンクを開いて内容が正しいか確かめ、「公開する」「公開しない」を選んでください。何も選ばなかったものは、下書きのまま残ります。<br>
-  <a href="/" target="_blank">いまの公開サイトを見る</a></p>
-  <div class="bulk">
-    <button data-all="approve">全部「公開する」にする</button>
-    <button data-all="later">全部「あとで」に戻す</button>
+<main class="wrap" style="padding-top:0">
+  <div class="tabs" role="tablist">
+    <button role="tab" data-tab="drafts" aria-selected="true">下書き<span class="n" id="n-drafts"></span></button>
+    <button role="tab" data-tab="news" aria-selected="false">公開済み<span class="n" id="n-news"></span></button>
+    <button role="tab" data-tab="stats" aria-selected="false">アクセス数</button>
   </div>
   <div id="msg"></div>
-  <div id="drafts"></div>
+
+  <section class="panel" id="panel-drafts">
+    <p class="lead" style="margin-top:16px">AIが書いた下書きです。出典リンクで内容が正しいか確かめて、「公開する」「公開しない」を選んでください。何も選ばなかったものは下書きのまま残ります。</p>
+    <div class="bulk">
+      <button data-all="approve">全部「公開する」にする</button>
+      <button data-all="later">全部「あとで」に戻す</button>
+    </div>
+    <div id="drafts"></div>
+  </section>
+
+  <section class="panel" id="panel-news" hidden>
+    <p class="lead" style="margin-top:16px">いまサイトに出ている記事です。文章の修正、「国全体」に載せるかの切り替え、非公開に戻すことができます。非公開にした記事は消えずに、PCの中（drafts/unpublished.json）に残ります。</p>
+    <div class="filter">
+      <input id="q" type="search" placeholder="見出し・要約で探す">
+      <select id="fm"><option value="">すべての省庁</option></select>
+    </div>
+    <div id="news"></div>
+  </section>
+
+  <section class="panel" id="panel-stats" hidden>
+    <div id="stats"></div>
+  </section>
 </main>
 <script src="/assets/app.js"></script>
 <script>
-let sources = {}, drafts = [];
-const state = {};   // id -> approve | reject | later
-const edits = {};   // id -> {title, summary, points, featured}
+let sources = {}, drafts = [], news = [], tab = "drafts";
+const state = {};   // 下書き: id -> approve | reject | later
+const edits = {};   // 下書き: id -> {title, summary, points, featured}
+const nstate = {};  // 公開済み: id -> keep | unpublish
+const nedits = {};  // 公開済み: id -> {...}
 
-function render() {
+function editorHtml(d) {
+  return `<div class="editor">
+    <label>見出し</label><input class="e-title" value="${Y.esc(d.title)}">
+    <label>要約</label><textarea class="e-summary">${Y.esc(d.summary)}</textarea>
+    <label>ポイント（1行に1つ）</label><textarea class="e-points">${Y.esc((d.points || []).join("\n"))}</textarea>
+  </div>`;
+}
+
+function renderDrafts() {
   const box = document.getElementById("drafts");
-  if (!drafts.length) { box.innerHTML = Y.empty("確認待ちの下書きはありません。"); tally(); return; }
-  box.innerHTML = drafts.map((d0) => {
-    const d = { ...d0, ...(edits[d0.id] || {}) };
-    const s = state[d.id] || "later";
-    return `
-    <section class="draft" data-id="${Y.esc(d.id)}" data-state="${s}">
+  box.innerHTML = !drafts.length ? Y.empty("確認待ちの下書きはありません。") : drafts.map((d0) => {
+    const d = { ...d0, ...(edits[d0.id] || {}) }, s = state[d.id] || "later";
+    return `<section class="draft" data-kind="draft" data-id="${Y.esc(d.id)}" data-state="${s}">
       <div class="controls">
         <fieldset>
           <label><input type="radio" name="s-${d.id}" value="approve" ${s === "approve" ? "checked" : ""}> 公開する</label>
@@ -74,61 +113,134 @@ function render() {
         <label><input type="checkbox" class="feat" ${d.featured ? "checked" : ""}> 国全体のページにも載せる</label>
         <p><button class="edit-btn" type="button">文章を直す</button></p>
       </div>
-      <div>
-        ${Y.article(d, sources)}
-        <div class="editor">
-          <label>見出し</label><input class="e-title" value="${Y.esc(d.title)}">
-          <label>要約</label><textarea class="e-summary">${Y.esc(d.summary)}</textarea>
-          <label>ポイント（1行に1つ）</label><textarea class="e-points">${Y.esc((d.points || []).join("\n"))}</textarea>
-        </div>
-      </div>
+      <div>${Y.article(d, sources)}${editorHtml(d)}</div>
     </section>`;
   }).join("");
-  tally();
+}
+
+function renderNews() {
+  const q = document.getElementById("q").value.trim(), fm = document.getElementById("fm").value;
+  const list = news.filter((n) => (!fm || n.ministry === fm || (n.also || []).includes(fm)) &&
+    (!q || (n.title + n.summary + (n.points || []).join("")).includes(q)));
+  document.getElementById("news").innerHTML = !list.length ? Y.empty("該当する記事はありません。") : list.map((n0) => {
+    const n = { ...n0, ...(nedits[n0.id] || {}) }, s = nstate[n.id] || "keep";
+    const dirty = nedits[n.id] || s === "unpublish" ? 1 : 0;
+    const pub = n0.published_at ? `公開：${n0.published_at.slice(5, 16).replace("T", " ")}` : "";
+    return `<section class="draft" data-kind="news" data-id="${Y.esc(n.id)}" data-state="${s}" data-dirty="${dirty}">
+      <div class="controls">
+        <fieldset>
+          <label><input type="radio" name="n-${n.id}" value="keep" ${s === "keep" ? "checked" : ""}> 公開したまま</label>
+          <label><input type="radio" name="n-${n.id}" value="unpublish" ${s === "unpublish" ? "checked" : ""}> 非公開に戻す</label>
+        </fieldset>
+        <label><input type="checkbox" class="feat" ${n.featured ? "checked" : ""}> 国全体のページに載せる</label>
+        <p><button class="edit-btn" type="button">文章を直す</button></p>
+        <p style="color:var(--muted);font-size:12px">${Y.esc(pub)}<br><a href="https://yossy8080.github.io/yukensha/ministries.html?m=${Y.esc(n.ministry)}#${Y.esc(n.id)}" target="_blank" rel="noopener">公開サイトで見る</a></p>
+      </div>
+      <div>${Y.article(n, sources)}${editorHtml(n)}</div>
+    </section>`;
+  }).join("");
+}
+
+async function renderStats() {
+  const cfg = await Y.load("/api/config").catch(() => ({}));
+  const featured = news.filter((n) => n.featured).length;
+  const by = {}; news.forEach((n) => (by[n.ministry] = (by[n.ministry] || 0) + 1));
+  const top = Object.entries(by).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([k, v]) => `${sources[k]?.name || k} ${v}件`).join("、");
+  const days = new Set(news.map((n) => n.date)).size;
+  const views = cfg.goatcounter
+    ? `<p>ページごとの閲覧数・どこから来たか・スマホとPCの割合などは、こちらで見られます：<a href="https://${Y.esc(cfg.goatcounter)}.goatcounter.com" target="_blank" rel="noopener">${Y.esc(cfg.goatcounter)}.goatcounter.com</a></p>`
+    : `<div class="placeholder"><h3>アクセス数はまだ測っていません</h3><p>GitHub Pages には、ページが何回見られたかを数える機能がありません。アクセス解析サービスを入れると、ページごとの閲覧数・どこから来たか・スマホとPCの割合などが見られるようになります。</p></div>`;
+  document.getElementById("stats").innerHTML = `
+    <div class="stats">
+      <div><b>${news.length}</b><span>公開中の記事</span></div>
+      <div><b>${featured}</b><span>国全体に載せている記事</span></div>
+      <div><b>${drafts.length}</b><span>確認待ちの下書き</span></div>
+      <div><b>${days}</b><span>記事がある日数</span></div>
+    </div>
+    <p style="color:var(--muted);font-size:14px">記事が多い省庁：${Y.esc(top || "—")}</p>
+    <h2 class="section-title" style="margin-top:28px">アクセス数（閲覧数）</h2>
+    ${views}`;
 }
 
 function tally() {
-  const v = Object.values(state);
-  const a = v.filter((x) => x === "approve").length, r = v.filter((x) => x === "reject").length;
-  document.getElementById("tally").textContent = `下書き ${drafts.length}件 ／ 公開する ${a}件 ／ 公開しない ${r}件`;
-  document.getElementById("go").disabled = a + r === 0;
+  let a = 0, r = 0, u = 0;
+  Object.values(state).forEach((x) => { if (x === "approve") a++; if (x === "reject") r++; });
+  Object.values(nstate).forEach((x) => { if (x === "unpublish") u++; });
+  const e = Object.keys(nedits).length, parts = [];
+  if (a) parts.push(`公開する ${a}件`); if (r) parts.push(`公開しない ${r}件`);
+  if (e) parts.push(`修正 ${e}件`); if (u) parts.push(`非公開に戻す ${u}件`);
+  document.getElementById("tally").textContent = parts.length ? "変更：" + parts.join("／") : "変更はまだありません";
+  document.getElementById("go").disabled = !parts.length;
+  document.getElementById("n-drafts").textContent = drafts.length;
+  document.getElementById("n-news").textContent = news.length;
 }
+
+function render() { renderDrafts(); renderNews(); if (tab === "stats") renderStats(); tally(); }
+function store(sec) { return sec.dataset.kind === "news" ? [nstate, nedits] : [state, edits]; }
 
 document.addEventListener("change", (e) => {
   const sec = e.target.closest(".draft"); if (!sec) return;
-  const id = sec.dataset.id;
-  if (e.target.type === "radio") { state[id] = e.target.value; sec.dataset.state = e.target.value; tally(); }
-  if (e.target.classList.contains("feat")) { edits[id] = { ...(edits[id] || {}), featured: e.target.checked }; }
+  const id = sec.dataset.id, [st, ed] = store(sec);
+  if (e.target.type === "radio") { st[id] = e.target.value; sec.dataset.state = e.target.value; }
+  if (e.target.classList.contains("feat")) ed[id] = { ...(ed[id] || {}), featured: e.target.checked };
+  if (sec.dataset.kind === "news") sec.dataset.dirty = nedits[id] || nstate[id] === "unpublish" ? 1 : 0;
+  tally();
 });
 document.addEventListener("input", (e) => {
-  const sec = e.target.closest(".draft"); if (!sec) return;
-  const id = sec.dataset.id, ed = edits[id] = { ...(edits[id] || {}) };
+  const sec = e.target.closest(".draft"); if (!sec || !e.target.closest(".editor")) return;
+  const id = sec.dataset.id, [, eds] = store(sec), ed = eds[id] = { ...(eds[id] || {}) };
   if (e.target.classList.contains("e-title")) ed.title = e.target.value;
   if (e.target.classList.contains("e-summary")) ed.summary = e.target.value;
   if (e.target.classList.contains("e-points")) ed.points = e.target.value.split("\n").map((x) => x.trim()).filter(Boolean);
+  if (sec.dataset.kind === "news") sec.dataset.dirty = 1;
+  tally();
 });
 document.addEventListener("click", (e) => {
-  if (e.target.classList.contains("edit-btn")) {
-    const ed = e.target.closest(".draft").querySelector(".editor");
-    if (ed.classList.toggle("open")) e.target.textContent = "直した内容をプレビュー";
-    else { render(); }
+  const t = e.target;
+  if (t.classList.contains("edit-btn")) {
+    const ed = t.closest(".draft").querySelector(".editor");
+    if (ed.classList.toggle("open")) t.textContent = "直した内容をプレビュー"; else render();
   }
-  if (e.target.dataset.all) { drafts.forEach((d) => (state[d.id] = e.target.dataset.all)); render(); }
+  if (t.dataset.all) { drafts.forEach((d) => (state[d.id] = t.dataset.all)); render(); }
+  const tb = t.closest("[data-tab]");
+  if (tb) {
+    tab = tb.dataset.tab;
+    document.querySelectorAll("[data-tab]").forEach((b) => b.setAttribute("aria-selected", b === tb));
+    document.querySelectorAll(".panel").forEach((p) => (p.hidden = p.id !== "panel-" + tab));
+    if (tab === "stats") renderStats();
+  }
 });
+document.getElementById("q").addEventListener("input", renderNews);
+document.getElementById("fm").addEventListener("change", renderNews);
+
 document.getElementById("go").addEventListener("click", async () => {
+  if (!confirm(document.getElementById("tally").textContent + "\nこの内容で保存して、公開サイトに反映します。よろしいですか？")) return;
+  const btn = document.getElementById("go"); btn.disabled = true; btn.textContent = "保存中…";
+  const post = (url, body) => fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) }).then((r) => r.json());
+  const out = [];
   const approve = Object.keys(state).filter((k) => state[k] === "approve");
   const reject = Object.keys(state).filter((k) => state[k] === "reject");
-  if (!confirm(`${approve.length}件を公開、${reject.length}件を公開しないにします。よろしいですか？`)) return;
-  const r = await fetch("/api/publish", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ approve, reject, edits }) });
-  const j = await r.json();
-  document.getElementById("msg").innerHTML = `<div class="msg">${j.error ? "エラー：" + Y.esc(j.error) : `${j.published}件を公開しました（公開しない ${j.rejected}件、残りの下書き ${j.remaining}件）。${Y.esc(j.git || "")} <a href="/" target="_blank">サイトを見る</a>`}</div>`;
-  Object.keys(state).forEach((k) => delete state[k]);
+  if (approve.length || reject.length) {
+    const j = await post("/api/publish", { approve, reject, edits });
+    out.push(j.error ? "エラー：" + j.error : `下書き：${j.published}件を公開、${j.rejected}件を公開しない（残り${j.remaining}件）。${j.git || ""}`);
+  }
+  const unpublish = Object.keys(nstate).filter((k) => nstate[k] === "unpublish");
+  if (unpublish.length || Object.keys(nedits).length) {
+    const j = await post("/api/manage", { unpublish, edits: nedits });
+    out.push(j.error ? "エラー：" + j.error : `公開済み：${j.edited}件を修正、${j.unpublished}件を非公開に戻しました。${j.git || ""}`);
+  }
+  document.getElementById("msg").innerHTML = `<div class="msg">${out.map(Y.esc).join("<br>")} <a href="https://yossy8080.github.io/yukensha/" target="_blank" rel="noopener">公開サイトを見る</a></div>`;
+  [state, edits, nstate, nedits].forEach((o) => Object.keys(o).forEach((k) => delete o[k]));
+  btn.textContent = "保存して公開サイトに反映";
   await init();
 });
 
 async function init() {
-  const [s, d] = await Promise.all([Y.load("/data/sources.json"), Y.load("/api/drafts")]);
-  sources = Object.fromEntries(s.map((x) => [x.id, x])); drafts = d; render();
+  const [s, d, n] = await Promise.all([Y.load("/data/sources.json"), Y.load("/api/drafts"), Y.load("/api/news")]);
+  sources = Object.fromEntries(s.map((x) => [x.id, x])); drafts = d; news = n.sort(Y.byDateDesc);
+  const fm = document.getElementById("fm");
+  if (fm.options.length === 1) s.forEach((x) => fm.add(new Option(x.name, x.id)));
+  render();
 }
 init();
 </script>
