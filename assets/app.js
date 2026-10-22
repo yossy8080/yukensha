@@ -33,6 +33,13 @@ const Y = (() => {
     }).join("<span class='sep'>・</span>");
   }
 
+  // 発言の引用（総理・官房長官の発言）
+  function quotes(it) {
+    if (!(it.quotes || []).length) return "";
+    const who = [it.speaker, it.scene].filter(Boolean).map(esc).join("・");
+    return `<figure class="quotes">${it.quotes.map((q) => `<blockquote>「${esc(q)}」</blockquote>`).join("")}${who ? `<figcaption>— ${who}</figcaption>` : ""}</figure>`;
+  }
+
   // 1件の記事（大きい表示）
   function article(it, srcMap) {
     const pts = (it.points || []).map((p) => `<li>${esc(p)}</li>`).join("");
@@ -42,6 +49,7 @@ const Y = (() => {
         <p class="kicker"><time datetime="${esc(it.date)}">${fmtDate(it.date)}</time>${ministryLabel(it, srcMap)}</p>
         <h3 class="headline">${esc(it.title)}</h3>
         <p class="summary">${esc(it.summary)}</p>
+        ${quotes(it)}
         ${pts ? `<ul class="points">${pts}</ul>` : ""}
         ${sourceLine(it)}
         ${tags ? `<p class="tags">${tags}</p>` : ""}
@@ -72,7 +80,28 @@ const Y = (() => {
     if (el) el.textContent = `${today.getFullYear()}年${today.getMonth() + 1}月${today.getDate()}日`;
   }
 
-  return { esc, load, fmtDate, byDateDesc, article, row, empty, markNav };
+  const visible = (sources) => sources.filter((s) => !s.hidden);
+
+  // オピニオン（今週の論点など）
+  function opinion(p, byId, srcMap) {
+    const topics = (p.topics || []).map((t, i) => {
+      const rel = (t.article_ids || []).map((id) => byId[id]).filter(Boolean)
+        .map((n) => `<li><time>${fmtDate(n.date)}</time> <a href="ministries.html?m=${esc(n.ministry)}#${esc(n.id)}">${esc(n.title)}</a> <span class="row-ministry">${esc(srcMap[n.ministry]?.short || "")}</span></li>`).join("");
+      return `<section class="topic"><h4><span class="topic-n">${i + 1}</span>${esc(t.name)}${t.count ? `<small>関連の発表 ${esc(t.count)}件</small>` : ""}</h4>
+        <p>${esc(t.summary || "")}</p>${rel ? `<ul class="topic-rel">${rel}</ul>` : ""}</section>`;
+    }).join("");
+    const body = (p.body || []).map((x) => `<p>${esc(x)}</p>`).join("");
+    return `<article class="item opinion" id="${esc(p.id)}">
+      <p class="kicker"><span class="kicker-ministry">${esc(p.kind || "オピニオン")}</span><time datetime="${esc(p.date)}">${fmtDate(p.date)}</time>${p.period ? `<span>対象：${esc(p.period)}</span>` : ""}</p>
+      <h3 class="headline">${esc(p.title)}</h3>
+      ${p.lead ? `<p class="summary">${esc(p.lead)}</p>` : ""}
+      ${topics}
+      ${body ? `<div class="op-body"><h4>編集部メモ</h4>${body}</div>` : ""}
+      <p class="source">${esc(p.author || "有権者編集部")}</p>
+    </article>`;
+  }
+
+  return { esc, load, fmtDate, byDateDesc, article, row, empty, markNav, quotes, visible, opinion };
 })();
 
 document.addEventListener("DOMContentLoaded", Y.markNav);

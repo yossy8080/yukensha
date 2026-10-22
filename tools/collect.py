@@ -15,6 +15,7 @@ import html
 import json
 import re
 import sys
+import urllib.parse
 import urllib.request
 import xml.etree.ElementTree as ET
 from pathlib import Path
@@ -148,6 +149,33 @@ def parse_meti(text: str, base: str):
     return items
 
 
+def collect_kokkai(src):
+    """国会会議録APIから、総理・官房長官の発言を会議ごとにまとめて返す。
+    会議録は公開までに1〜3週間かかるので、30日前までさかのぼって探す。"""
+    since = (dt.datetime.now(JST).date() - dt.timedelta(days=30)).isoformat()
+    groups = {}
+    for pos in src.get("positions", ["内閣総理大臣"]):
+        q = urllib.parse.urlencode({"speakerPosition": pos, "from": since, "maximumRecords": 100, "recordPacking": "json"})
+        data = json.loads(fetch("https://kokkai.ndl.go.jp/api/speech?" + q))
+        for s in data.get("speechRecord", []):
+            key = (s["issueID"], pos)
+            g = groups.setdefault(key, {
+                "title": f'{s["nameOfHouse"]} {s["nameOfMeeting"]} {s["issue"]}での{pos}（{s["speaker"]}）の発言',
+                "url": f'https://kokkai.ndl.go.jp/txt/{s["issueID"]}',
+                "date": s["date"], "category": "国会", "speaker": s["speaker"], "position": pos,
+                "issue_id": s["issueID"], "speeches": 0})
+            g["speeches"] += 1
+    return [dict(g, url=g["url"] + "#" + g["position"]) for g in groups.values()]
+
+
+STATEMENT_PATHS = ("/statement/", "/discourse/", "/tyoukanpress/")
+
+
+def is_statement(it):
+    """官邸の新着のうち、総理・官房長官の発言（会見・演説・指示・談話）か。"""
+    return any(p in it["url"] for p in STATEMENT_PATHS)
+
+
 PARSERS = {"rss": parse_feed, "meti_html": parse_meti, "kantei_html": parse_kantei, "mofa_html": parse_mofa, "env_html": parse_env}
 
 
@@ -162,18 +190,26 @@ def main():
     cutoff = (dt.datetime.now(JST).date() - dt.timedelta(days=args.days)).isoformat()
 
     new, errors = [], []
+    hatsugen = next((s for s in sources if s["id"] == "hatsugen"), None)
     for src in sources:
+        if src["type"] == "derived":  # 他の発表元から振り分けるだけ（総理・官房長官の発言）
+            continue
         try:
-            items = PARSERS[src["type"]](fetch(src["url"]), src["url"])
+            if src["type"] == "kokkai":
+                items = collect_kokkai(src)
+            else:
+                items = PARSERS[src["type"]](fetch(src["url"]), src["url"])
         except Exception as e:  # 1つのサイトが落ちても他は続ける
             errors.append(f'{src["name"]}: {e}')
             continue
         count = 0
         for it in items:
-            if it["url"] in seen or (it["date"] and it["date"] < cutoff):
+            too_old = it["date"] and it["date"] < cutoff and src["type"] != "kokkai"
+            if it["url"] in seen or too_old:
                 continue
             seen.add(it["url"])
-            it.update({"ministry": src["id"], "ministry_name": src["name"], "site": src["site"]})
+            dest = hatsugen if (hatsugen and (src["type"] == "kokkai" or (src["id"] == "kantei" and is_statement(it)))) else src
+            it.update({"ministry": dest["id"], "ministry_name": dest["name"], "site": src["site"]})
             new.append(it)
             count += 1
         print(f'{src["name"]}: {len(items)}件中 新着{count}件')

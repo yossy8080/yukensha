@@ -82,6 +82,9 @@ main { padding: 28px 0 64px; }
 .headline { font-family: var(--serif); font-size: 22px; line-height: 1.5; margin: 0 0 10px; font-weight: 700; text-wrap: pretty; }
 .featured-first .item:first-child .headline { font-size: clamp(24px, 3.4vw, 30px); }
 .summary { margin: 0 0 10px; }
+.quotes { margin: 0 0 12px; padding: 4px 0 4px 16px; border-left: 2px solid var(--ink); }
+.quotes blockquote { margin: 0 0 6px; font-family: var(--serif); font-size: 17px; line-height: 1.7; }
+.quotes figcaption { font-size: 13px; color: var(--muted); }
 .points { margin: 0 0 12px; padding-left: 1.2em; }
 .points li { margin: 2px 0; }
 .points li::marker { color: var(--accent); }
@@ -105,6 +108,11 @@ aside .block { margin-bottom: 36px; }
 .ministry-list a { display: flex; justify-content: space-between; padding: 9px 0; border-bottom: 1px solid var(--rule); text-decoration: none; min-height: 44px; align-items: center; }
 .ministry-list .count { color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; }
 .note { font-size: 14px; color: var(--muted); }
+.said { padding: 10px 0; border-bottom: 1px solid var(--rule); }
+.said .kicker { margin: 0; }
+.said-q { margin: 2px 0; font-family: var(--serif); font-size: 15px; line-height: 1.6; }
+.said-q a { text-decoration: none; }
+.said-who { margin: 0; font-size: 12px; color: var(--muted); }
 .note p { margin: 10px 0; }
 
 /* ── 省庁の切り替え ── */
@@ -115,6 +123,19 @@ aside .block { margin-bottom: 36px; }
 }
 .chips a[aria-current="true"] { background: var(--ink); color: var(--paper); }
 .chips .count { font-size: 12px; opacity: .7; }
+
+/* ── オピニオン ── */
+.topic { margin: 18px 0; }
+.topic h4 { font-family: var(--serif); font-size: 18px; margin: 0 0 6px; display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; }
+.topic h4 small { font-family: var(--sans); font-weight: 400; font-size: 12px; color: var(--muted); }
+.topic-n { color: var(--accent); }
+.topic p { margin: 0 0 8px; }
+.topic-rel { list-style: none; margin: 0; padding: 0; font-size: 14px; }
+.topic-rel li { padding: 4px 0; border-bottom: 1px dotted var(--rule); }
+.topic-rel time { color: var(--muted); font-size: 12px; margin-right: 6px; }
+.op-body { margin-top: 18px; padding: 14px 16px; background: var(--paper-2); }
+.op-body h4 { margin: 0 0 6px; font-size: 14px; }
+.op-body p { margin: 0 0 8px; }
 
 /* ── 準備中のページ ── */
 .placeholder { border: 1px dashed var(--rule); padding: 28px; background: var(--paper-2); }

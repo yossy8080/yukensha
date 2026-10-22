@@ -27,7 +27,7 @@
     <li><a href="ministries.html">省庁別</a></li>
     <li><a href="pledges.html" class="soon">公約トラッカー<small>準備中</small></a></li>
     <li><a href="local.html">地方</a></li>
-    <li><a href="opinion.html" class="soon">オピニオン<small>準備中</small></a></li>
+    <li><a href="opinion.html">オピニオン</a></li>
     <li><a href="about.html">このサイトについて</a></li>
   </ul>
 </nav>
@@ -40,6 +40,11 @@
     <ul id="all" class="rows"></ul>
   </section>
   <aside>
+    <div class="block" id="hatsugen-block" hidden>
+      <h2 class="section-title">総理・官房長官の発言</h2>
+      <div id="hatsugen"></div>
+      <p class="note"><a href="ministries.html?m=hatsugen">発言をすべて見る</a></p>
+    </div>
     <div class="block">
       <h2 class="section-title">省庁別</h2>
       <ul id="ministry-list" class="ministry-list"></ul>
@@ -72,7 +77,15 @@
   document.getElementById("all").innerHTML = news.slice(0, 40).map((n) => Y.row(n, map)).join("");
   document.getElementById("all-count").textContent = news.length ? `${news.length}件` : "";
   const count = (id) => news.filter((n) => n.ministry === id || (n.also || []).includes(id)).length;
-  document.getElementById("ministry-list").innerHTML = sources.map((s) =>
+  const said = news.filter((n) => n.ministry === "hatsugen" || (n.also || []).includes("hatsugen")).slice(0, 3);
+  if (said.length) {
+    document.getElementById("hatsugen-block").hidden = false;
+    document.getElementById("hatsugen").innerHTML = said.map((n) => `
+      <div class="said"><p class="kicker"><time>${Y.fmtDate(n.date)}</time></p>
+      <p class="said-q"><a href="ministries.html?m=hatsugen#${Y.esc(n.id)}">${Y.esc(n.quotes && n.quotes[0] ? "「" + n.quotes[0] + "」" : n.title)}</a></p>
+      ${n.speaker ? `<p class="said-who">— ${Y.esc(n.speaker)}</p>` : ""}</div>`).join("");
+  }
+  document.getElementById("ministry-list").innerHTML = Y.visible(sources).map((s) =>
     `<li><a href="ministries.html?m=${s.id}"><span>${Y.esc(s.name)}</span><span class="count">${count(s.id)}件</span></a></li>`).join("");
 })().catch((e) => { document.getElementById("featured").innerHTML = Y.empty(e.message); });
 </script>

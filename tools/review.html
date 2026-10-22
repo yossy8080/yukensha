@@ -57,6 +57,7 @@
   <div class="tabs" role="tablist">
     <button role="tab" data-tab="drafts" aria-selected="true">下書き<span class="n" id="n-drafts"></span></button>
     <button role="tab" data-tab="news" aria-selected="false">公開済み<span class="n" id="n-news"></span></button>
+    <button role="tab" data-tab="opinion" aria-selected="false">オピニオン<span class="n" id="n-op"></span></button>
     <button role="tab" data-tab="stats" aria-selected="false">アクセス数</button>
   </div>
   <div id="msg"></div>
@@ -79,13 +80,19 @@
     <div id="news"></div>
   </section>
 
+  <section class="panel" id="panel-opinion" hidden>
+    <p class="lead" style="margin-top:16px">毎週の「今週の論点」などの下書きです。内容を確かめて「公開する」「公開しない」を選んでください。</p>
+    <div id="opinion"></div>
+  </section>
+
   <section class="panel" id="panel-stats" hidden>
     <div id="stats"></div>
   </section>
 </main>
 <script src="/assets/app.js"></script>
 <script>
-let sources = {}, drafts = [], news = [], tab = "drafts";
+let sources = {}, drafts = [], news = [], opDrafts = [], tab = "drafts";
+const ostate = {};  // オピニオン: id -> approve | reject | later
 const state = {};   // 下書き: id -> approve | reject | later
 const edits = {};   // 下書き: id -> {title, summary, points, featured}
 const nstate = {};  // 公開済み: id -> keep | unpublish
@@ -141,6 +148,21 @@ function renderNews() {
   }).join("");
 }
 
+function renderOpinion() {
+  const byId = Object.fromEntries(news.map((n) => [n.id, n]));
+  document.getElementById("opinion").innerHTML = !opDrafts.length ? Y.empty("確認待ちのオピニオンはありません。") : opDrafts.map((p) => {
+    const s = ostate[p.id] || "later";
+    return `<section class="draft" data-kind="opinion" data-id="${Y.esc(p.id)}" data-state="${s}">
+      <div class="controls"><fieldset>
+        <label><input type="radio" name="o-${p.id}" value="approve" ${s === "approve" ? "checked" : ""}> 公開する</label>
+        <label><input type="radio" name="o-${p.id}" value="reject" ${s === "reject" ? "checked" : ""}> 公開しない</label>
+        <label><input type="radio" name="o-${p.id}" value="later" ${s === "later" ? "checked" : ""}> あとで</label>
+      </fieldset></div>
+      <div>${Y.opinion(p, byId, sources)}</div>
+    </section>`;
+  }).join("");
+}
+
 async function renderStats() {
   const cfg = await Y.load("/api/config").catch(() => ({}));
   const featured = news.filter((n) => n.featured).length;
@@ -166,17 +188,21 @@ function tally() {
   let a = 0, r = 0, u = 0;
   Object.values(state).forEach((x) => { if (x === "approve") a++; if (x === "reject") r++; });
   Object.values(nstate).forEach((x) => { if (x === "unpublish") u++; });
+  let oa = 0, orj = 0;
+  Object.values(ostate).forEach((x) => { if (x === "approve") oa++; if (x === "reject") orj++; });
   const e = Object.keys(nedits).length, parts = [];
+  if (oa) parts.push(`オピニオン公開 ${oa}件`); if (orj) parts.push(`オピニオン公開しない ${orj}件`);
   if (a) parts.push(`公開する ${a}件`); if (r) parts.push(`公開しない ${r}件`);
   if (e) parts.push(`修正 ${e}件`); if (u) parts.push(`非公開に戻す ${u}件`);
   document.getElementById("tally").textContent = parts.length ? "変更：" + parts.join("／") : "変更はまだありません";
   document.getElementById("go").disabled = !parts.length;
   document.getElementById("n-drafts").textContent = drafts.length;
   document.getElementById("n-news").textContent = news.length;
+  document.getElementById("n-op").textContent = opDrafts.length || "";
 }
 
-function render() { renderDrafts(); renderNews(); if (tab === "stats") renderStats(); tally(); }
-function store(sec) { return sec.dataset.kind === "news" ? [nstate, nedits] : [state, edits]; }
+function render() { renderDrafts(); renderNews(); renderOpinion(); if (tab === "stats") renderStats(); tally(); }
+function store(sec) { return sec.dataset.kind === "news" ? [nstate, nedits] : sec.dataset.kind === "opinion" ? [ostate, {}] : [state, edits]; }
 
 document.addEventListener("change", (e) => {
   const sec = e.target.closest(".draft"); if (!sec) return;
@@ -229,17 +255,23 @@ document.getElementById("go").addEventListener("click", async () => {
     const j = await post("/api/manage", { unpublish, edits: nedits });
     out.push(j.error ? "エラー：" + j.error : `公開済み：${j.edited}件を修正、${j.unpublished}件を非公開に戻しました。${j.git || ""}`);
   }
+  const oapprove = Object.keys(ostate).filter((k) => ostate[k] === "approve");
+  const oreject = Object.keys(ostate).filter((k) => ostate[k] === "reject");
+  if (oapprove.length || oreject.length) {
+    const j = await post("/api/publish_opinion", { approve: oapprove, reject: oreject });
+    out.push(j.error ? "エラー：" + j.error : `オピニオン：${j.published}件を公開、${j.rejected}件を公開しない。${j.git || ""}`);
+  }
   document.getElementById("msg").innerHTML = `<div class="msg">${out.map(Y.esc).join("<br>")} <a href="https://yossy8080.github.io/yukensha/" target="_blank" rel="noopener">公開サイトを見る</a></div>`;
-  [state, edits, nstate, nedits].forEach((o) => Object.keys(o).forEach((k) => delete o[k]));
+  [state, edits, nstate, nedits, ostate].forEach((o) => Object.keys(o).forEach((k) => delete o[k]));
   btn.textContent = "保存して公開サイトに反映";
   await init();
 });
 
 async function init() {
-  const [s, d, n] = await Promise.all([Y.load("/data/sources.json"), Y.load("/api/drafts"), Y.load("/api/news")]);
-  sources = Object.fromEntries(s.map((x) => [x.id, x])); drafts = d; news = n.sort(Y.byDateDesc);
+  const [s, d, n, o] = await Promise.all([Y.load("/data/sources.json"), Y.load("/api/drafts"), Y.load("/api/news"), Y.load("/api/opinion_drafts")]);
+  sources = Object.fromEntries(s.map((x) => [x.id, x])); drafts = d; news = n.sort(Y.byDateDesc); opDrafts = o;
   const fm = document.getElementById("fm");
-  if (fm.options.length === 1) s.forEach((x) => fm.add(new Option(x.name, x.id)));
+  if (fm.options.length === 1) Y.visible(s).forEach((x) => fm.add(new Option(x.name, x.id)));
   render();
 }
 init();

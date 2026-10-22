@@ -22,6 +22,8 @@ NEWS = ROOT / "data" / "news.json"
 DRAFTS = ROOT / "drafts" / "drafts.json"
 REJECTED = ROOT / "drafts" / "rejected.json"
 UNPUBLISHED = ROOT / "drafts" / "unpublished.json"
+OPINION = ROOT / "data" / "opinion.json"
+OPINION_DRAFTS = ROOT / "drafts" / "opinion_drafts.json"
 REVIEW_HTML = Path(__file__).resolve().parent / "review.html"
 PORT = int(os.environ.get("YUKENSHA_PORT", "5600"))
 JST = dt.timezone(dt.timedelta(hours=9))
@@ -114,6 +116,36 @@ def save_git(message: str) -> str:
     return msg
 
 
+def publish_opinion(body: dict) -> dict:
+    """オピニオン（今週の論点など）の下書きを公開する／しない。"""
+    drafts = read(OPINION_DRAFTS, [])
+    posts = read(OPINION, [])
+    approve, reject = set(body.get("approve", [])), set(body.get("reject", []))
+    edits = body.get("edits", {})
+    now = dt.datetime.now(JST).isoformat(timespec="seconds")
+    published, remaining, rejected = [], [], 0
+    for d in drafts:
+        for k in ("title", "lead", "body"):
+            if k in edits.get(d["id"], {}):
+                d[k] = edits[d["id"]][k]
+        if d["id"] in approve:
+            d["published_at"] = now
+            published.append(d)
+        elif d["id"] in reject:
+            rejected += 1
+        else:
+            remaining.append(d)
+    known = {x["id"] for x in posts}
+    posts = sorted(posts + [x for x in published if x["id"] not in known], key=lambda x: x["date"], reverse=True)
+    write(OPINION, posts)
+    write(OPINION_DRAFTS, remaining)
+    msg = ""
+    if published and (ROOT / ".git").exists():
+        git("add", "data/opinion.json")
+        msg = save_git(f"オピニオンを{len(published)}件公開（{now[:10]}）")
+    return {"published": len(published), "rejected": rejected, "remaining": len(remaining), "git": msg}
+
+
 def manage(body: dict) -> dict:
     """公開済みの記事を直す／非公開に戻す。"""
     news = read(NEWS, [])
@@ -172,6 +204,8 @@ class Handler(SimpleHTTPRequestHandler):
             self.wfile.write(b)
         elif self.path == "/api/drafts":
             self._json(read(DRAFTS, []))
+        elif self.path == "/api/opinion_drafts":
+            self._json(read(OPINION_DRAFTS, []))
         elif self.path == "/api/news":
             self._json(read(NEWS, []))
         elif self.path == "/api/config":
@@ -182,7 +216,7 @@ class Handler(SimpleHTTPRequestHandler):
             super().do_GET()
 
     def do_POST(self):
-        actions = {"/api/publish": publish, "/api/manage": manage}
+        actions = {"/api/publish": publish, "/api/manage": manage, "/api/publish_opinion": publish_opinion}
         if self.path not in actions:
             return self.send_error(404)
         n = int(self.headers.get("Content-Length", 0))

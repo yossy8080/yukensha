@@ -27,14 +27,14 @@
     <li><a href="ministries.html">省庁別</a></li>
     <li><a href="pledges.html" class="soon">公約トラッカー<small>準備中</small></a></li>
     <li><a href="local.html">地方</a></li>
-    <li><a href="opinion.html" class="soon">オピニオン<small>準備中</small></a></li>
+    <li><a href="opinion.html">オピニオン</a></li>
     <li><a href="about.html">このサイトについて</a></li>
   </ul>
 </nav>
 <main class="wrap">
 <h1 class="page-title">オピニオン</h1>
-<p class="lead">ニュース（事実）とははっきり分けて、評価や意見を載せるコーナーです。</p>
-<div class="placeholder"><h3>準備中</h3><p>ニュースのページには評価を入れません。評価はこのページだけに、書いた人の名前つきで載せる予定です。</p></div>
+<p class="lead">ニュース（事実）とははっきり分けて、まとめや評価・意見を載せるコーナーです。毎週「今週の論点」として、政府の発表が多かったテーマを整理しています。</p>
+<div id="posts"></div>
 </main>
 <footer>
   <div class="wrap">
@@ -43,6 +43,15 @@
   </div>
 </footer>
 <script src="assets/app.js"></script>
+<script>
+(async () => {
+  const [sources, news, posts] = await Promise.all([Y.load("data/sources.json"), Y.load("data/news.json"), Y.load("data/opinion.json")]);
+  const map = Object.fromEntries(sources.map((s) => [s.id, s]));
+  const byId = Object.fromEntries(news.map((n) => [n.id, n]));
+  document.getElementById("posts").innerHTML = posts.length ? posts.map((p) => Y.opinion(p, byId, map)).join("") : Y.empty("まだ公開された記事はありません。");
+  if (location.hash) document.querySelector(location.hash)?.scrollIntoView();
+})().catch((e) => { document.getElementById("posts").innerHTML = Y.empty(e.message); });
+</script>
 
 </body>
 </html>

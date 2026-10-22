@@ -27,7 +27,7 @@
     <li><a href="ministries.html">省庁別</a></li>
     <li><a href="pledges.html" class="soon">公約トラッカー<small>準備中</small></a></li>
     <li><a href="local.html">地方</a></li>
-    <li><a href="opinion.html" class="soon">オピニオン<small>準備中</small></a></li>
+    <li><a href="opinion.html">オピニオン</a></li>
     <li><a href="about.html">このサイトについて</a></li>
   </ul>
 </nav>
@@ -53,11 +53,11 @@
   news.sort(Y.byDateDesc);
   document.getElementById("chips").innerHTML =
     `<a href="ministries.html" aria-current="${!m}">すべて<span class="count">${news.length}</span></a>` +
-    sources.map((s) => `<a href="ministries.html?m=${s.id}" aria-current="${m === s.id}">${Y.esc(s.name)}<span class="count">${news.filter((n) => has(n, s.id)).length}</span></a>`).join("");
+    Y.visible(sources).map((s) => `<a href="ministries.html?m=${s.id}" aria-current="${m === s.id}">${Y.esc(s.name)}<span class="count">${news.filter((n) => has(n, s.id)).length}</span></a>`).join("");
   const list = m ? news.filter((n) => has(n, m)) : news;
   if (m && map[m]) {
-    document.getElementById("title").textContent = map[m].name + "のニュース";
-    document.getElementById("lead").innerHTML = `${Y.esc(map[m].name)}の発表を要約しています。元の情報：<a href="${Y.esc(map[m].home)}" target="_blank" rel="noopener">${Y.esc(map[m].site)}</a>`;
+    document.getElementById("title").textContent = map[m].name + (m === "hatsugen" ? "" : "のニュース");
+    document.getElementById("lead").innerHTML = `${Y.esc(map[m].note ? map[m].note + "を、元の言葉の引用と要約で載せています" : map[m].name + "の発表を要約しています")}。元の情報：<a href="${Y.esc(map[m].home)}" target="_blank" rel="noopener">${Y.esc(map[m].site)}</a>`;
     document.title = `有権者 — ${map[m].name}`;
   }
   document.getElementById("list").innerHTML = list.length ? list.map((n) => Y.article(n, map)).join("") : Y.empty("まだ公開された記事はありません。");

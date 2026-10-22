@@ -259,7 +259,10 @@
   "source_url": "https://www.kantei.go.jp/jp/105/statement/2026/1021kaiken.html",
   "source_title": "総理就任１年の節目を迎えての会見",
   "site": "首相官邸ホームページ",
-  "published_at": "2026-10-21T23:41:09+09:00"
+  "published_at": "2026-10-21T23:41:09+09:00",
+  "also": [
+   "hatsugen"
+  ]
  },
  {
   "id": "2026-10-21-meti-ec-shijo",
@@ -810,7 +813,10 @@
   "source_url": "https://www.kantei.go.jp/jp/105/discourse/20261016shiji.html",
   "source_title": "カムチャツカ半島を震源とする地震に関する総理指示（12：41）",
   "site": "首相官邸ホームページ",
-  "published_at": "2026-10-17T23:38:09+09:00"
+  "published_at": "2026-10-17T23:38:09+09:00",
+  "also": [
+   "hatsugen"
+  ]
  },
  {
   "id": "2026-10-16-maff-kome-kakaku",
@@ -914,7 +920,10 @@
   "source_url": "https://www.kantei.go.jp/jp/105/statement/2026/1015kaiken.html",
   "source_title": "閣僚人事等についての会見",
   "site": "首相官邸ホームページ",
-  "published_at": "2026-10-17T23:38:09+09:00"
+  "published_at": "2026-10-17T23:38:09+09:00",
+  "also": [
+   "hatsugen"
+  ]
  },
  {
   "id": "2026-10-15-meti-nichibei-handoutai",
@@ -1003,7 +1012,10 @@
   "source_url": "https://www.kantei.go.jp/jp/105/statement/2026/1014kaiken.html",
   "source_title": "農林水産大臣の交代についての会見",
   "site": "首相官邸ホームページ",
-  "published_at": "2026-10-17T23:38:09+09:00"
+  "published_at": "2026-10-17T23:38:09+09:00",
+  "also": [
+   "hatsugen"
+  ]
  },
  {
   "id": "2026-10-14-mofa-jinken-riji",

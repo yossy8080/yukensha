@@ -1,4 +1,5 @@
 [
+  {"id": "hatsugen", "name": "総理・官房長官の発言", "short": "発言", "site": "首相官邸ホームページ・国会会議録", "home": "https://www.kantei.go.jp/jp/105/statement/", "type": "derived", "note": "官邸の会見・演説・指示と、国会での総理・官房長官の発言"},
   {"id": "kantei", "name": "首相官邸", "short": "官邸", "site": "首相官邸ホームページ", "home": "https://www.kantei.go.jp/", "type": "kantei_html", "url": "https://www.kantei.go.jp/jp/news/index.html"},
   {"id": "cao", "name": "内閣府", "short": "内閣府", "site": "内閣府ホームページ", "home": "https://www.cao.go.jp/", "type": "rss", "url": "https://www.cao.go.jp/rss/news.rdf"},
   {"id": "digital", "name": "デジタル庁", "short": "デジタル", "site": "デジタル庁ウェブサイト", "home": "https://www.digital.go.jp/", "type": "rss", "url": "https://www.digital.go.jp/rss/news.xml"},
@@ -12,5 +13,6 @@
   {"id": "meti", "name": "経済産業省", "short": "経産", "site": "経済産業省ホームページ", "home": "https://www.meti.go.jp/", "type": "meti_html", "url": "https://www.meti.go.jp/press/index.html"},
   {"id": "mlit", "name": "国土交通省", "short": "国交", "site": "国土交通省ホームページ", "home": "https://www.mlit.go.jp/", "type": "rss", "url": "https://www.mlit.go.jp/pressrelease.rdf"},
   {"id": "env", "name": "環境省", "short": "環境", "site": "環境省ホームページ", "home": "https://www.env.go.jp/", "type": "env_html", "url": "https://www.env.go.jp/press/"},
-  {"id": "mod", "name": "防衛省", "short": "防衛", "site": "防衛省ホームページ", "home": "https://www.mod.go.jp/", "type": "rss", "url": "https://www.mod.go.jp/j/rss/news.xml"}
+  {"id": "mod", "name": "防衛省", "short": "防衛", "site": "防衛省ホームページ", "home": "https://www.mod.go.jp/", "type": "rss", "url": "https://www.mod.go.jp/j/rss/news.xml"},
+  {"id": "kokkai", "name": "国会会議録", "short": "国会", "site": "国会会議録検索システム", "home": "https://kokkai.ndl.go.jp/", "type": "kokkai", "url": "https://kokkai.ndl.go.jp/api/speech", "positions": ["内閣総理大臣", "内閣官房長官"], "hidden": true}
 ]
