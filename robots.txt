@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://yossy8080.github.io/yukensha/sitemap.xml

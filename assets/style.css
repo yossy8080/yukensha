@@ -143,8 +143,21 @@ aside .block { margin-bottom: 36px; }
 
 .empty { color: var(--muted); padding: 24px 0; }
 
+/* ── よくある質問 ── */
+.faq details { border-bottom: 1px solid var(--rule); }
+.faq summary {
+  cursor: pointer; padding: 12px 0; min-height: 44px; font-family: var(--serif); font-weight: 700; font-size: 17px;
+  list-style: none; display: flex; gap: 10px; align-items: baseline;
+}
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::before { content: "問"; color: var(--accent); font-size: 14px; }
+.faq summary:hover { color: var(--accent); }
+.faq details p { margin: 0 0 14px; padding-left: 1.5em; }
+
 /* ── フッター ── */
 footer { border-top: 3px double var(--ink); padding: 24px 0 40px; font-size: 13px; color: var(--muted); }
 footer p { margin: 4px 0; }
+footer .footer-links { margin-top: 12px; }
+footer .footer-links a { color: var(--ink); }
 
 @media (prefers-reduced-motion: no-preference) { a { transition: color .15s; } }
