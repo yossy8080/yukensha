@@ -1,0 +1,224 @@
+/* 有権者 — 記事ビュー「Mirror Hall」とリーダー（hall.js）
+   注意：.hall 自体には transform / filter を付けない（用語ポップアップの position: fixed がずれるため）。 */
+
+.hall {
+  --cw: min(560px, 42vw);
+  --ch: min(72vh, 680px, calc(100vh - 250px));
+  position: fixed; inset: 0; z-index: 100;
+  display: flex; flex-direction: column; align-items: center;
+  color: var(--text, #e8edf4);
+  background: radial-gradient(120% 70% at 50% 0%, #0d2140 0%, var(--night-1, #0a1a30) 35%, var(--night-0, #04080f) 75%);
+  overflow: hidden;
+  opacity: 0;
+  font-family: var(--sans, sans-serif);
+}
+.hall[hidden] { display: none; }
+.hall.is-in { opacity: 1; }
+@media (prefers-reduced-motion: no-preference) { .hall { transition: opacity .35s ease; } }
+.hall-defs { position: absolute; width: 0; height: 0; }
+
+/* 夜空と水平線、暗い水面 */
+.hall-sky {
+  position: absolute; inset: 0; pointer-events: none;
+  background:
+    radial-gradient(40% 18% at 50% 64%, rgba(143, 208, 255, .12), transparent 70%),
+    linear-gradient(180deg, transparent 0 60%, rgba(2, 6, 12, .85) 60.2%, #02060c 100%);
+}
+.hall-sky::after { /* 水平線の細い光 */
+  content: ""; position: absolute; left: 0; right: 0; top: 60%; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(214, 236, 255, .28), transparent);
+}
+
+/* 上部：コレクション名 */
+.hall-top { position: relative; z-index: 3; text-align: center; padding: 22px 64px 0; flex: none; }
+.hall-kicker { margin: 0; font-size: 12px; letter-spacing: .24em; color: var(--sub, #93a1b5); }
+.hall-no { color: var(--glow-2, #8fd0ff); font-variant-numeric: tabular-nums; }
+.hall-title {
+  margin: 4px 0 0; font-family: var(--serif, serif); font-weight: 800;
+  font-size: clamp(26px, 3.2vw, 40px); line-height: 1.3; letter-spacing: .22em; text-indent: .22em;
+  text-shadow: 0 0 24px rgba(143, 208, 255, .35);
+}
+.hall-title:focus { outline: none; } /* 開いたときにフォーカスを置くだけ（Tab では来ない） */
+.hall-count { margin: 2px 0 0; font-size: 13px; color: var(--sub, #93a1b5); }
+
+.hall-close {
+  position: absolute; top: 14px; right: 14px; z-index: 6;
+  width: 48px; height: 48px; display: grid; place-items: center; padding: 0;
+  border: 1px solid rgba(214, 236, 255, .22); border-radius: 50%;
+  background: rgba(8, 16, 30, .6); color: var(--text, #e8edf4); font-size: 24px; line-height: 1; cursor: pointer;
+}
+.hall-close:hover { border-color: var(--glow-2, #8fd0ff); color: var(--glow, #d6ecff); }
+.hall button:focus-visible { outline: 2px solid var(--glow-2, #8fd0ff); outline-offset: 3px; }
+
+/* 中央：カードのリング */
+.hall-stage {
+  position: relative; z-index: 2; flex: 1 1 auto; width: 100%; min-height: 0;
+  display: flex; align-items: center; justify-content: center;
+  touch-action: pan-y; cursor: grab; user-select: none; -webkit-user-select: none;
+}
+.hall-stage.is-dragging { cursor: grabbing; }
+.hall-ring, .hall-reflect {
+  position: relative; width: var(--cw); height: var(--ch);
+  perspective: 1800px; perspective-origin: 50% 50%;
+  transform-style: preserve-3d;
+}
+.hall-ring-mirror { position: absolute; inset: 0; width: auto; height: auto; }
+
+.hall-card {
+  position: absolute; left: 50%; top: 50%; width: var(--cw); height: var(--ch);
+  --f: 1;
+  backface-visibility: hidden; -webkit-backface-visibility: hidden;
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(22, 44, 74, .96), rgba(8, 18, 34, .97) 70%);
+  border: 1px solid rgba(214, 236, 255, calc(.12 + var(--f) * .3));
+  box-shadow: 0 0 calc(var(--f) * 50px) rgba(143, 208, 255, calc(var(--f) * .28)), inset 0 1px 0 rgba(214, 236, 255, .14);
+  opacity: calc(.3 + var(--f) * .7);
+  cursor: pointer;
+  will-change: transform;
+}
+.hall-card::before { /* 縁を走る冷たい光 */
+  content: ""; position: absolute; inset: -1px; border-radius: inherit; pointer-events: none;
+  background: linear-gradient(160deg, rgba(214, 236, 255, .5), transparent 30%, transparent 70%, rgba(143, 208, 255, .35));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  padding: 1px; opacity: var(--f);
+}
+.hall-card::after { /* 正面から外れるほど暗く */
+  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  background: #02060c; opacity: calc((1 - var(--f)) * .65);
+}
+.hall-card.is-front::after { opacity: 0; }
+.hall-card-in {
+  position: relative; height: 100%; display: flex; flex-direction: column;
+  padding: clamp(24px, 3.2vw, 40px); overflow: hidden;
+}
+.hall-card-meta { margin: 0 0 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; font-size: 15px; color: var(--sub, #93a1b5); }
+.hall-card-meta time { color: var(--glow, #d6ecff); }
+.hall-card-meta time::before { content: ""; display: inline-block; width: 7px; height: 7px; margin-right: 8px; border-radius: 50%; background: var(--shu, #e8452c); vertical-align: 2px; }
+.hall-tag { font-size: 13px; padding: 1px 10px; border: 1px solid rgba(143, 208, 255, .28); border-radius: 999px; }
+.hall-card-title { margin: 0 0 18px; font-family: var(--serif, serif); font-weight: 800; font-size: clamp(24px, 2.3vw, 32px); line-height: 1.45; letter-spacing: .02em; text-wrap: pretty; }
+.hall-card-open {
+  all: unset; cursor: pointer; display: inline; color: var(--text, #e8edf4); overflow-wrap: anywhere;
+}
+.hall-card-open:focus-visible { outline: 2px solid var(--glow-2, #8fd0ff); outline-offset: 4px; border-radius: 4px; }
+.hall-card-summary {
+  position: relative; flex: 1 1 auto; min-height: 0; margin: 0; overflow: hidden;
+  font-size: 18px; line-height: 1.8; color: #d5deea;
+  -webkit-mask-image: linear-gradient(180deg, #000 70%, transparent);
+  mask-image: linear-gradient(180deg, #000 70%, transparent);
+}
+.hall-card-more { margin: 14px 0 0; font-size: 15px; color: var(--glow-2, #8fd0ff); letter-spacing: .08em; }
+.hall-card.is-front .hall-card-more span { display: inline-block; }
+@media (prefers-reduced-motion: no-preference) {
+  .hall-card.is-front:hover .hall-card-more span { transform: translateX(4px); transition: transform .2s; }
+}
+
+/* 水面の映り込み（反転・ぼかし・揺らぎ・下に向かって消える） */
+.hall-water {
+  position: absolute; left: 50%; top: calc(50% + var(--ch) / 2 + 6px); width: 100vw; height: calc(var(--ch) * .42);
+  transform: translateX(-50%); pointer-events: none; overflow: hidden;
+  display: flex; justify-content: center;
+  -webkit-mask-image: linear-gradient(180deg, rgba(0, 0, 0, .55), transparent 85%);
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, .55), transparent 85%);
+}
+/* その場で上下反転すると、カードの下端が水面（この箱の上端）に来る */
+.hall-reflect { flex: none; transform: scaleY(-1); transform-origin: 50% 50%; filter: url(#hall-ripple) blur(2px); opacity: .55; }
+.hall-reflect .hall-card { box-shadow: none; }
+
+/* 下：カウンターとドット */
+.hall-foot {
+  position: relative; z-index: 3; flex: none; width: 100%;
+  display: grid; grid-template-columns: auto auto auto; justify-content: center; align-items: center; gap: 4px 18px;
+  padding: 6px 16px calc(14px + env(safe-area-inset-bottom));
+}
+.hall-counter { margin: 0; font-family: var(--serif, serif); font-size: 20px; letter-spacing: .12em; font-variant-numeric: tabular-nums; color: var(--sub, #93a1b5); min-width: 6.5em; text-align: center; }
+.hall-counter b { color: var(--text, #e8edf4); font-weight: 800; }
+.hall-nav {
+  width: 48px; height: 48px; border-radius: 50%; padding: 0; cursor: pointer;
+  border: 1px solid rgba(214, 236, 255, .22); background: rgba(8, 16, 30, .5); color: var(--text, #e8edf4); font-size: 18px;
+}
+.hall-nav:hover:not(:disabled) { border-color: var(--glow-2, #8fd0ff); color: var(--glow, #d6ecff); }
+.hall-nav:disabled { opacity: .3; cursor: default; }
+.hall-dots { grid-column: 1 / -1; display: flex; justify-content: center; flex-wrap: wrap; gap: 0; }
+.hall-dot { width: 24px; height: 24px; padding: 0; border: 0; background: none; cursor: pointer; display: grid; place-items: center; }
+.hall-dot::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: rgba(214, 236, 255, .3); transition: background .2s, transform .2s; }
+.hall-dot[aria-current="true"]::before { background: var(--glow, #d6ecff); transform: scale(1.4); box-shadow: 0 0 8px var(--glow-2, #8fd0ff); }
+.hall-hint { grid-column: 1 / -1; margin: 0; text-align: center; font-size: 12px; color: var(--sub, #93a1b5); opacity: .8; }
+.hall.is-single .hall-nav, .hall.is-single .hall-hint { visibility: hidden; }
+.hall-empty { position: relative; z-index: 3; margin: auto; color: var(--sub, #93a1b5); font-size: 18px; }
+.hall.is-empty .hall-stage, .hall.is-empty .hall-foot { display: none; }
+.hall-live { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* ── リーダー ── */
+.hall-reader {
+  position: fixed; inset: 0; z-index: 10; overflow-y: auto; overscroll-behavior: contain;
+  background: linear-gradient(180deg, #0c1a2e 0%, #0a1626 40%, #08111f 100%);
+  -webkit-overflow-scrolling: touch;
+}
+.hall-reader[hidden] { display: none; }
+.hall-reader-bar {
+  position: sticky; top: 0; z-index: 2; display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  height: 64px; padding: 0 12px 0 16px;
+  background: rgba(10, 22, 38, .82); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(214, 236, 255, .1);
+}
+.hall-reader-bar .hall-close { position: static; }
+.hall-back {
+  min-height: 44px; padding: 0 14px; border: 1px solid rgba(214, 236, 255, .2); border-radius: 999px;
+  background: none; color: var(--text, #e8edf4); font: inherit; font-size: 14px; cursor: pointer;
+}
+.hall-back:hover { border-color: var(--glow-2, #8fd0ff); color: var(--glow, #d6ecff); }
+.hall-reader-pos { font-size: 14px; color: var(--sub, #93a1b5); font-variant-numeric: tabular-nums; }
+.hall-reader-body { max-width: 720px; margin: 0 auto; padding: 40px 22px 24px; }
+
+.hall-reader .item { border: 0; padding: 0; }
+.hall-reader .kicker { font-size: 15px; gap: 6px 14px; margin-bottom: 18px; color: var(--sub, #93a1b5); }
+.hall-reader .kicker time { color: var(--glow, #d6ecff); }
+.hall-reader .headline {
+  font-family: var(--serif, serif); font-weight: 800; font-size: clamp(28px, 4.6vw, 40px); line-height: 1.45;
+  margin: 0 0 26px; letter-spacing: .02em;
+}
+.hall-reader .headline:focus { outline: none; }
+.hall-reader .summary { font-size: clamp(18px, 2.2vw, 20px); line-height: 1.9; margin: 0 0 26px; color: #e3e9f2; }
+.hall-reader .quotes { margin: 0 0 28px; padding: 6px 0 6px 20px; border-left: 2px solid var(--glow-2, #8fd0ff); }
+.hall-reader .quotes blockquote { font-size: clamp(18px, 2.2vw, 21px); line-height: 1.85; margin: 0 0 10px; }
+.hall-reader .quotes figcaption { font-size: 14px; }
+.hall-reader .points { font-size: clamp(17px, 2vw, 19px); line-height: 1.9; margin: 0 0 30px; padding-left: 1.3em; }
+.hall-reader .points li { margin: 6px 0; }
+.hall-reader .source {
+  font-size: 15px; line-height: 1.8; padding: 16px 18px; border-radius: 10px;
+  background: rgba(143, 208, 255, .06); border: 1px solid rgba(143, 208, 255, .16);
+}
+.hall-reader .source a { color: var(--glow, #d6ecff); }
+.hall-reader .tags { margin-top: 18px; }
+.hall-reader .tag { font-size: 13px; padding: 2px 12px; }
+
+.hall-reader-nav {
+  max-width: 720px; margin: 0 auto; padding: 16px 22px calc(40px + env(safe-area-inset-bottom));
+  display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px;
+}
+.hall-reader-nav button {
+  min-height: 48px; padding: 0 18px; border-radius: 999px; cursor: pointer; font: inherit; font-size: 15px;
+  border: 1px solid rgba(214, 236, 255, .22); background: rgba(8, 16, 30, .5); color: var(--text, #e8edf4);
+}
+.hall-reader-nav button:hover:not(:disabled) { border-color: var(--glow-2, #8fd0ff); color: var(--glow, #d6ecff); }
+.hall-reader-nav button:disabled { opacity: .3; cursor: default; }
+.hall-copy { order: 3; flex-basis: 100%; }
+
+/* ── スマホ ── */
+@media (max-width: 600px) {
+  .hall { --cw: 86vw; --ch: min(60vh, 540px, calc(100svh - 240px)); }
+  .hall-top { padding: 18px 60px 0; }
+  .hall-title { letter-spacing: .14em; text-indent: .14em; }
+  .hall-close { top: 10px; right: 10px; }
+  .hall-card-in { padding: 22px 22px 20px; }
+  .hall-card-meta { font-size: 14px; margin-bottom: 12px; }
+  .hall-card-summary { font-size: 17px; }
+  .hall-foot { gap: 2px 14px; }
+  .hall-hint { display: none; }
+  .hall-reader-body { padding: 28px 18px 16px; }
+}
+@media (max-height: 640px) and (min-width: 601px) {
+  .hall { --ch: calc(100vh - 210px); }
+  .hall-hint { display: none; }
+}

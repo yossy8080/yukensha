@@ -9,8 +9,11 @@
 4. 公開したものだけ `data/news.json` に入り、サイトに出る（gitにコミット。GitHubとつなげば自動で公開）
 
 ## フォルダ
-- `index.html` 国全体 / `ministries.html` 省庁別 / `local.html` 地方（東京都・準備中） / `pledges.html` 公約トラッカー（準備中） / `opinion.html` オピニオン（準備中） / `about.html` このサイトについて
-- `data/sources.json` 集める発表元の一覧（府省を足すときはここに追加）
+- `index.html` トップ（夜の海のスクロールページ。府省ごとの章 → 象徴をひらくと記事ビュー） / `ministries.html` 省庁別 / `local.html` 地方（東京都・準備中） / `pledges.html` 公約トラッカー（準備中） / `opinion.html` オピニオン（準備中） / `about.html` このサイトについて
+  - `assets/home.js` + `home.css` トップの組み立て・スクロール演出 / `assets/scene3d.js` 3D（Three.js r170 を CDN から。失敗したら CSS の表示に切り替わる） / `assets/hall.js` + `hall.css` 記事ビュー（`index.html#m=府省id`、`#a=記事id` で直接開ける）
+  - `assets/glossary.js` + `glossary.css` + `data/glossary.json` 用語ポップアップ（難しい用語の簡単な説明。語を足すときは glossary.json に追加）
+  - `assets/glyphs.json` 象徴の1文字の字形（`python tools/make_glyphs.py フォント.ttf` で作る）
+- `data/sources.json` 集める発表元の一覧（府省を足すときはここに追加。`emblem` = 府省を象徴する1文字。足したら make_glyphs.py を実行）
 - `data/news.json` 公開済みの記事
 - `drafts/` 下書き・候補（gitに入れない）
 - `tools/collect.py` 新着集め / `tools/fetch_page.py` 本文の取り出し / `tools/review_server.py` + `tools/review.html` 確認ページ

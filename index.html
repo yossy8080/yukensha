@@ -2,104 +2,136 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>有権者 — 国全体のニュース</title>
-<meta name="description" content="首相官邸と各府省の発表を、出典リンクつきで要約しています。運営者が選んだ大切なニュース、すべての新着、総理・官房長官の発言を載せています。">
+<meta name="description" content="官邸と各府省の発表を、府省ごとに出典リンクつきで要約しています。府省の象徴をひらくと最新の記事を読めます。難しい用語には簡単な説明がつきます。評価は載せていません。">
 <link rel="canonical" href="https://yossy8080.github.io/yukensha/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="有権者">
 <meta property="og:title" content="有権者 — 国全体のニュース">
-<meta property="og:description" content="首相官邸と各府省の発表を、出典リンクつきで要約しています。運営者が選んだ大切なニュース、すべての新着、総理・官房長官の発言を載せています。">
+<meta property="og:description" content="官邸と各府省の発表を、府省ごとに出典リンクつきで要約しています。府省の象徴をひらくと最新の記事を読めます。難しい用語には簡単な説明がつきます。評価は載せていません。">
 <meta property="og:url" content="https://yossy8080.github.io/yukensha/">
 <meta property="og:image" content="https://yossy8080.github.io/yukensha/assets/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:locale" content="ja_JP">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#04080f">
+<script>document.documentElement.classList.add("js");</script>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2304080f'/%3E%3Ccircle cx='16' cy='16' r='9' fill='none' stroke='%238fd0ff' stroke-width='2'/%3E%3Ccircle cx='16' cy='16' r='2.6' fill='%23e8452c'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&family=Shippori+Mincho:wght@700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="assets/home.css">
+<link rel="stylesheet" href="assets/hall.css">
+<link rel="stylesheet" href="assets/glossary.css">
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+  }
+}
+</script>
 <script data-goatcounter="https://yossy8080.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </head>
-<body>
-<header class="masthead">
-  <div class="wrap masthead-inner">
-    <div>
-      <a class="logo" href="index.html">有権者</a>
-      <p class="tagline">官邸・各府省の発表を、出典リンクつきで要約する。</p>
-    </div>
-    <p class="dateline"><span data-today></span><br>評価は載せていません</p>
+<body class="home">
+<div class="loader" id="loader" aria-hidden="true">
+  <div class="loader-box">
+    <svg class="loader-ring" viewBox="0 0 100 100">
+      <circle cx="50" cy="50" r="46" pathLength="1"></circle>
+      <circle class="on" cx="50" cy="50" r="46" pathLength="1"></circle>
+    </svg>
+    <span class="loader-num">0</span>
+  </div>
+</div>
+<div class="night" aria-hidden="true"></div>
+<canvas id="scene" aria-hidden="true"></canvas>
+
+<header class="site-header">
+  <div class="site-header-inner">
+    <a class="site-logo" href="index.html">有権者</a>
+    <nav class="site-nav" aria-label="メニュー">
+      <ul>
+        <li><a href="#stream">府省</a></li>
+        <li><a href="#opinion">オピニオン</a></li>
+        <li><a href="#local">地方</a></li>
+        <li><a href="#pledges">公約チェッカー</a></li>
+        <li><a href="about.html">このサイトについて</a></li>
+      </ul>
+    </nav>
   </div>
 </header>
-<nav class="nav" aria-label="メニュー">
-  <ul>
-    <li><a href="index.html">国全体</a></li>
-    <li><a href="ministries.html">省庁別</a></li>
-    <li><a href="pledges.html" class="soon">公約トラッカー<small>準備中</small></a></li>
-    <li><a href="local.html">地方</a></li>
-    <li><a href="opinion.html">オピニオン</a></li>
-    <li><a href="about.html">このサイトについて</a></li>
-  </ul>
-</nav>
-<main class="wrap">
-<div class="grid">
-  <section>
-    <h2 class="section-title">いま大切なこと<small>運営者が選んだ国全体のニュース</small></h2>
-    <div id="featured" class="featured-first"></div>
-    <h2 class="section-title" style="margin-top:40px">すべての新着<small id="all-count"></small></h2>
-    <ul id="all" class="rows"></ul>
+
+<main id="top">
+  <svg id="flow" class="flow" aria-hidden="true" focusable="false" preserveAspectRatio="none">
+    <defs>
+      <linearGradient id="flow-grad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#d6ecff"/>
+        <stop offset=".5" stop-color="#8fd0ff"/>
+        <stop offset="1" stop-color="#d6ecff"/>
+      </linearGradient>
+      <filter id="flow-blur" x="-50%" y="-1%" width="200%" height="102%"><feGaussianBlur stdDeviation="6"/></filter>
+    </defs>
+    <path class="flow-glow" d="M0,0" filter="url(#flow-blur)"/>
+    <path class="flow-core" d="M0,0"/>
+    <circle class="flow-spark" r="4" cx="0" cy="0"/>
+  </svg>
+
+  <section class="hero" id="hero" aria-labelledby="hero-title">
+    <div class="hero-inner">
+      <h1 class="hero-title" id="hero-title">有権者</h1>
+      <p class="hero-lead">官邸・各府省の発表を、出典リンクつきで要約する。<br>評価は載せない。</p>
+      <p class="hero-latest" id="hero-latest" hidden></p>
+    </div>
+    <a class="hero-scroll" href="#stream"><span>スクロール</span></a>
   </section>
-  <aside>
-    <div class="block" id="hatsugen-block" hidden>
-      <h2 class="section-title">総理・官房長官の発言</h2>
-      <div id="hatsugen"></div>
-      <p class="note"><a href="ministries.html?m=hatsugen">発言をすべて見る</a></p>
+
+  <section class="stream" id="stream" aria-labelledby="stream-title">
+    <header class="stream-head reveal">
+      <p class="eyebrow">府省の流れ</p>
+      <h2 class="stream-title" id="stream-title">府省ごとの発表</h2>
+      <p class="stream-meta" id="stream-meta"></p>
+      <p class="stream-note">府省の象徴をひらくと、その府省の記事が読めます。難しい言葉は、点線の下線をクリックすると簡単な説明が出ます。</p>
+    </header>
+    <div id="chapters" class="chapters"></div>
+    <div class="quiet reveal" id="quiet" hidden>
+      <h3 class="quiet-title">まだ記事のない府省</h3>
+      <ul class="quiet-list" id="quiet-list"></ul>
     </div>
-    <div class="block">
-      <h2 class="section-title">省庁別</h2>
-      <ul id="ministry-list" class="ministry-list"></ul>
-    </div>
-    <div class="block note">
-      <h2 class="section-title">このサイトのきまり</h2>
-      <p>政府の一次情報（官邸・各府省の発表）だけを元にしています。</p>
-      <p>すべての記事に出典リンクをつけています。</p>
-      <p>良い・悪いの評価は入れていません。評価は今後「オピニオン」として分けて載せる予定です。</p>
-    </div>
-  </aside>
-</div>
+    <noscript><p class="stream-note">記事の一覧は <a href="ministries.html">府省別のページ</a> でも読めます。</p></noscript>
+  </section>
+
+  <section class="later reveal" id="opinion" aria-labelledby="opinion-title">
+    <p class="eyebrow">Opinion</p>
+    <h2 class="later-title" id="opinion-title">オピニオン</h2>
+    <p class="later-soon">準備中</p>
+    <p class="later-link"><a href="opinion.html">これまでのページ</a></p>
+  </section>
+  <section class="later reveal" id="local" aria-labelledby="local-title">
+    <p class="eyebrow">Local</p>
+    <h2 class="later-title" id="local-title">地方</h2>
+    <p class="later-soon">準備中</p>
+    <p class="later-link"><a href="local.html">これまでのページ</a></p>
+  </section>
+  <section class="later reveal" id="pledges" aria-labelledby="pledges-title">
+    <p class="eyebrow">Pledges</p>
+    <h2 class="later-title" id="pledges-title">公約チェッカー</h2>
+    <p class="later-soon">準備中</p>
+    <p class="later-link"><a href="pledges.html">これまでのページ</a></p>
+  </section>
 </main>
+
 <footer>
   <div class="wrap">
     <p>有権者 — 要約はAI（Hermes）が下書きし、運営者が確認してから公開しています。誤りに気づいたらお知らせください。</p>
     <p>各記事は、政府のウェブサイト（公共データ利用規約 PDL1.0 等）の情報をもとに、有権者が要約・加工して作成したものです。正確な内容は必ず出典をご確認ください。</p>
-    <p class="footer-links"><a href="about.html">このサイトについて</a> ・ <a href="privacy.html">プライバシーポリシー</a></p>
+    <p class="footer-links"><a href="about.html">このサイトについて</a> ・ <a href="privacy.html">プライバシーポリシー</a> ・ <a href="ministries.html">府省別の記事一覧</a></p>
   </div>
 </footer>
 <script src="assets/app.js"></script>
-<script>
-(async () => {
-  const [sources, news] = await Promise.all([Y.load("data/sources.json"), Y.load("data/news.json")]);
-  const map = Object.fromEntries(sources.map((s) => [s.id, s]));
-  news.sort(Y.byDateDesc);
-  const featured = news.filter((n) => n.featured).slice(0, 8);
-  document.getElementById("featured").innerHTML = featured.length
-    ? featured.map((n) => Y.article(n, map)).join("")
-    : Y.empty("まだ公開された記事はありません。");
-  document.getElementById("all").innerHTML = news.slice(0, 40).map((n) => Y.row(n, map)).join("");
-  document.getElementById("all-count").textContent = news.length ? `${news.length}件` : "";
-  const count = (id) => news.filter((n) => n.ministry === id || (n.also || []).includes(id)).length;
-  const said = news.filter((n) => n.ministry === "hatsugen" || (n.also || []).includes("hatsugen")).slice(0, 3);
-  if (said.length) {
-    document.getElementById("hatsugen-block").hidden = false;
-    document.getElementById("hatsugen").innerHTML = said.map((n) => `
-      <div class="said"><p class="kicker"><time>${Y.fmtDate(n.date)}</time></p>
-      <p class="said-q"><a href="ministries.html?m=hatsugen#${Y.esc(n.id)}">${Y.esc(n.quotes && n.quotes[0] ? "「" + n.quotes[0] + "」" : n.title)}</a></p>
-      ${n.speaker ? `<p class="said-who">— ${Y.esc(n.speaker)}</p>` : ""}</div>`).join("");
-  }
-  document.getElementById("ministry-list").innerHTML = Y.visible(sources).map((s) =>
-    `<li><a href="ministries.html?m=${s.id}"><span>${Y.esc(s.name)}</span><span class="count">${count(s.id)}件</span></a></li>`).join("");
-})().catch((e) => { document.getElementById("featured").innerHTML = Y.empty(e.message); });
-</script>
+<script src="assets/glossary.js"></script>
+<script type="module" src="assets/home.js"></script>
 </body>
 </html>

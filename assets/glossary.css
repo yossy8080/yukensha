@@ -1,0 +1,82 @@
+/* 有権者 — 用語ポップアップ（glossary.js） */
+
+.term {
+  display: inline; margin: 0; padding: 0; border: 0; background: none;
+  font: inherit; color: inherit; line-height: inherit; letter-spacing: inherit; text-align: inherit;
+  cursor: pointer;
+  text-decoration: underline dotted var(--glow-2, #8fd0ff);
+  text-decoration-thickness: 1.5px; text-underline-offset: 4px;
+  border-radius: 2px;
+  -webkit-tap-highlight-color: transparent;
+}
+.term:hover, .term[aria-expanded="true"] {
+  color: var(--glow, #d6ecff);
+  background: rgba(143, 208, 255, .1);
+  text-decoration-style: solid;
+}
+.term:focus-visible { outline: 2px solid var(--glow-2, #8fd0ff); outline-offset: 2px; }
+
+.gl-pop {
+  position: fixed; z-index: 1000;
+  width: max-content; max-width: min(360px, calc(100vw - 24px));
+  padding: 16px 44px 14px 18px;
+  background: rgba(10, 22, 40, .94);
+  -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
+  border: 1px solid rgba(143, 208, 255, .32);
+  border-radius: 12px;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, .55), 0 0 0 1px rgba(214, 236, 255, .04), 0 0 30px rgba(143, 208, 255, .12);
+  color: var(--text, #e8edf4);
+  font-family: var(--sans, sans-serif); font-size: 16px; line-height: 1.8; text-align: left;
+  letter-spacing: normal;
+}
+.gl-pop[hidden] { display: none; }
+.gl-pop p { margin: 0; }
+.gl-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 6px; margin-bottom: 6px !important; }
+.gl-term { font-family: var(--serif, serif); font-weight: 800; font-size: 20px; line-height: 1.4; color: var(--glow, #d6ecff); }
+.gl-yomi { font-size: 12px; color: var(--sub, #93a1b5); }
+.gl-desc { font-size: 16px; }
+.gl-wiki { margin-top: 10px !important; }
+.gl-wiki[hidden] { display: none; }
+.gl-wiki a { color: var(--glow-2, #8fd0ff); font-size: 14px; text-decoration: underline; text-underline-offset: 3px; }
+.gl-wiki a:hover { color: var(--glow, #d6ecff); }
+.gl-note { margin-top: 8px !important; font-size: 12px; color: var(--sub, #93a1b5); }
+.gl-close {
+  position: absolute; top: 6px; right: 6px; width: 36px; height: 36px;
+  display: grid; place-items: center; padding: 0; border: 0; border-radius: 50%;
+  background: none; color: var(--sub, #93a1b5); font-size: 20px; line-height: 1; cursor: pointer;
+}
+.gl-close:hover { color: var(--text, #e8edf4); background: rgba(143, 208, 255, .1); }
+.gl-close:focus-visible, .gl-wiki a:focus-visible { outline: 2px solid var(--glow-2, #8fd0ff); outline-offset: 2px; }
+.gl-grip { display: none; }
+
+/* 用語に向く小さな三角 */
+.gl-pop:not(.is-sheet)::before {
+  content: ""; position: absolute; top: -6px; left: var(--arrow-x, 50%); width: 10px; height: 10px; margin-left: -5px;
+  background: rgba(10, 22, 40, .94); border-left: 1px solid rgba(143, 208, 255, .32); border-top: 1px solid rgba(143, 208, 255, .32);
+  transform: rotate(45deg);
+}
+.gl-pop.is-above::before { top: auto; bottom: -6px; transform: rotate(225deg); }
+
+/* スマホ：下からのシート */
+.gl-pop.is-sheet {
+  left: 0; right: 0; bottom: 0; top: auto; width: auto; max-width: none;
+  padding: 22px 52px calc(18px + env(safe-area-inset-bottom)) 20px;
+  border-radius: 16px 16px 0 0; border-bottom: 0;
+}
+.gl-pop.is-sheet .gl-grip {
+  display: block; position: absolute; top: 8px; left: 50%; width: 40px; height: 4px; margin-left: -20px;
+  border-radius: 2px; background: rgba(214, 236, 255, .25);
+}
+.gl-pop.is-sheet .gl-close { top: 12px; right: 10px; width: 44px; height: 44px; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .gl-pop:not([hidden]) { animation: gl-in .18s ease-out; }
+  .gl-pop.is-sheet:not([hidden]) { animation: gl-up .24s cubic-bezier(.2, .8, .2, 1); }
+}
+@keyframes gl-in { from { opacity: 0; transform: translateY(4px); } }
+@keyframes gl-up { from { transform: translateY(100%); } }
+
+@media print {
+  .gl-pop { display: none !important; }
+  .term { text-decoration: none; color: inherit; background: none; }
+}
