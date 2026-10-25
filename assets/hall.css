@@ -9,12 +9,14 @@
   color: var(--text, #e8edf4);
   background: radial-gradient(120% 70% at 50% 0%, #0d2140 0%, var(--night-1, #0a1a30) 35%, var(--night-0, #04080f) 75%);
   overflow: hidden;
-  opacity: 0;
   font-family: var(--sans, sans-serif);
+  isolation: isolate;
 }
 .hall[hidden] { display: none; }
-.hall.is-in { opacity: 1; }
-@media (prefers-reduced-motion: no-preference) { .hall { transition: opacity .35s ease; } }
+/* 背景（.hall 自体）は開いた瞬間から不透明で最前面。中身だけをふわっと出す（背後のページが透けて重ならないように） */
+.hall > :not(.hall-reader) { opacity: 0; }
+.hall.is-in > :not(.hall-reader) { opacity: 1; }
+@media (prefers-reduced-motion: no-preference) { .hall > :not(.hall-reader) { transition: opacity .35s ease; } }
 .hall-defs { position: absolute; width: 0; height: 0; }
 
 /* 夜空と水平線、暗い水面 */

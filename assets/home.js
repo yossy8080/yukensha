@@ -58,7 +58,7 @@ function fold() {
 function chapterHTML(s, i, n, items) {
   const latest = items.slice(0, 3).map((it) => `
       <li><time datetime="${Y.esc(it.date)}">${Y.fmtDate(it.date)}</time><a href="#a=${encodeURIComponent(it.id)}">${Y.esc(it.title)}</a></li>`).join("");
-  const side = i % 2 ? "left" : "right";
+  const side = i % 2 ? "right" : "left"; // エンブレムを置く側（章ごとに左右交互）
   const id = Y.esc(s.id);
   return `
   <section class="chapter" id="ch-${id}" data-i="${i}" data-side="${side}" aria-labelledby="ch-${id}-title">
@@ -236,7 +236,7 @@ async function main() {
             st.index = i;
             st.progress = clamp01((mid - r.top) / r.height);
             const a = $(".ch-anchor", chapterEls[i]).getBoundingClientRect();
-            st.anchor = { x: a.left + a.width / 2, y: a.top + a.height / 2, size: a.width * 0.82 };
+            st.anchor = { x: a.left + a.width / 2, y: a.top + a.height / 2, size: a.width * 0.95 };
             break;
           }
         }
@@ -249,11 +249,12 @@ async function main() {
 
   let ticking = false;
   function onScroll() {
+    // 3D への状態はスクロールのたびに直接渡す（rAF が間引かれる環境でも章の切り替えが遅れないように）
+    if (scene) scene.update(computeState());
     if (ticking) return;
     ticking = true;
     requestAnimationFrame(() => {
       ticking = false;
-      if (scene) scene.update(computeState());
       drawFlow();
     });
   }

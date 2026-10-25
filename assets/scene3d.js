@@ -226,8 +226,8 @@ export function createScene({ canvas, chapters, glyphs, dprMax = 2, isMobile = f
   scene.add(ocean);
 
   /* ライト */
-  scene.add(new THREE.AmbientLight(0x1a2a44, 0.6));
-  const moonLight = new THREE.DirectionalLight(0xbcd6f5, 1.1);
+  scene.add(new THREE.AmbientLight(0x22344f, 0.8));
+  const moonLight = new THREE.DirectionalLight(0xbcd6f5, 1.4);
   moonLight.position.set(-6, 10, 6);
   scene.add(moonLight);
   const glowLight = new THREE.PointLight(0x8fd0ff, 0, 9, 1.6);
@@ -249,7 +249,7 @@ export function createScene({ canvas, chapters, glyphs, dprMax = 2, isMobile = f
   };
   const coreGeo = new THREE.IcosahedronGeometry(1, 2);
   const shardGeos = [new THREE.TetrahedronGeometry(1, 0), new THREE.OctahedronGeometry(1, 0)];
-  const glyphFace = new THREE.MeshStandardMaterial({ color: 0xb4c4d6, metalness: 0.72, roughness: 0.32, envMap: envTex, envMapIntensity: 0.3 });
+  const glyphFace = new THREE.MeshStandardMaterial({ color: 0xc4d2e2, metalness: 0.72, roughness: 0.32, envMap: envTex, envMapIntensity: 0.4 });
   const glyphGeoCache = new Map();
   const svgLoader = new SVGLoader();
 
@@ -339,7 +339,7 @@ export function createScene({ canvas, chapters, glyphs, dprMax = 2, isMobile = f
     root.visible = false;
     const e = {
       i, root, stoneGroup, pieces, coreMat, shards, glyphSide, stoneMat, color,
-      sink: SINK, hover: 0, spin: 0, baseRot: (i % 2 ? -1 : 1) * 0.12, vis: 0,
+      sink: SINK, hover: 0, spin: 0, baseRot: (i % 2 ? -1 : 1) * 0.12, vis: 0, want: 0, from: 0, at: 0,
     };
     scene.add(root);
     emblems.set(i, e);
@@ -392,13 +392,18 @@ export function createScene({ canvas, chapters, glyphs, dprMax = 2, isMobile = f
 
   /* ── ループ ── */
   const clock = new THREE.Clock();
-  let raf = 0, paused = false, time = 0;
+  let raf = 0, paused = false, time = 0, lastFrameAt = 0;
   const lerpK = (dt, speed) => 1 - Math.exp(-dt * speed);
+  const RISE_MS = 1200, SINK_MS = 900;
 
   function frame() {
+    if (raf) cancelAnimationFrame(raf);
     raf = 0;
-    const dt = Math.min(clock.getDelta(), 0.1);
-    time += dt;
+    // 描画がまばらな環境（裏のタブ・自動操作のブラウザなど）でも追いつけるよう、経過時間を大きめまで使う
+    const dt = Math.min(clock.getDelta(), 0.5);
+    const now = performance.now();
+    lastFrameAt = now;
+    time += Math.min(dt, 0.1);
 
     heroS += (state.hero - heroS) * lerpK(dt, 4);
     endS += (state.end - endS) * lerpK(dt, 3);
@@ -418,7 +423,7 @@ export function createScene({ canvas, chapters, glyphs, dprMax = 2, isMobile = f
       screenToWorld(state.anchor.x, state.anchor.y, slotTarget);
       const dist = camera.position.distanceTo(slotTarget);
       const worldPerPx = (2 * dist * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2))) / height;
-      slotScaleTarget = THREE.MathUtils.clamp((state.anchor.size * worldPerPx) / STONE_D, 0.35, 1.6);
+      slotScaleTarget = THREE.MathUtils.clamp((state.anchor.size * worldPerPx) / STONE_D, 0.35, 2.4);
     } else {
       slotTarget.set(isMobile ? 0 : 1.6, 1.45, 0);
       slotScaleTarget = 1;
@@ -437,12 +442,17 @@ export function createScene({ canvas, chapters, glyphs, dprMax = 2, isMobile = f
     let best = null;
     for (const e of emblems.values()) {
       const active = e.i === idx;
-      const target = active ? 0 : SINK;
-      e.sink += (target - e.sink) * lerpK(dt, active ? 1.5 : 1.9);
-      e.vis = 1 - THREE.MathUtils.clamp(e.sink / SINK, 0, 1);
+      // 浮上・沈下は「何フレーム描いたか」ではなく「切り替わってからの時間」で決める
+      // （フレームが少ない環境でも、1.2 秒たてば必ず浮き上がっている）
+      const want = active ? 1 : 0;
+      if (want !== e.want) { e.from = e.vis; e.want = want; e.at = now; }
+      const p = THREE.MathUtils.clamp((now - e.at) / (want ? RISE_MS : SINK_MS), 0, 1);
+      const ease = want ? 1 - Math.pow(1 - p, 3) : p * p * (3 - 2 * p);
+      e.vis = e.from + (want - e.from) * ease;
+      e.sink = SINK * (1 - e.vis);
       e.hover += ((e.i === hoverIndex ? 1 : 0) - e.hover) * lerpK(dt, 6);
-      if (!active) e.spin += dt * 1.6 * (1 - e.vis * 0.5); // 沈みながら回る
-      e.root.visible = e.sink > SINK + 0.25;
+      if (!active) e.spin += Math.min(dt, 0.1) * 1.6 * (1 - e.vis * 0.5); // 沈みながら回る
+      e.root.visible = e.vis > 0.04;
       if (!e.root.visible && !active && Math.abs(e.i - idx) > 1) { disposeEmblem(e); continue; }
 
       const float = Math.sin(time * 0.7 + e.i) * 0.07;
@@ -468,9 +478,9 @@ export function createScene({ canvas, chapters, glyphs, dprMax = 2, isMobile = f
       }
       const pulse = 0.85 + Math.sin(time * 1.3 + e.i) * 0.15;
       const glow = (1.2 + e.hover * 1.4) * pulse * (0.4 + 0.6 * e.vis);
-      e.stoneMat.userData.uCrack.value.copy(e.color).multiplyScalar(glow * 1.1);
-      e.coreMat.color.copy(e.color).multiplyScalar(1.25 + e.hover * 1.4);
-      if (e.glyphSide) e.glyphSide.emissiveIntensity = 0.9 + e.hover * 1.2;
+      e.stoneMat.userData.uCrack.value.copy(e.color).multiplyScalar(glow * 1.6);
+      e.coreMat.color.copy(e.color).multiplyScalar(1.45 + e.hover * 1.4);
+      if (e.glyphSide) e.glyphSide.emissiveIntensity = 0.75 + e.hover * 1.0;
       if (!best || e.vis > best.vis) best = e;
     }
 
@@ -482,7 +492,7 @@ export function createScene({ canvas, chapters, glyphs, dprMax = 2, isMobile = f
       u.uGlow.value = best.vis * (1 + best.hover * 0.8) * (1 - endS);
       glowLight.position.set(best.root.position.x + 0.4, best.root.position.y + 0.6, best.root.position.z + 2.2);
       glowLight.color.copy(best.color);
-      glowLight.intensity = best.vis * (4 + best.hover * 4) * slotScale;
+      glowLight.intensity = best.vis * (4.5 + best.hover * 4) * Math.sqrt(slotScale);
     } else {
       u.uGlow.value *= 0.9;
       glowLight.intensity *= 0.9;
@@ -498,12 +508,20 @@ export function createScene({ canvas, chapters, glyphs, dprMax = 2, isMobile = f
     schedule();
   }
 
+  // 非表示のタブでは requestAnimationFrame 自体をブラウザが止めるので、ここでは document.hidden を見ない
+  // （document.hidden の判定に頼ると、自動操作のブラウザなどで一度も描かれないことがある）
+  let fallbackT = 0, lastUpdateAt = 0;
   function schedule() {
-    if (!raf && !paused && !document.hidden) raf = requestAnimationFrame(frame);
+    if (paused) return;
+    if (!raf) raf = requestAnimationFrame(frame);
+    // 保険：スクロールなどで状態が変わってから 3 秒間は、rAF が来なくてもタイマーで描き直す（浮上の途中で止まらないように）
+    clearTimeout(fallbackT);
+    if (performance.now() - lastUpdateAt < 3000) {
+      fallbackT = setTimeout(() => { if (!paused && performance.now() - lastFrameAt > 300) frame(); }, 350);
+    }
   }
   function onVisibility() {
-    if (document.hidden) { cancelAnimationFrame(raf); raf = 0; }
-    else { clock.getDelta(); schedule(); }
+    if (!document.hidden) { clock.getDelta(); schedule(); }
   }
   function onPointer(e) {
     pointer.set((e.clientX / width) * 2 - 1, -((e.clientY / height) * 2 - 1));
@@ -526,6 +544,9 @@ export function createScene({ canvas, chapters, glyphs, dprMax = 2, isMobile = f
       if (typeof s.progress === "number") state.progress = s.progress;
       if (typeof s.end === "number") state.end = s.end;
       state.anchor = s.anchor || null;
+      lastUpdateAt = performance.now();
+      // rAF がしばらく来ていない（描画が止められている）ときは、その場で1枚描く
+      if (!paused) { if (lastUpdateAt - lastFrameAt > 400) frame(); else schedule(); }
     },
     pick(x, y) {
       const targets = [];
@@ -539,11 +560,12 @@ export function createScene({ canvas, chapters, glyphs, dprMax = 2, isMobile = f
     setHover(i) { hoverIndex = i; },
     setPaused(b) {
       paused = !!b;
-      if (paused) { cancelAnimationFrame(raf); raf = 0; }
+      if (paused) { cancelAnimationFrame(raf); raf = 0; clearTimeout(fallbackT); }
       else { clock.getDelta(); schedule(); }
     },
     dispose() {
       cancelAnimationFrame(raf);
+      clearTimeout(fallbackT);
       raf = 0;
       paused = true;
       window.removeEventListener("resize", resize);
