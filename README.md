@@ -9,14 +9,44 @@
 4. 公開したものだけ `data/news.json` に入り、サイトに出る（gitにコミット。GitHubとつなげば自動で公開）
 
 ## フォルダ
-- `index.html` トップ（夜の海のスクロールページ。府省ごとの章 → 象徴をひらくと記事ビュー） / `ministries.html` 省庁別 / `local.html` 地方（東京都・準備中） / `pledges.html` 公約トラッカー（準備中） / `opinion.html` オピニオン（準備中） / `about.html` このサイトについて
-  - `assets/home.js` + `home.css` トップの組み立て・スクロール演出 / `assets/scene3d.js` 3D（Three.js r170 を CDN から。失敗したら CSS の表示に切り替わる） / `assets/hall.js` + `hall.css` 記事ビュー（`index.html#m=府省id`、`#a=記事id` で直接開ける）
+- `index.html` トップ（夜の海と天の川のスクロールページ。府省ごとの章 → 物体をひらくと記事ビュー） / `ministries.html` 省庁別 / `local.html` 地方（東京都・準備中） / `pledges.html` 公約トラッカー（準備中） / `opinion.html` オピニオン（準備中） / `about.html` このサイトについて
+  - `assets/home.js` + `home.css` トップの組み立て・スクロール演出 / `assets/hall.js` + `hall.css` 記事ビュー（`index.html#m=府省id`、`#a=記事id` で直接開ける）
+  - 3D（Three.js r170 を CDN から。WebGL2 が使えない・読み込みに失敗・「動きを減らす」設定のときは CSS の明朝1文字のエンブレムに切り替わる）
+    - `assets/scene3d.js` 全体のまとめ（カメラ・スクロールとの対応・クリック判定）
+    - `assets/models3d.js` 府省を表す物体の形（プリミティブ・押し出し・Lathe・Tube で手作り。外部のモデルファイルは使わない）
+    - `assets/morph3d.js` 光の粒子でできた物体と、府省から府省への変形（天の川に巻き込まれて渦を巻き、次の形に集まる）
+    - `assets/galaxy3d.js` + `band3d.js` 天の川の帯（星・星雲のにじみ・塵の筋・府省の節）/ `assets/sea3d.js` 夜の海と空
+  - `tools/models.html` 物体の一覧（確認用。`http://localhost:…/tools/models.html` で全部の形を並べて見られる）
   - `assets/glossary.js` + `glossary.css` + `data/glossary.json` 用語ポップアップ（難しい用語の簡単な説明。語を足すときは glossary.json に追加）
-  - `assets/glyphs.json` 象徴の1文字の字形（`python tools/make_glyphs.py フォント.ttf` で作る）
-- `data/sources.json` 集める発表元の一覧（府省を足すときはここに追加。`emblem` = 府省を象徴する1文字。足したら make_glyphs.py を実行）
+  - `assets/glyphs.json` 象徴の1文字の字形（`python tools/make_glyphs.py フォント.ttf` で作る。今のトップの 3D では使っていない）
+- `data/sources.json` 集める発表元の一覧（府省を足すときはここに追加。`emblem` = フォールバック用の1文字、`model` = トップの 3D の物体。下の表を参照）
 - `data/news.json` 公開済みの記事
 - `drafts/` 下書き・候補（gitに入れない）
 - `tools/collect.py` 新着集め / `tools/fetch_page.py` 本文の取り出し / `tools/review_server.py` + `tools/review.html` 確認ページ
+
+## トップの 3D の物体（`data/sources.json` の `model`）
+公式ロゴ・紋章（桐紋など）と赤十字のマークは権利の問題があるので使わず、その府省を代表する「物」で表しています。
+差し替えるときは、sources.json の `model` を下のキーのどれかに変えるだけです（新しい形を足すときは `assets/models3d.js` の `BUILD` に追加）。
+
+| id | 府省 | model | 物体 |
+|---|---|---|---|
+| hatsugen | 総理・官房長官の発言 | diet | 国会議事堂（中央の塔と階段状のピラミッド屋根、左右に翼棟） |
+| kantei | 首相官邸 | kantei | 首相官邸の建物（ガラス張りの低層棟と、大きく張り出した水平の庇） |
+| cao | 内閣府 | compass | 羅針盤（方位磁針） |
+| digital | デジタル庁 | phone | スマートフォン（画面に格子状のアイコン） |
+| soumu | 総務省 | tower | 電波塔（格子の鉄塔とアンテナ） |
+| moj | 法務省 | scales | 天秤 |
+| mofa | 外務省 | globe | 地球儀（経線・緯線・陸地と台座） |
+| mof | 財務省 | coins | 積み重ねた硬貨 |
+| mext | 文部科学省 | book | 開いた本 |
+| mhlw | 厚生労働省 | heart | 手のひらに乗ったハート（十字は使わない） |
+| maff | 農林水産省 | rice | 稲穂 |
+| meti | 経済産業省 | gear | 噛み合う歯車 |
+| mlit | 国土交通省 | bridge | アーチ橋 |
+| env | 環境省 | leaf | 葉（葉脈つき） |
+| mod | 防衛省 | shield | 盾（武器は出さない） |
+
+`hidden` の府省（国会会議録）はトップに出ないので `model` はありません。
 
 ## ルール
 - 一次情報（政府の発表）だけを使う。新聞記事の本文は使わない

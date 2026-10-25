@@ -336,12 +336,13 @@ BUILD.heart = (add) => {
   const h = extrude(s, 0.28, 0.16, 24);
   h.translate(0, 0, -0.14);
   add(T(h, { sx: 0.6, sy: 0.6, sz: 0.6, rz: -0.08, y: 0.55 }), 1.1);
-  add(T(sphere(1, 24, 12), { sx: 0.62, sy: 0.15, sz: 0.5, x: -0.15, y: -0.32 }), 0.55);
-  const finger = (z, len, curl) => add(tube([V(0.3, -0.3, z), V(0.3 + len * 0.55, -0.27, z),
-    V(0.3 + len * 0.9, -0.17 + curl * 0.05, z), V(0.3 + len, -0.02 + curl * 0.12, z)], 0.085, 20, 8), 0.8);
-  finger(-0.27, 0.62, 1); finger(-0.09, 0.72, 1.2); finger(0.09, 0.7, 1.1); finger(0.26, 0.56, 0.9);
-  add(tube([V(-0.25, -0.28, 0.42), V(0.0, -0.18, 0.55), V(0.22, -0.02, 0.58), V(0.32, 0.08, 0.52)], 0.09, 20, 8), 0.8);
-  add(T(cyl(0.2, 0.25, 0.42, 18, true), { sz: 0.7, rz: PI / 2 + 0.12, x: -0.92, y: -0.38 }), 0.3);
+  // 上向きに開いた手のひら（ハートの下）。指は右へ伸びて先が少し丸まり、親指は手前に立つ
+  add(T(sphere(1, 24, 12), { sx: 0.6, sy: 0.13, sz: 0.46, x: -0.12, y: -0.34 }), 0.55);
+  const finger = (z, len, curl) => add(tube([V(0.36, -0.32, z), V(0.36 + len * 0.55, -0.3, z),
+    V(0.36 + len * 0.88, -0.2 + curl * 0.05, z), V(0.36 + len, -0.05 + curl * 0.1, z)], 0.062, 20, 8), 0.9);
+  finger(-0.3, 0.5, 1); finger(-0.1, 0.62, 1.2); finger(0.1, 0.6, 1.1); finger(0.29, 0.46, 0.9);
+  add(tube([V(-0.2, -0.3, 0.38), V(0.02, -0.2, 0.52), V(0.2, -0.04, 0.56), V(0.28, 0.06, 0.5)], 0.068, 20, 8), 0.9);
+  add(tube([V(-0.68, -0.38, 0), V(-0.95, -0.44, 0), V(-1.15, -0.5, 0)], 0.17, 12, 12), 0.25);
 };
 
 // 稲穂：垂れた穂に粒が並ぶ3本の茎と葉
@@ -351,19 +352,20 @@ BUILD.rice = (add) => {
     const curve = new THREE.CatmullRomCurve3([V(x0, -1.25, z0), V(x0 + lean * 0.1, -0.3, z0), V(x0 + lean * 0.35, 0.5, z0),
       V(x0 + lean * 0.75, 0.95, z0), V(x0 + lean * 1.1, 0.85 - droop * 0.2, z0), V(x0 + lean * 1.3, 0.5 - droop * 0.4, z0 + 0.05)]);
     add(new THREE.TubeGeometry(curve, 60, 0.018, 5, false), 1.3);
-    for (let k = 0; k < 26; k++) {
-      const t = 0.58 + (k / 26) * 0.42;
+    // 粒は左右交互に、短い枝の先に1つずつ（一粒ずつ見分けられる間隔で）
+    for (let k = 0; k < 15; k++) {
+      const t = 0.6 + (k / 15) * 0.4;
       const p = curve.getPoint(t), tg = curve.getTangent(t);
       const side = V(-tg.y, tg.x, 0).normalize();
-      for (const sgn of [-1, 1]) {
-        const dir = tg.clone().multiplyScalar(0.8).addScaledVector(side, sgn * 0.9).add(V(0, 0, (r() - 0.5) * 0.9)).normalize();
-        const g = sphere(1, 8, 6);
-        g.scale(0.038, 0.085, 0.038);
-        g.applyQuaternion(new THREE.Quaternion().setFromUnitVectors(_up, dir));
-        const c = p.clone().addScaledVector(dir, 0.095);
-        g.translate(c.x, c.y, c.z);
-        add(g, 1.1);
-      }
+      const sgn = k % 2 ? 1 : -1;
+      const dir = tg.clone().multiplyScalar(0.75).addScaledVector(side, sgn * 0.85).add(V(0, 0, (r() - 0.5) * 0.6)).normalize();
+      const c = p.clone().addScaledVector(dir, 0.13);
+      add(rod(p, c, 0.006, 3), 1.2);
+      const g = sphere(1, 10, 8);
+      g.scale(0.045, 0.1, 0.045);
+      g.applyQuaternion(new THREE.Quaternion().setFromUnitVectors(_up, dir));
+      g.translate(c.x, c.y, c.z);
+      add(g, 1.2);
     }
     const leaf = new THREE.CatmullRomCurve3([V(x0, -0.95, z0), V(x0 - lean * 0.25, -0.4, z0 + 0.05),
       V(x0 - lean * 0.6, 0.0, z0 + 0.08), V(x0 - lean * 0.98, 0.05 - droop * 0.1, z0 + 0.1)]);

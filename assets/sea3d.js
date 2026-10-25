@@ -33,7 +33,7 @@ void main() {
   vec3 sky = mix(uSkyLow, uSkyHigh, clamp(R.y * 1.6, 0.0, 1.0));
   vec3 col = mix(uDeep, sky, fres);
   float md = max(dot(R, uMoonDir), 0.0);
-  col += uMoon * (pow(md, 900.0) * 0.4 + pow(md, 80.0) * 0.012);
+  col += uMoon * (pow(md, 900.0) * 0.12 + pow(md, 80.0) * 0.006);
   // 物体の光が水面に縦に揺れて映る
   vec3 L = normalize(uGlowPos - vWorld);
   float gd = max(dot(R, L), 0.0);
