@@ -116,7 +116,7 @@ export function createMorph({ count, band }) {
   const uniforms = {
     ...band.uniforms,
     uP: { value: 0.5 }, uTime: { value: 0 }, uScale: { value: 1 }, uSize: { value: 2.2 }, uPR: { value: 1 },
-    uHover: { value: 0 }, uFlow: { value: 0 }, uS0: { value: 0.62 }, uSpan: { value: 0.075 }, uBright: { value: 1 },
+    uHover: { value: 0 }, uFlow: { value: 0 }, uS0: { value: 0.62 }, uSpan: { value: 0.035 }, uBright: { value: 1 },
     uCenter: { value: new THREE.Vector3() }, uRot: { value: new THREE.Matrix3() },
   };
   const mat = new THREE.ShaderMaterial({

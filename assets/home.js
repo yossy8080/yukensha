@@ -220,43 +220,49 @@ async function main() {
 
   /* スクロール → WebGL の状態 */
   const hero = $("#hero"), stream = $("#stream");
-  // 章の「中心」のページ上の高さ（-1 番目 = ヒーロー、n 番目 = 最後の章の1つ先）。レイアウトが変わったら測り直す
-  // スマホは物体が上・文章が下なので、文章のカードの中心で測り、画面の少し下の線と比べる
-  let centers = [], stage = null;
+  // スクロール量 → 章の位置 f の対応表（[scrollY, f] の折れ線）。レイアウトが変わったら測り直す
+  //   PC：章の中央が画面の中央に来たとき f = 章の番号（その前後 0.24 は形を止めて見せる。scene3d.js の HOLD）
+  //   スマホ：物体が上・文章が下。カードが画面の下から出てくるときには形が落ち着いていて（f = k - 0.24）、
+  //          カードが物体の上を通り過ぎたら（f = k + 0.24）次の府省へ変形する。変形はカードとカードのすき間で見える
+  let knots = [], stage = null;
   function measure() {
     const pageY = (el) => el.getBoundingClientRect().top + scrollY;
-    const c = [pageY(hero) + hero.offsetHeight / 2];
-    for (const ch of chapterEls) {
-      const el = isMobile ? $(".ch-card", ch) : ch;
-      c.push(pageY(el) + el.offsetHeight / 2);
-    }
-    const n = c.length;
-    c.push(n > 2 ? c[n - 1] + (c[n - 1] - c[n - 2]) : c[n - 1] + innerHeight);
-    centers = c;
+    const vh = innerHeight;
     // 物体を置く場所（画面に固定）：PC は右の列の中央、スマホは上
     const header = $(".site-header");
     const hh = header ? header.offsetHeight : 0;
     const vis = chapterEls[0] && $(".ch-visual", chapterEls[0]);
     const anc = chapterEls[0] && $(".ch-anchor", chapterEls[0]);
-    const size = anc ? anc.offsetWidth : Math.min(innerWidth, innerHeight) * 0.5;
-    if (isMobile) stage = { x: innerWidth / 2, y: hh + innerHeight * 0.03 + size / 2, size: size * 0.95 };
+    const size = anc ? anc.offsetWidth : Math.min(innerWidth, vh) * 0.5;
+    if (isMobile) stage = { x: innerWidth / 2, y: hh + vh * 0.03 + size / 2, size: size * 0.95 };
     else {
       const r = vis ? vis.getBoundingClientRect() : { left: innerWidth / 2, width: innerWidth / 2 };
-      stage = { x: r.left + r.width / 2, y: innerHeight / 2 + hh / 2, size: size * 0.95 };
+      stage = { x: r.left + r.width / 2, y: vh / 2 + hh / 2, size: size * 0.95 };
     }
+    const k = [[pageY(hero) + hero.offsetHeight / 2 - vh / 2, -1]];
+    chapterEls.forEach((ch, i) => {
+      if (isMobile) {
+        const card = $(".ch-card", ch), top = pageY(card), bottom = top + card.offsetHeight;
+        k.push([top - vh * 0.86, i - 0.24]);
+        k.push([bottom - stage.y, i + 0.24]);
+      } else k.push([pageY(ch) + ch.offsetHeight / 2 - vh / 2, i]);
+    });
+    const [ly, lf] = k[k.length - 1];
+    k.push([ly + vh * 0.8, Math.floor(lf) + 1]);
+    for (let j = 1; j < k.length; j++) k[j][0] = Math.max(k[j][0], k[j - 1][0] + 1); // 単調に
+    knots = k;
   }
   function computeState() {
     const vh = innerHeight;
     const hr = hero.getBoundingClientRect();
     const st = { hero: clamp01(hr.bottom / Math.max(1, hr.height)), f: -1, anchor: stage, end: 0 };
-    const line = scrollY + vh * (isMobile ? 0.66 : 0.5);
-    const c = centers;
-    if (c.length > 1) {
-      if (line <= c[0]) st.f = -1;
-      else if (line >= c[c.length - 1]) st.f = c.length - 2;
+    const y = scrollY, k = knots;
+    if (k.length > 1) {
+      if (y <= k[0][0]) st.f = k[0][1];
+      else if (y >= k[k.length - 1][0]) st.f = k[k.length - 1][1];
       else {
-        for (let k = 1; k < c.length; k++) {
-          if (line <= c[k]) { st.f = k - 2 + clamp01((line - c[k - 1]) / Math.max(1, c[k] - c[k - 1])); break; }
+        for (let j = 1; j < k.length; j++) {
+          if (y <= k[j][0]) { st.f = k[j - 1][1] + (k[j][1] - k[j - 1][1]) * clamp01((y - k[j - 1][0]) / (k[j][0] - k[j - 1][0])); break; }
         }
       }
     }
@@ -300,7 +306,7 @@ async function main() {
       });
       html.classList.add("webgl");
       html.classList.remove("no-webgl");
-      scene.update(computeState());
+      relayout(); // WebGL 用のレイアウト（スマホはカードの間隔が広がる）で測り直して、状態を渡す
       setupPicking(scene, chapters, hall);
     } catch (e) {
       scene = null;

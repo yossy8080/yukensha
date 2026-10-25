@@ -33,8 +33,9 @@ export function createBand() {
 
   // C = 物体の中心（ワールド）。帯が t=S0 で物体の少し奥を通るように P2 を解く
   function setAnchor(C, mobile) {
-    P[0].set(mobile ? -34 : -60, mobile ? 34 : 28, -140);
-    P[1].set(mobile ? -12 : -24, mobile ? 14 : 10, -60);
+    // 始まり（t=0）は画面の外の、左上の遠い空
+    P[0].set(mobile ? -70 : -120, mobile ? 70 : 46, -150);
+    P[1].set(mobile ? -14 : -26, mobile ? 16 : 10, -60);
     P[3].set(C.x + (mobile ? 4.5 : 8), C.y - (mobile ? 5.5 : 3.4), 13);
     _a.copy(C).add(new THREE.Vector3(0, 0, -1.1));
     const t = S0, u = 1 - t, a = u * u * u, b = 3 * u * u * t, c = 3 * u * t * t, d = t * t * t;

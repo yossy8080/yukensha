@@ -216,6 +216,9 @@ html:not(.webgl) .emblem-hit:focus-visible { outline: none; box-shadow: none; }
     background: rgba(6, 12, 22, .78); border-color: rgba(214, 236, 255, .12);
     -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
   }
+  /* WebGL のとき：物体は画面の上に固定。カードとカードのあいだを画面ほぼ1枚分あけ、そこで物体が変形する */
+  html.webgl .chapter { --a: min(84vw, 44vh); padding: 0 16px; }
+  html.webgl .ch-visual { height: 96vh; height: 96svh; }
   .ch-name { font-size: clamp(32px, 10vw, 44px); letter-spacing: .14em; }
   .ch-latest a { font-size: 16px; }
   .stream-head { padding-top: 14vh; }
