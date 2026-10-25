@@ -1,9 +1,10 @@
 /* 有権者 — 新しいトップ（index.html）の組み立てと演出（ES module）
    1. news.json から「府省の章」を作る（記事が1件以上ある府省を sources.json の順に。0件の府省は最後に名前だけ）
-   2. スクロール位置から「いまの章」と進み具合を計算し、背面の WebGL（scene3d.js）に渡す（スクロールの乗っ取りはしない）
-   3. ページを貫く1本の光の線（SVG）をスクロールに合わせて描く／各章はピンボケから焦点が合って現れる
-   4. エンブレム（3D はクリック判定に Raycaster、キーボードは透明ボタン）→ その府省の記事ビュー（hall.js）
-   WebGL が使えない・three の読み込みに失敗・動きを減らす設定のときは、CSS の明朝文字のエンブレムで同じ操作ができる。 */
+   2. スクロール位置から「章の位置 f」（-1=ヒーロー, 0..n-1=各章, 小数=章のあいだ）を計算し、背面の WebGL（scene3d.js）に渡す
+      （スクロールの乗っ取りはしない）。3D の物体は画面に貼り付いた1つだけで、f に合わせて府省の物体どうしが変形する
+   3. WebGL のときは天の川の帯が府省をつなぐ。使えないときは、ページを貫く1本の光の線（SVG）を描く
+   4. 物体（3D はクリック判定に Raycaster、キーボードは透明ボタン）→ その府省の記事ビュー（hall.js）
+   WebGL2 が使えない・three の読み込みに失敗・動きを減らす設定のときは、CSS の明朝文字のエンブレムで同じ操作ができる。 */
 
 /* global Y */
 import { initHall } from "./hall.js";
@@ -58,10 +59,10 @@ function fold() {
 function chapterHTML(s, i, n, items) {
   const latest = items.slice(0, 3).map((it) => `
       <li><time datetime="${Y.esc(it.date)}">${Y.fmtDate(it.date)}</time><a href="#a=${encodeURIComponent(it.id)}">${Y.esc(it.title)}</a></li>`).join("");
-  const side = i % 2 ? "right" : "left"; // エンブレムを置く側（章ごとに左右交互）
   const id = Y.esc(s.id);
+  // 物体はいつも同じ側（PC は右、スマホは上）。文章は PC は左、スマホは下
   return `
-  <section class="chapter" id="ch-${id}" data-i="${i}" data-side="${side}" aria-labelledby="ch-${id}-title">
+  <section class="chapter" id="ch-${id}" data-i="${i}" aria-labelledby="ch-${id}-title">
     <div class="ch-visual">
       <div class="ch-anchor">
         <button type="button" class="emblem-hit" data-m="${id}" aria-label="${Y.esc(s.name)}の記事をひらく">
@@ -171,13 +172,12 @@ function setupReveal() {
 function webglAvailable() {
   try {
     const c = document.createElement("canvas");
-    return !!(window.WebGLRenderingContext && (c.getContext("webgl2") || c.getContext("webgl")));
+    return !!(window.WebGL2RenderingContext && c.getContext("webgl2")); // three r170 は WebGL2 だけに対応
   } catch (e) { return false; }
 }
 
 /* ── 組み立て ── */
 async function main() {
-  const glyphsP = Y.load("assets/glyphs.json").catch(() => ({}));
   const [sources, news] = await Promise.all([Y.load("data/sources.json"), Y.load("data/news.json")]);
   const srcMap = Object.fromEntries(sources.map((s) => [s.id, s]));
   news.sort(Y.byDateDesc);
@@ -220,30 +220,48 @@ async function main() {
 
   /* スクロール → WebGL の状態 */
   const hero = $("#hero"), stream = $("#stream");
+  // 章の「中心」のページ上の高さ（-1 番目 = ヒーロー、n 番目 = 最後の章の1つ先）。レイアウトが変わったら測り直す
+  // スマホは物体が上・文章が下なので、文章のカードの中心で測り、画面の少し下の線と比べる
+  let centers = [], stage = null;
+  function measure() {
+    const pageY = (el) => el.getBoundingClientRect().top + scrollY;
+    const c = [pageY(hero) + hero.offsetHeight / 2];
+    for (const ch of chapterEls) {
+      const el = isMobile ? $(".ch-card", ch) : ch;
+      c.push(pageY(el) + el.offsetHeight / 2);
+    }
+    const n = c.length;
+    c.push(n > 2 ? c[n - 1] + (c[n - 1] - c[n - 2]) : c[n - 1] + innerHeight);
+    centers = c;
+    // 物体を置く場所（画面に固定）：PC は右の列の中央、スマホは上
+    const header = $(".site-header");
+    const hh = header ? header.offsetHeight : 0;
+    const vis = chapterEls[0] && $(".ch-visual", chapterEls[0]);
+    const anc = chapterEls[0] && $(".ch-anchor", chapterEls[0]);
+    const size = anc ? anc.offsetWidth : Math.min(innerWidth, innerHeight) * 0.5;
+    if (isMobile) stage = { x: innerWidth / 2, y: hh + innerHeight * 0.03 + size / 2, size: size * 0.95 };
+    else {
+      const r = vis ? vis.getBoundingClientRect() : { left: innerWidth / 2, width: innerWidth / 2 };
+      stage = { x: r.left + r.width / 2, y: innerHeight / 2 + hh / 2, size: size * 0.95 };
+    }
+  }
   function computeState() {
-    const vh = innerHeight, mid = vh * 0.5;
+    const vh = innerHeight;
     const hr = hero.getBoundingClientRect();
-    const st = { hero: clamp01(hr.bottom / Math.max(1, hr.height)), index: -1, progress: 0, anchor: null, end: 0 };
-    if (chapterEls.length) {
-      const first = chapterEls[0].getBoundingClientRect();
-      const last = chapterEls[chapterEls.length - 1].getBoundingClientRect();
-      if (mid < first.top) st.index = -1;
-      else if (mid > last.bottom) st.index = chapterEls.length;
+    const st = { hero: clamp01(hr.bottom / Math.max(1, hr.height)), f: -1, anchor: stage, end: 0 };
+    const line = scrollY + vh * (isMobile ? 0.66 : 0.5);
+    const c = centers;
+    if (c.length > 1) {
+      if (line <= c[0]) st.f = -1;
+      else if (line >= c[c.length - 1]) st.f = c.length - 2;
       else {
-        for (let i = 0; i < chapterEls.length; i++) {
-          const r = chapterEls[i].getBoundingClientRect();
-          if (mid >= r.top && mid <= r.bottom) {
-            st.index = i;
-            st.progress = clamp01((mid - r.top) / r.height);
-            const a = $(".ch-anchor", chapterEls[i]).getBoundingClientRect();
-            st.anchor = { x: a.left + a.width / 2, y: a.top + a.height / 2, size: a.width * 0.95 };
-            break;
-          }
+        for (let k = 1; k < c.length; k++) {
+          if (line <= c[k]) { st.f = k - 2 + clamp01((line - c[k - 1]) / Math.max(1, c[k] - c[k - 1])); break; }
         }
       }
     }
     const sb = stream.getBoundingClientRect().bottom;
-    st.end = clamp01((mid - sb) / vh);
+    st.end = clamp01((vh * 0.5 - sb) / vh);
     return st;
   }
 
@@ -261,7 +279,7 @@ async function main() {
   addEventListener("scroll", onScroll, { passive: true });
 
   let resizeT = 0;
-  const relayout = () => { buildFlow(chapterEls); onScroll(); };
+  const relayout = () => { measure(); buildFlow(chapterEls); onScroll(); };
   addEventListener("resize", () => { clearTimeout(resizeT); resizeT = setTimeout(relayout, 150); });
   relayout();
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(relayout);
@@ -273,12 +291,11 @@ async function main() {
   /* WebGL（使えなければフォールバックのまま） */
   if (!reduced && webglAvailable()) {
     try {
-      const [mod, glyphs] = await Promise.all([import("./scene3d.js"), glyphsP]);
+      const mod = await import("./scene3d.js");
       scene = mod.createScene({
         canvas: $("#scene"),
-        chapters: chapters.map((s) => ({ id: s.id, name: s.name, emblem: s.emblem || s.name.slice(0, 1) })),
-        glyphs,
-        dprMax: isMobile ? 1.5 : 2,
+        chapters: chapters.map((s) => ({ id: s.id, name: s.name, model: s.model })),
+        dprMax: isMobile ? 1.5 : 1.75,
         isMobile,
       });
       html.classList.add("webgl");
@@ -295,7 +312,7 @@ async function main() {
   await loaded;
 }
 
-/* 3D のエンブレムをホバー・クリック（Raycaster）。文字や操作部品の上では何もしない */
+/* 3D の物体をホバー・クリック（Raycaster）。今表示している府省の記事ビューを開く。文字や操作部品の上では何もしない */
 function setupPicking(scene, chapters, hall) {
   const blocked = (t) => t.closest && t.closest("a, button, input, .ch-card, .site-header, .hero-inner, .later, footer, .hall");
   let hover = -1, pending = null;

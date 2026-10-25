@@ -45,7 +45,8 @@ body.home footer { position: relative; z-index: 2; background: linear-gradient(1
 .site-logo.is-arrived { animation: logo-arrive .6s ease-out; }
 @keyframes logo-arrive { from { text-shadow: 0 0 18px rgba(143, 208, 255, .95); } to { text-shadow: none; } }
 
-/* ── 光の流れ ── */
+/* ── 光の流れ（WebGL が使えないときだけ。WebGL のときは天の川の帯が府省をつなぐ） ── */
+html.webgl .flow { display: none; }
 .flow { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; overflow: visible; }
 .flow path { fill: none; stroke-linecap: round; }
 .flow-glow { stroke: #8fd0ff; stroke-width: 10; opacity: .32; }
@@ -109,20 +110,18 @@ html.js .reveal.is-in { opacity: 1; filter: none; transform: none; transition: o
 .stream-note { margin: 18px auto 0; color: var(--sub); font-size: 14px; max-width: 34em; }
 
 .chapter {
-  --a: min(46vw, 78vh, 660px); /* エンブレムを画面の主役に */
+  --a: min(42vw, 70vh, 620px); /* 物体を画面の主役に */
   position: relative; min-height: 125vh;
   display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   max-width: 1440px; margin: 0 auto; padding: 0 clamp(20px, 4vw, 64px);
 }
-/* data-side = エンブレムを置く側。文章は反対側の列に、エンブレムから離れる向きに寄せる */
-.chapter[data-side="right"] .ch-visual { order: 2; }
-.ch-visual { position: relative; }
+/* 物体はいつも右の列（WebGL のときは画面に固定した1つの物体がこの位置に来る）、文章は左の列 */
+.ch-visual { position: relative; order: 2; }
 .ch-anchor {
   position: sticky; top: calc(50vh - var(--a) / 2 + var(--header-h) / 2);
   width: var(--a); height: var(--a); margin: 12vh auto;
 }
-.ch-text { display: flex; align-items: center; padding: 18vh 0; }
-.chapter[data-side="left"] .ch-text { justify-content: flex-end; }
+.ch-text { display: flex; align-items: center; justify-content: flex-start; padding: 18vh 0; }
 .ch-card {
   width: 100%; max-width: 540px; padding: 30px 32px;
   border-radius: 18px; border: 1px solid rgba(214, 236, 255, .08);
@@ -211,9 +210,7 @@ html:not(.webgl) .emblem-hit:focus-visible { outline: none; box-shadow: none; }
   }
   .ch-visual { position: relative; height: calc(var(--a) + 4vh); }
   .ch-anchor { position: absolute; top: 2vh; left: 50%; margin: 0 0 0 calc(var(--a) / -2); }
-  .ch-text { position: relative; z-index: 1; padding: 0; }
-  .chapter[data-side] .ch-text { justify-content: center; }
-  .chapter[data-side="right"] .ch-visual { order: 0; }
+  .ch-text { position: relative; z-index: 1; padding: 0; justify-content: center; }
   .ch-card {
     padding: 22px 20px; border-radius: 16px;
     background: rgba(6, 12, 22, .78); border-color: rgba(214, 236, 255, .12);
