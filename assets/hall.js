@@ -60,13 +60,17 @@ export function initHall({ sources, news, srcMap, order = [], onToggle = () => {
       <div class="hall-reader-bar">
         <button type="button" class="hall-back">← 一覧へ戻る</button>
         <span class="hall-reader-pos"></span>
-        <button type="button" class="hall-close hall-reader-close" aria-label="閉じる"><span aria-hidden="true">×</span></button>
+        <div class="hall-reader-tools">
+          <button type="button" class="hall-copy" aria-label="この記事へのリンクをコピー">リンクをコピー</button>
+          <button type="button" class="hall-close hall-reader-close" aria-label="閉じる"><span aria-hidden="true">×</span></button>
+        </div>
       </div>
       <div class="hall-reader-body"></div>
-      <nav class="hall-reader-nav" aria-label="前後の記事">
-        <button type="button" class="hall-rprev">← 前の記事</button>
-        <button type="button" class="hall-copy">この記事へのリンクをコピー</button>
-        <button type="button" class="hall-rnext">次の記事 →</button>
+      <!-- 画面の下に固定。前・次がないときはそのボタンを隠し、府省の記事一覧はいつも真ん中 -->
+      <nav class="hall-reader-nav" aria-label="記事の移動">
+        <button type="button" class="hall-rprev" aria-label="前の記事"><span aria-hidden="true">← 前<span class="hall-rlong">の記事</span></span></button>
+        <a class="hall-rlist" href="ministries.html"></a>
+        <button type="button" class="hall-rnext" aria-label="次の記事"><span aria-hidden="true">次<span class="hall-rlong">の記事</span> →</span></button>
       </nav>
     </section>`;
   document.body.appendChild(root);
@@ -295,9 +299,15 @@ export function initHall({ sources, news, srcMap, order = [], onToggle = () => {
     const h = readerBody.querySelector(".headline");
     if (h) h.tabIndex = -1;
     $(".hall-reader-pos").textContent = `${j + 1} / ${list.length}`;
-    $(".hall-rprev").disabled = j <= 0;
-    $(".hall-rnext").disabled = j >= list.length - 1;
-    $(".hall-copy").textContent = "この記事へのリンクをコピー";
+    $(".hall-rprev").hidden = j <= 0;
+    $(".hall-rnext").hidden = j >= list.length - 1;
+    // 真ん中：この記事の府省の記事一覧（ministries.html?m=…）へ。ふつうのページ移動
+    const s = srcMap[it.ministry];
+    const a = $(".hall-rlist");
+    a.href = "ministries.html?m=" + encodeURIComponent(it.ministry);
+    // 2行になるときも「の記事一覧」は切らない
+    a.innerHTML = `<span>${s ? `${Y.esc(s.name)}<span class="hall-nw">の記事一覧</span>` : "記事一覧"}</span>`;
+    $(".hall-copy").textContent = "リンクをコピー";
     reader.scrollTop = 0;
     if (window.YG) window.YG.apply(readerBody).catch(() => {});
   }
