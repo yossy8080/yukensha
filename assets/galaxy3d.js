@@ -44,7 +44,7 @@ void main() {
   float sf = s - uFlow; // 帯の光（GLOW_FS）と同じ座標で塵の筋を決める
   float l = exp(-pow((aOff.x - lane(sf)) / 0.085, 2.0)) * smoothstep(0.3, 0.65, fbm(vec2(sf * 20.0, aOff.x * 6.0) + 7.0));
   float a = (1.0 - 0.8 * l) * mix(0.3, 1.0, exp(-aOff.x * aOff.x * 5.0));
-  a *= smoothstep(1.5, 5.0, dist) * smoothstep(0.0, 0.12, s) * smoothstep(1.0, 0.93, s);
+  a *= smoothstep(1.5, 5.0, dist) * smoothstep(0.0, 0.12, s) * smoothstep(1.0, 0.93, s) * smoothstep(-0.8, 1.2, p.y);
   // 物体のまわりは少し暗くして、形を読みやすくする
   a *= 1.0 - uClear * (1.0 - smoothstep(uClearR * 0.45, uClearR * 1.25, distance(p, uCenter)));
   vKind = aKind;
@@ -67,7 +67,9 @@ void main() {
   vec2 c = gl_PointCoord - 0.5;
   float d = dot(c, c) * 4.0;
   if (d > 1.0) discard;
-  float a = vKind > 0.5 ? exp(-d * 3.2) * 0.075 : exp(-d * 5.5);
+  // 縁でちょうど 0 になるように引き算する（スプライトの四角や円の縁を見せない）
+  float a = vKind > 0.5 ? (exp(-d * 3.2) - 0.0408) * 0.078 : exp(-d * 5.5) - 0.004;
+  a = max(a, 0.0);
   gl_FragColor = vec4(vCol * a * vA, 1.0);
 }`;
 
@@ -78,6 +80,7 @@ attribute vec2 aSV;
 varying float vS;
 varying float vV;
 varying float vFade;
+varying float vEdge;
 void main() {
   float s = aSV.x;
   vec3 C = bandPos(s), T = bandTan(s), side, up;
@@ -85,8 +88,10 @@ void main() {
   vec3 p = C + side * aSV.y * bandWidth(s) * 1.3;
   vS = s;
   vV = aSV.y * 1.3;
+  vEdge = 1.0 - smoothstep(0.45, 1.0, abs(aSV.y)); // 帯の両端は 0 まで消す（直線の縁を見せない）
   vec4 mv = modelViewMatrix * vec4(p, 1.0);
-  vFade = smoothstep(2.0, 8.0, -mv.z) * smoothstep(0.0, 0.2, s) * smoothstep(1.0, 0.9, s);
+  // 近すぎるところ・帯の始まりと終わり・海面に近いところはやわらかく消す（海で切れた直線が出ないように）
+  vFade = smoothstep(2.0, 8.0, -mv.z) * smoothstep(0.0, 0.2, s) * smoothstep(1.0, 0.9, s) * smoothstep(-0.8, 1.6, p.y);
   gl_Position = projectionMatrix * mv;
 }`;
 const GLOW_FS = /* glsl */`
@@ -95,6 +100,7 @@ uniform float uFlow, uDim;
 varying float vS;
 varying float vV;
 varying float vFade;
+varying float vEdge;
 void main() {
   float sf = vS - uFlow;
   float n = fbm(vec2(sf * 34.0, vV * 3.2));
@@ -104,7 +110,7 @@ void main() {
   glow *= 1.0 - 0.8 * l;
   vec3 col = mix(vec3(0.38, 0.47, 0.86), vec3(1.0, 0.86, 0.68), core * 0.55);
   col = mix(col, vec3(0.72, 0.55, 0.98), smoothstep(0.55, 0.8, fbm(vec2(sf * 9.0, vV * 2.0) + 3.0)) * 0.45);
-  gl_FragColor = vec4(col * glow * 0.15 * vFade * uDim, 1.0);
+  gl_FragColor = vec4(col * glow * 0.15 * vFade * vEdge * uDim, 1.0);
 }`;
 const DUST_FS = /* glsl */`
 ${NOISE_GLSL}
@@ -112,11 +118,12 @@ uniform float uFlow, uDim;
 varying float vS;
 varying float vV;
 varying float vFade;
+varying float vEdge;
 void main() {
   float sf = vS - uFlow;
   float l = exp(-pow((vV - lane(sf)) / 0.075, 2.0)) * smoothstep(0.3, 0.65, fbm(vec2(sf * 20.0, vV * 6.0) + 7.0));
   l *= 0.7 + 0.3 * fbm(vec2(sf * 70.0, vV * 14.0));
-  gl_FragColor = vec4(0.008, 0.012, 0.024, l * 0.6 * vFade * (0.5 + 0.5 * uDim));
+  gl_FragColor = vec4(0.008, 0.012, 0.024, l * 0.6 * vFade * vEdge * (0.5 + 0.5 * uDim));
 }`;
 
 /* ── 府省の節 ── */
@@ -203,7 +210,7 @@ export function createGalaxy({ band, isMobile, nodes = 0 }) {
   const starMat = new THREE.ShaderMaterial({
     vertexShader: STAR_VS, fragmentShader: STAR_FS,
     uniforms: { ...band.uniforms, ...common, uClear: { value: 0 }, uClearR: { value: 1.5 }, uCenter: { value: new THREE.Vector3() } },
-    transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+    transparent: true, depthWrite: false, depthTest: false, blending: THREE.AdditiveBlending,
   });
   const stars = new THREE.Points(starGeo, starMat);
   stars.frustumCulled = false;
@@ -222,8 +229,9 @@ export function createGalaxy({ band, isMobile, nodes = 0 }) {
   ribGeo.setAttribute("aSV", new THREE.Float32BufferAttribute(sv, 2));
   ribGeo.setIndex(idx);
   const ribU = { ...band.uniforms, uFlow: common.uFlow, uDim: common.uDim };
-  const glowMat = new THREE.ShaderMaterial({ vertexShader: RIBBON_VS, fragmentShader: GLOW_FS, uniforms: ribU, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide });
-  const dustMat = new THREE.ShaderMaterial({ vertexShader: RIBBON_VS, fragmentShader: DUST_FS, uniforms: ribU, transparent: true, depthWrite: false, side: THREE.DoubleSide });
+  // 帯は海面などで切られないよう深度テストをしない（海に近いところは RIBBON_VS の vFade で消える）
+  const glowMat = new THREE.ShaderMaterial({ vertexShader: RIBBON_VS, fragmentShader: GLOW_FS, uniforms: ribU, transparent: true, depthWrite: false, depthTest: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide });
+  const dustMat = new THREE.ShaderMaterial({ vertexShader: RIBBON_VS, fragmentShader: DUST_FS, uniforms: ribU, transparent: true, depthWrite: false, depthTest: false, side: THREE.DoubleSide });
   const glow = new THREE.Mesh(ribGeo, glowMat), dust = new THREE.Mesh(ribGeo, dustMat);
   glow.frustumCulled = dust.frustumCulled = false;
   glow.renderOrder = 1;
@@ -236,7 +244,7 @@ export function createGalaxy({ band, isMobile, nodes = 0 }) {
   const nodeMat = new THREE.ShaderMaterial({
     vertexShader: NODE_VS, fragmentShader: NODE_FS,
     uniforms: { ...band.uniforms, uF: { value: -1 }, uStep: { value: 0.055 }, uS0: { value: 0.62 }, uPR: common.uPR, uSettled: { value: 0 }, uDim: common.uDim, uTime: common.uTime },
-    transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+    transparent: true, depthWrite: false, depthTest: false, blending: THREE.AdditiveBlending,
   });
   const nodePts = new THREE.Points(nodeGeo, nodeMat);
   nodePts.frustumCulled = false;

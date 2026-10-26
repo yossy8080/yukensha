@@ -36,7 +36,7 @@ export function createBand() {
     // 始まり（t=0）は画面の外の、左上の遠い空
     P[0].set(mobile ? -70 : -120, mobile ? 70 : 46, -150);
     P[1].set(mobile ? -14 : -26, mobile ? 16 : 10, -60);
-    P[3].set(C.x + (mobile ? 4.5 : 8), C.y - (mobile ? 5.5 : 3.4), 13);
+    P[3].set(C.x + (mobile ? 4.5 : 8), C.y - (mobile ? 3.0 : 1.6), 13); // 手前の端も海面より上を通る
     _a.copy(C).add(new THREE.Vector3(0, 0, -1.1));
     const t = S0, u = 1 - t, a = u * u * u, b = 3 * u * u * t, c = 3 * u * t * t, d = t * t * t;
     P[2].copy(_a).addScaledVector(P[0], -a).addScaledVector(P[1], -b).addScaledVector(P[3], -d).multiplyScalar(1 / c);

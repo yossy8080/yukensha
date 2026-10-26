@@ -165,9 +165,14 @@ export function createScene({ canvas, chapters, dprMax = 1.75, isMobile = false 
     if (ms.a === ms.b && ms.p > 0.2 && ms.p < 0.8) curIndex = -1;
     hoverS += ((curIndex >= 0 && curIndex === hoverIndex ? 1 : 0) - hoverS) * lerpK(dt, 8);
 
-    // ゆっくり左右に振れながら、いつもカメラの方を向く
-    const face = Math.atan2(camera.position.x - center.x, camera.position.z - center.z);
-    _e.set(0.05 + Math.sin(time * 0.21) * 0.05 - pointerS.y * 0.08, face + Math.sin(time * 0.27) * 0.34 + pointerS.x * 0.16, 0, "YXZ");
+    // ゆっくり左右に振れながら、いつもカメラの方を向く（上下も：スマホのように画面の上に置いても下から見上げてつぶれないように）
+    const dx = camera.position.x - center.x, dz = camera.position.z - center.z;
+    const face = Math.atan2(dx, dz);
+    const tilt = Math.atan2(center.y - camera.position.y, Math.hypot(dx, dz));
+    // スマホは物体が画面の真ん中に来て真正面になりやすいので、PC と同じように少し斜め上から見せて奥行きを出す
+    const bias = isMobile ? [0.16, 0.38] : [0, 0];
+    _e.set(tilt + bias[0] + 0.05 + Math.sin(time * 0.21) * 0.05 - pointerS.y * 0.08,
+      face + bias[1] + Math.sin(time * 0.27) * (isMobile ? 0.22 : 0.34) + pointerS.x * 0.16, 0, "YXZ");
     rot.makeRotationFromEuler(_e);
     const settled = clamp01(1 - 5 * Math.min(ms.p, 1 - ms.p)); // 1 = 形が落ち着いている
     const flow = fS * NODE_STEP;

@@ -94,8 +94,9 @@ export function createSea(scene, isMobile) {
   stars.renderOrder = -1;
   scene.add(stars);
 
-  const seg = isMobile ? [110, 80] : [220, 150];
-  const oceanGeo = new THREE.PlaneGeometry(160, 120, seg[0], seg[1]);
+  // 海の板は霧で完全に消える遠さまで広げ、端（直線の縁）が見えないようにする
+  const seg = isMobile ? [140, 100] : [280, 180];
+  const oceanGeo = new THREE.PlaneGeometry(320, 220, seg[0], seg[1]);
   oceanGeo.rotateX(-Math.PI / 2);
   const oceanMat = new THREE.ShaderMaterial({
     vertexShader: OCEAN_VS, fragmentShader: OCEAN_FS,
@@ -107,7 +108,7 @@ export function createSea(scene, isMobile) {
     },
   });
   const ocean = new THREE.Mesh(oceanGeo, oceanMat);
-  ocean.position.set(0, -0.6, -40);
+  ocean.position.set(0, -0.6, -85);
   scene.add(ocean);
 
   return {
