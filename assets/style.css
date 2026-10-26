@@ -82,15 +82,16 @@ a:focus-visible, button:focus-visible, summary:focus-visible { outline: 2px soli
 @media (max-width: 720px) {
   .site-header-inner { padding: 0 0 0 16px; gap: 8px; }
   .site-logo { font-size: 19px; }
-  .site-nav {
-    overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch;
-    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 14px, #000 calc(100% - 24px), transparent 100%);
-    mask-image: linear-gradient(90deg, transparent 0, #000 14px, #000 calc(100% - 24px), transparent 100%);
-  }
+  /* 長い項目は短い名前にして、5つとも画面に収める（とても狭い画面だけ横にスクロール） */
+  .site-nav { overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
   .site-nav::-webkit-scrollbar { display: none; }
-  .site-nav ul { padding: 0 20px 0 8px; }
-  .site-nav a { padding: 0 10px; font-size: 13px; }
+  .site-nav ul { padding: 0 8px 0 0; }
+  .site-nav a { padding: 0 8px; font-size: 13px; }
+  .site-nav .nav-long { display: none; }
+  .site-nav .nav-short { display: inline; }
 }
+@media (max-width: 359px) { .site-nav a { padding: 0 6px; font-size: 12px; } }
+.nav-short { display: none; }
 
 /* ── レイアウト ── */
 main { padding: 40px 0 72px; }
