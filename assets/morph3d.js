@@ -173,8 +173,8 @@ export function createMorph({ count, band }) {
     uniforms.uPR.value = u.pr;
     uniforms.uBright.value = u.bright;
     uniforms.uSize.value = u.size;
-    // 形が落ち着いているほど輪郭と面を見せる（ほどけ始めてもしばらく残し、集まる途中から早めに見せる）
-    const settle = [1 - smooth(0.0, 0.3, u.p), smooth(0.65, 1.0, u.p)];
+    // 形が落ち着いているほど輪郭と面を見せる
+    const settle = [1 - smooth(0.0, 0.16, u.p), smooth(0.84, 1.0, u.p)];
     if (cur[0] === cur[1]) settle[1] = 0;
     _m4.compose(u.center, new THREE.Quaternion().setFromRotationMatrix(u.rot), new THREE.Vector3(u.scale, u.scale, u.scale));
     holders.forEach((h, k) => {
