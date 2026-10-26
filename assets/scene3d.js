@@ -18,7 +18,13 @@ import { createSea } from "./sea3d.js";
 import { createGalaxy } from "./galaxy3d.js";
 
 const MODEL_SIZE = 2.6; // models3d.js の物体の最大の幅
-const HOLD = 0.24;      // 章の中央の前後この割合は、形を止めて見せる
+const HOLD = 0.34;      // 章の中央の前後この割合は、形を止めて見せる（変形は章のあいだの 32%）
+const HERO_START = 0.12; // ヒーロー（f=-1）からこれだけ進んだら、もう最初の府省の形が集まり始める
+// 物体がスクロール（f）を追いかける速さの上限（章/秒）。形が止まっている区間は少し速く、変形の区間はゆっくり。
+// 1章あたり 0.68/1.0 + 0.32/0.38 ≒ 1.5 秒（平均 約0.67章/秒）。変形そのもの（ほどける→流れる→集まる）は約0.85秒かけて見せる
+const SPEED_HOLD = 1.0, SPEED_MORPH = 0.38;
+const SNAP_DIST = 3;     // これ以上離れたら（メニューやディープリンクで大きく飛んだとき）上限を上げ、約 CATCH_UP 秒で追いつく
+const CATCH_UP = 2.6;
 const NODE_STEP = 0.055; // 帯の上の、府省の節どうしの間隔（帯のパラメータ）
 
 const clamp01 = (v) => Math.max(0, Math.min(1, v));
@@ -95,7 +101,10 @@ export function createScene({ canvas, chapters, dprMax = 1.75, isMobile = false 
     if (!n || f <= -1) return { a: 0, b: 0, p: 0.5 };
     const i = Math.floor(f);
     const p = smooth(clamp01((f - i - HOLD) / (1 - 2 * HOLD)));
-    if (i < 0) return { a: 0, b: 0, p: 0.5 + 0.5 * p };      // ヒーロー → 最初の府省：帯から集まる
+    if (i < 0) {                                               // ヒーロー → 最初の府省：帯から早めに集まり始める
+      const q = smooth(clamp01((f + 1 - HERO_START) / (1 - HERO_START - HOLD)));
+      return { a: 0, b: 0, p: 0.5 + 0.5 * q };
+    }
     if (i >= n) return { a: n - 1, b: n - 1, p: 0.5 };
     if (i === n - 1) return { a: i, b: i, p: 0.5 * p };     // 最後の府省 → 帯へ戻る
     return { a: i, b: i + 1, p };
@@ -118,21 +127,40 @@ export function createScene({ canvas, chapters, dprMax = 1.75, isMobile = false 
   /* ── ループ ── */
   const clock = new THREE.Clock();
   let raf = 0, paused = false, offscreen = false, hidden = document.hidden, disposed = false;
-  let time = 0, lastFrameAt = 0, lastUpdateAt = 0, fallbackT = 0;
+  let time = 0, lastFrameAt = 0, lastUpdateAt = 0, fallbackT = 0, snapNext = true;
   const lerpK = (dt, speed) => 1 - Math.exp(-dt * speed);
+
+  // 物体の位置 fS を、スクロールの位置 state.f へ「速さの上限つき」で追いかけさせる。
+  // 速くスクロールしても、ほどける→流れる→集まるが必ず見える（スクロールより少し遅れて追いかける）。
+  // 近づくとなめらかに減速し、動き出しもなめらかに加速する。タブ復帰などで描画が止まっていたときはすぐ合わせる
+  let vel = 0, boost = 0;
+  function followScroll(dt, long) {
+    const diff = state.f - fS, dist = Math.abs(diff);
+    if (long || dist < 1e-4) { if (long) fS = state.f; vel = 0; boost = 0; return; }
+    if (dist > SNAP_DIST) boost = Math.max(boost, dist / CATCH_UP); // 大きく飛んだ：距離に比例して上限を上げる
+    else if (dist < 0.5) boost = 0;
+    const u = fS - Math.floor(fS);
+    const inMorph = smooth(clamp01((u - HOLD + 0.08) / 0.08)) * smooth(clamp01((1 - HOLD + 0.08 - u) / 0.08));
+    const vmax = Math.max(SPEED_HOLD + (SPEED_MORPH - SPEED_HOLD) * inMorph, boost);
+    const want = Math.min(vmax, dist * 2.4); // 近づくほど遅く（最後は約0.4秒の時定数で止まる）
+    vel += (want - vel) * lerpK(dt, 6);
+    const step = Math.min(dist, Math.max(vel, 0) * dt);
+    fS += Math.sign(diff) * step;
+  }
 
   function frame() {
     if (raf) cancelAnimationFrame(raf);
     raf = 0;
     if (disposed) return;
     const now = performance.now();
-    // 経過時間で進める。描画が長く止まっていた（タブの切り替えなど）ときは、スクロール位置にすぐ合わせる
+    // 経過時間で進める。最初の1枚と、描画を止めていたあと（タブ復帰・記事ビューを閉じたとき・画面に戻ったとき）は
+    // スクロール位置にすぐ合わせる。フレームがまばらなだけ（重い端末など）のときは、速さの上限を守って追いかける
     const dt = Math.min(clock.getDelta(), 0.5);
-    const long = now - lastFrameAt > 700;
+    const long = snapNext || now - lastFrameAt > 6000;
+    snapNext = false;
     lastFrameAt = now;
     time += dt;
-    const k = long ? 1 : lerpK(dt, 6);
-    fS += (state.f - fS) * k;
+    followScroll(dt, long);
     heroS += (state.hero - heroS) * (long ? 1 : lerpK(dt, 4));
     endS += (state.end - endS) * (long ? 1 : lerpK(dt, 3));
     pointerS.lerp(pointer, lerpK(dt, 2.5));
@@ -161,8 +189,9 @@ export function createScene({ canvas, chapters, dprMax = 1.75, isMobile = false 
     const n = chapters.length;
     ms = morphState(fS);
     if (n) morph.setShapes(shapeOf(ms.a), shapeOf(ms.b));
-    curIndex = !n ? -1 : ms.p < 0.2 ? ms.a : ms.p > 0.8 ? ms.b : -1;
-    if (ms.a === ms.b && ms.p > 0.2 && ms.p < 0.8) curIndex = -1;
+    // クリックで開くのは、いま画面に形として見えている府省（スクロール位置の章ではなく、遅れて追いかけている物体の方）
+    curIndex = !n ? -1 : ms.p < 0.3 ? ms.a : ms.p > 0.65 ? ms.b : -1;
+    if (ms.a === ms.b && ms.p >= 0.3 && ms.p <= 0.65) curIndex = -1;
     hoverS += ((curIndex >= 0 && curIndex === hoverIndex ? 1 : 0) - hoverS) * lerpK(dt, 8);
 
     // ゆっくり左右に振れながら、いつもカメラの方を向く（上下も：スマホのように画面の上に置いても下から見上げてつぶれないように）
@@ -201,7 +230,7 @@ export function createScene({ canvas, chapters, dprMax = 1.75, isMobile = false 
     }
   }
   function stop() { cancelAnimationFrame(raf); raf = 0; clearTimeout(fallbackT); }
-  function resume() { if (!running()) return; clock.getDelta(); frame(); }
+  function resume() { if (!running()) return; clock.getDelta(); snapNext = true; frame(); }
   function onVisibility() {
     hidden = document.hidden;
     if (hidden) stop(); else resume();

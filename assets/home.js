@@ -221,9 +221,9 @@ async function main() {
   /* スクロール → WebGL の状態 */
   const hero = $("#hero"), stream = $("#stream");
   // スクロール量 → 章の位置 f の対応表（[scrollY, f] の折れ線）。レイアウトが変わったら測り直す
-  //   PC：章の中央が画面の中央に来たとき f = 章の番号（その前後 0.24 は形を止めて見せる。scene3d.js の HOLD）
-  //   スマホ：物体が上・文章が下。カードが画面の下から出てくるときには形が落ち着いていて（f = k - 0.24）、
-  //          カードが物体の上を通り過ぎたら（f = k + 0.24）次の府省へ変形する。変形はカードとカードのすき間で見える
+  //   PC：章の中央が画面の中央に来たとき f = 章の番号（その前後 0.34 は形を止めて見せる。scene3d.js の HOLD）
+  //   スマホ：物体が上・文章が下。カードが画面の下から出てくるときには形が落ち着いていて（f = k - 0.34）、
+  //          カードが物体の上を通り過ぎたら（f = k + 0.34）次の府省へ変形する。変形はカードとカードのすき間で見える
   let knots = [], stage = null;
   function measure() {
     const pageY = (el) => el.getBoundingClientRect().top + scrollY;
@@ -243,8 +243,8 @@ async function main() {
     chapterEls.forEach((ch, i) => {
       if (isMobile) {
         const card = $(".ch-card", ch), top = pageY(card), bottom = top + card.offsetHeight;
-        k.push([top - vh * 0.86, i - 0.24]);
-        k.push([bottom - stage.y, i + 0.24]);
+        k.push([top - vh * 0.86, i - 0.34]);
+        k.push([bottom - stage.y, i + 0.34]);
       } else k.push([pageY(ch) + ch.offsetHeight / 2 - vh / 2, i]);
     });
     const [ly, lf] = k[k.length - 1];
