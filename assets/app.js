@@ -1,6 +1,7 @@
 /* 有権者 — 共通スクリプト
    データ: data/sources.json（府省の一覧）, data/news.json（公開済みの記事）
-   記事の形: {id, date, ministry, also[], featured, tags[], title, summary, points[], source_url, source_title, site} */
+   記事の形: {id, date, ministry, also[], featured, tags[], title, summary, points[], source_url, source_title, site,
+             explain[{q, a}]（任意・はじめての人向けの背景）, refs[{title, site, url}]（任意・背景の説明に使った公式ページ）} */
 
 const Y = (() => {
   const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -25,6 +26,21 @@ const Y = (() => {
     return `<p class="source">出典：<a href="${esc(it.source_url)}" target="_blank" rel="noopener">「${esc(it.source_title)}」（${esc(it.site)}）</a>をもとに有権者が要約して作成</p>`;
   }
 
+  // 背景の説明に使った公式ページ
+  function refsLine(it) {
+    const refs = (it.refs || []).filter((r) => r && r.url);
+    if (!refs.length) return "";
+    const links = refs.map((r) => `<a href="${esc(r.url)}" target="_blank" rel="noopener">「${esc(r.title)}」（${esc(r.site)}）</a>`).join("、");
+    return `<p class="source source-refs">背景の説明：${links}を参考に有権者が作成</p>`;
+  }
+
+  // はじめての人へ（短い Q&A の背景）
+  function explain(it) {
+    const qa = (it.explain || []).filter((x) => x && (x.q || x.a));
+    if (!qa.length) return "";
+    return `<section class="explain" aria-label="はじめての人へ"><p class="explain-label" data-no-gloss>はじめての人へ</p><dl>${qa.map((x) => `<dt>${esc(x.q)}</dt><dd>${esc(x.a)}</dd>`).join("")}</dl></section>`;
+  }
+
   function ministryLabel(it, srcMap) {
     const ids = [it.ministry, ...(it.also || [])];
     return ids.map((id) => {
@@ -44,14 +60,15 @@ const Y = (() => {
   function article(it, srcMap) {
     const pts = (it.points || []).map((p) => `<li>${esc(p)}</li>`).join("");
     const tags = (it.tags || []).map((t) => `<span class="tag">${esc(t)}</span>`).join("");
+    const ex = explain(it);
     return `
       <article class="item" id="${esc(it.id)}">
         <p class="kicker"><time datetime="${esc(it.date)}">${fmtDate(it.date)}</time>${ministryLabel(it, srcMap)}</p>
         <h3 class="headline">${esc(it.title)}</h3>
         <p class="summary">${esc(it.summary)}</p>
-        ${quotes(it)}
-        ${pts ? `<ul class="points">${pts}</ul>` : ""}
-        ${sourceLine(it)}
+        ${ex}${quotes(it)}
+        ${pts ? `${ex ? `<p class="points-label" data-no-gloss>今回のポイント</p>` : ""}<ul class="points">${pts}</ul>` : ""}
+        ${sourceLine(it)}${refsLine(it)}
         ${tags ? `<p class="tags">${tags}</p>` : ""}
       </article>`;
   }
