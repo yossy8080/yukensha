@@ -94,7 +94,7 @@
 let sources = {}, drafts = [], news = [], opDrafts = [], tab = "drafts";
 const ostate = {};  // オピニオン: id -> approve | reject | later
 const state = {};   // 下書き: id -> approve | reject | later
-const edits = {};   // 下書き: id -> {title, summary, points, featured}
+const edits = {};   // 下書き: id -> {title, summary, explain, points, featured}
 const nstate = {};  // 公開済み: id -> keep | unpublish
 const nedits = {};  // 公開済み: id -> {...}
 
@@ -102,8 +102,17 @@ function editorHtml(d) {
   return `<div class="editor">
     <label>見出し</label><input class="e-title" value="${Y.esc(d.title)}">
     <label>要約</label><textarea class="e-summary">${Y.esc(d.summary)}</textarea>
+    <label>はじめての人へ（1行に1つ「質問｜答え」）</label><textarea class="e-explain">${Y.esc((d.explain || []).map((x) => `${x.q || ""}｜${x.a || ""}`).join("\n"))}</textarea>
     <label>ポイント（1行に1つ）</label><textarea class="e-points">${Y.esc((d.points || []).join("\n"))}</textarea>
   </div>`;
+}
+
+// 「質問｜答え」の行 → [{q, a}]（半角の | でもよい。区切りが無い行は質問だけ）
+function parseExplain(text) {
+  return text.split("\n").map((x) => x.trim()).filter(Boolean).map((line) => {
+    const i = line.search(/[｜|]/);
+    return i < 0 ? { q: line, a: "" } : { q: line.slice(0, i).trim(), a: line.slice(i + 1).trim() };
+  });
 }
 
 function renderDrafts() {
@@ -218,6 +227,7 @@ document.addEventListener("input", (e) => {
   if (e.target.classList.contains("e-title")) ed.title = e.target.value;
   if (e.target.classList.contains("e-summary")) ed.summary = e.target.value;
   if (e.target.classList.contains("e-points")) ed.points = e.target.value.split("\n").map((x) => x.trim()).filter(Boolean);
+  if (e.target.classList.contains("e-explain")) ed.explain = parseExplain(e.target.value);
   if (sec.dataset.kind === "news") sec.dataset.dirty = 1;
   tally();
 });

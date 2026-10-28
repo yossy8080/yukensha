@@ -27,7 +27,31 @@ OPINION_DRAFTS = ROOT / "drafts" / "opinion_drafts.json"
 REVIEW_HTML = Path(__file__).resolve().parent / "review.html"
 PORT = int(os.environ.get("YUKENSHA_PORT", "5600"))
 JST = dt.timezone(dt.timedelta(hours=9))
-EDITABLE = ("title", "summary", "points", "featured", "tags")
+EDITABLE = ("title", "summary", "points", "featured", "tags", "explain", "refs")
+
+
+def clean(k, v):
+    """explain / refs は辞書のリストだけ通す（文字の項目だけ残し、空の行は捨てる）。"""
+    keys = {"explain": ("q", "a"), "refs": ("title", "site", "url")}.get(k)
+    if not keys:
+        return v
+    out = []
+    for x in v if isinstance(v, list) else []:
+        if isinstance(x, dict):
+            item = {f: str(x.get(f) or "").strip() for f in keys}
+            if any(item.values()):
+                out.append(item)
+    return out
+
+
+def apply_edits(item: dict, e: dict):
+    for k in EDITABLE:
+        if k in e:
+            v = clean(k, e[k])
+            if k in ("explain", "refs") and not v:
+                item.pop(k, None)  # 空にしたら項目ごと消す（前と同じ表示に戻る）
+            else:
+                item[k] = v
 
 
 
@@ -76,10 +100,7 @@ def publish(body: dict) -> dict:
 
     published, rejected, remaining = [], [], []
     for d in drafts:
-        e = edits.get(d["id"], {})
-        for k in EDITABLE:
-            if k in e:
-                d[k] = e[k]
+        apply_edits(d, edits.get(d["id"], {}))
         if d["id"] in approve:
             d["published_at"] = now
             published.append(d)
@@ -156,9 +177,7 @@ def manage(body: dict) -> dict:
     for n in news:
         e = edits.get(n["id"])
         if e:
-            for k in EDITABLE:
-                if k in e:
-                    n[k] = e[k]
+            apply_edits(n, e)
             n["updated_at"] = now
             edited += 1
         if n["id"] in unpublish:
