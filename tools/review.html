@@ -35,6 +35,11 @@
   .editor label { display: block; font-size: 13px; color: var(--muted); margin: 10px 0 4px; }
   .editor input, .editor textarea { width: 100%; font: inherit; padding: 8px 10px; border: 1px solid var(--rule); background: #fff; }
   .editor textarea { min-height: 90px; }
+  .rw-badge { display: inline-block; margin: 22px 0 0; padding: 4px 12px; background: var(--ink); color: var(--paper); font-weight: 700; font-size: 14px; }
+  .rw-now { margin: 0 0 22px; border: 1px dashed var(--rule); padding: 0 14px; }
+  .rw-now summary { cursor: pointer; padding: 10px 0; min-height: 36px; color: var(--muted); }
+  .rw-now .item { opacity: .75; }
+  .rw-count { align-self: center; color: var(--muted); font-size: 14px; }
   .msg { padding: 14px 16px; background: var(--paper-2); border: 1px solid var(--rule); margin: 16px 0; }
   .filter { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 18px 0 6px; font-size: 14px; }
   .filter input, .filter select { font: inherit; padding: 8px 10px; border: 1px solid var(--rule); background: #fff; min-height: 40px; }
@@ -67,6 +72,8 @@
     <div class="bulk">
       <button data-all="approve">全部「公開する」にする</button>
       <button data-all="later">全部「あとで」に戻す</button>
+      <button id="rw-all" hidden>書き直しをすべて『公開する』にする</button>
+      <span class="rw-count" id="rw-count"></span>
     </div>
     <div id="drafts"></div>
   </section>
@@ -115,10 +122,21 @@ function parseExplain(text) {
   });
 }
 
+// 公開済みと同じ id の下書き＝「書き直し」（公開すると元の記事を置きかえる）
+function rewriteOf(id) { return news.find((n) => n.id === id); }
+
+function rewriteHtml(pub) {
+  // 下書きと同じ id が2つ並ばないよう、公開版の article からは id を外す
+  return `<details class="rw-now"><summary>いまの公開版を見る</summary>${Y.article(pub, sources).replace(/ id="[^"]*"/, "")}</details>`;
+}
+
 function renderDrafts() {
   const box = document.getElementById("drafts");
+  const rw = drafts.filter((d) => rewriteOf(d.id)).length;
+  document.getElementById("rw-all").hidden = !rw;
+  document.getElementById("rw-count").textContent = rw ? `うち書き直し ${rw}件` : "";
   box.innerHTML = !drafts.length ? Y.empty("確認待ちの下書きはありません。") : drafts.map((d0) => {
-    const d = { ...d0, ...(edits[d0.id] || {}) }, s = state[d.id] || "later";
+    const d = { ...d0, ...(edits[d0.id] || {}) }, s = state[d.id] || "later", pub = rewriteOf(d.id);
     return `<section class="draft" data-kind="draft" data-id="${Y.esc(d.id)}" data-state="${s}">
       <div class="controls">
         <fieldset>
@@ -129,7 +147,7 @@ function renderDrafts() {
         <label><input type="checkbox" class="feat" ${d.featured ? "checked" : ""}> 国全体のページにも載せる</label>
         <p><button class="edit-btn" type="button">文章を直す</button></p>
       </div>
-      <div>${Y.article(d, sources)}${editorHtml(d)}</div>
+      <div>${pub ? `<p class="rw-badge">書き直し（公開中の記事を置きかえ）</p>` : ""}${Y.article(d, sources)}${pub ? rewriteHtml(pub) : ""}${editorHtml(d)}</div>
     </section>`;
   }).join("");
 }
@@ -238,6 +256,7 @@ document.addEventListener("click", (e) => {
     if (ed.classList.toggle("open")) t.textContent = "直した内容をプレビュー"; else render();
   }
   if (t.dataset.all) { drafts.forEach((d) => (state[d.id] = t.dataset.all)); render(); }
+  if (t.id === "rw-all") { drafts.filter((d) => rewriteOf(d.id)).forEach((d) => (state[d.id] = "approve")); render(); }
   const tb = t.closest("[data-tab]");
   if (tb) {
     tab = tb.dataset.tab;
@@ -258,7 +277,7 @@ document.getElementById("go").addEventListener("click", async () => {
   const reject = Object.keys(state).filter((k) => state[k] === "reject");
   if (approve.length || reject.length) {
     const j = await post("/api/publish", { approve, reject, edits });
-    out.push(j.error ? "エラー：" + j.error : `下書き：${j.published}件を公開、${j.rejected}件を公開しない（残り${j.remaining}件）。${j.git || ""}`);
+    out.push(j.error ? "エラー：" + j.error : `下書き：${j.published}件を公開、${j.updated ? `${j.updated}件を書き直し、` : ""}${j.rejected}件を公開しない（残り${j.remaining}件）。${j.git || ""}`);
   }
   const unpublish = Object.keys(nstate).filter((k) => nstate[k] === "unpublish");
   if (unpublish.length || Object.keys(nedits).length) {
