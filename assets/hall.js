@@ -512,7 +512,7 @@ export function initHall({ sources, news, srcMap, order = [], onToggle = () => {
     const items = [...scope.querySelectorAll('button:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])')]
       .filter((el) => el.tabIndex >= 0 && el.getClientRects().length && !el.closest("[inert], [hidden], .hall-reflect, [aria-hidden='true']"));
     const pop = root.querySelector(".gl-pop:not([hidden])");
-    if (pop) items.push(...pop.querySelectorAll("a[href], button"));
+    if (pop) items.push(...[...pop.querySelectorAll("a[href], button")].filter((el) => !items.includes(el) && !el.closest("[hidden]")));
     if (!items.length) return;
     const first = items[0], last = items[items.length - 1];
     const inside = items.includes(document.activeElement);

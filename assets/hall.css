@@ -187,6 +187,14 @@
 .hall-reader .quotes { margin: 0 0 28px; padding: 6px 0 6px 20px; border-left: 2px solid var(--glow-2, #8fd0ff); }
 .hall-reader .quotes blockquote { font-size: clamp(18px, 2.2vw, 21px); line-height: 1.85; margin: 0 0 10px; }
 .hall-reader .quotes figcaption { font-size: 14px; }
+.hall-reader .explain {
+  margin: 0 0 26px; padding: 18px 20px; border-radius: 12px;
+  background: rgba(143, 208, 255, .06); border: 1px solid rgba(143, 208, 255, .2);
+}
+.hall-reader .explain-label, .hall-reader .points-label { margin: 0 0 10px; font-size: 14px; font-weight: 700; letter-spacing: .08em; color: var(--accent, #ff6a4d); }
+.hall-reader .explain dt { font-size: clamp(17px, 2vw, 19px); line-height: 1.6; font-weight: 700; color: var(--glow, #d6ecff); margin-bottom: 4px; }
+.hall-reader .explain dd { font-size: clamp(16px, 1.9vw, 18px); margin: 0 0 12px; line-height: 1.85; color: #e3e9f2; }
+.hall-reader .explain dd:last-child { margin-bottom: 0; }
 .hall-reader .points { font-size: clamp(17px, 2vw, 19px); line-height: 1.9; margin: 0 0 30px; padding-left: 1.3em; }
 .hall-reader .points li { margin: 6px 0; }
 .hall-reader .source {
@@ -194,6 +202,7 @@
   background: rgba(143, 208, 255, .06); border: 1px solid rgba(143, 208, 255, .16);
 }
 .hall-reader .source a { color: var(--glow, #d6ecff); }
+.hall-reader .source-refs { margin-top: 10px; }
 .hall-reader .tags { margin-top: 18px; }
 .hall-reader .tag { font-size: 13px; padding: 2px 12px; }
 

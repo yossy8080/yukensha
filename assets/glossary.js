@@ -1,5 +1,5 @@
-/* 有権者 — 用語ポップアップ（Wikipedia のポップアップのように、難しい用語の簡単な意味を出す）
-   データ: data/glossary.json [{term, aliases[], yomi, short, wiki}]
+/* 有権者 — 用語ポップアップ（辞書のポップアップのように、難しい用語の簡単な意味を出す）
+   データ: data/glossary.json [{term, aliases[], yomi, short, src_name, src_url}]（src_* は官邸・各府省・JAXA などの公式ページ。それ以外の項目は見ない）
    使い方: YG.apply(要素) … 要素の中の各 <article>（無ければ要素全体）ごとに、各用語の最初の1回を
            <button class="term"> で包む。何度呼んでも二重には包まない。
    API: window.YG = { load(url) -> Promise<entries>, apply(root) -> Promise, close() } */
@@ -107,7 +107,7 @@
       <span class="gl-grip" aria-hidden="true"></span>
       <p class="gl-head"><strong id="gl-pop-term" class="gl-term"></strong><span class="gl-yomi"></span></p>
       <p id="gl-pop-desc" class="gl-desc"></p>
-      <p class="gl-wiki"><a target="_blank" rel="noopener">Wikipediaで詳しく <span aria-hidden="true">↗</span></a></p>
+      <p class="gl-src"><a target="_blank" rel="noopener">くわしく：<span class="gl-src-name"></span> <span aria-hidden="true">↗</span></a></p>
       <p class="gl-note">有権者編集部による簡単な説明</p>
       <button type="button" class="gl-close" aria-label="閉じる">×</button>`;
     pop.querySelector(".gl-close").addEventListener("click", () => close(true));
@@ -148,9 +148,12 @@
     pop.querySelector(".gl-term").textContent = entry.term;
     pop.querySelector(".gl-yomi").textContent = entry.yomi ? `（${entry.yomi}）` : "";
     pop.querySelector(".gl-desc").textContent = entry.short;
-    const wiki = pop.querySelector(".gl-wiki");
-    wiki.hidden = !entry.wiki;
-    if (entry.wiki) wiki.querySelector("a").href = entry.wiki;
+    const src = pop.querySelector(".gl-src"), srcUrl = entry.src_url || "";
+    src.hidden = !srcUrl;
+    if (srcUrl) {
+      src.querySelector("a").href = srcUrl;
+      src.querySelector(".gl-src-name").textContent = entry.src_name || "公式ページ";
+    }
     pop.hidden = false;
     position(btn);
     current = btn;
@@ -158,7 +161,7 @@
     btn.setAttribute("aria-expanded", "true");
     btn.setAttribute("aria-controls", "gl-pop");
     btn.setAttribute("aria-describedby", "gl-pop-desc");
-    if (byKeyboard) pop.querySelector(entry.wiki ? ".gl-wiki a" : ".gl-close").focus();
+    if (byKeyboard) pop.querySelector(srcUrl ? ".gl-src a" : ".gl-close").focus();
   }
 
   function close(returnFocus) {
