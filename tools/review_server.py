@@ -6,6 +6,7 @@
 
 「公開する」を押すと:
   1. 選んだ下書きを data/news.json に追加（公開済みになる）
+     すでに公開中の記事と同じ id の下書きは「書き直し」として、その記事を置きかえる
   2. 「公開しない」を選んだものは drafts/rejected.json に移す
   3. git にコミットする（GitHubとつながっていれば push もする）
 自分のPCの中だけで動き、外からはアクセスできません（127.0.0.1 のみ）。
@@ -110,16 +111,32 @@ def publish(body: dict) -> dict:
         else:
             remaining.append(d)
 
-    known = {n["id"] for n in news}
-    news += [p for p in published if p["id"] not in known]
+    # 公開済みと同じ id の下書きは「書き直し」：元の記事を置きかえる（最初の公開日時は残す）
+    pos = {n["id"]: i for i, n in enumerate(news)}
+    new, updated = 0, 0
+    for p in published:
+        if p["id"] in pos:
+            p["published_at"] = news[pos[p["id"]]].get("published_at", now)
+            p["updated_at"] = now
+            news[pos[p["id"]]] = p
+            updated += 1
+        else:
+            pos[p["id"]] = len(news)
+            news.append(p)
+            new += 1
     news.sort(key=lambda n: (n["date"], n.get("published_at", "")), reverse=True)
     write(NEWS, news)
     write(DRAFTS, remaining)
     if rejected:
         write(REJECTED, read(REJECTED, []) + rejected)
 
-    msg = save_git(f"記事を{len(published)}件公開（{now[:10]}）") if published else ""
-    return {"published": len(published), "rejected": len(rejected), "remaining": len(remaining), "git": msg}
+    parts = []
+    if new:
+        parts.append(f"{new}件公開")
+    if updated:
+        parts.append(f"{updated}件書き直し")
+    msg = save_git("記事を" + "・".join(parts) + f"（{now[:10]}）") if parts else ""
+    return {"published": new, "updated": updated, "rejected": len(rejected), "remaining": len(remaining), "git": msg}
 
 
 def save_git(message: str) -> str:
