@@ -1,5 +1,5 @@
 /* 有権者 — 用語ポップアップ（辞書のポップアップのように、難しい用語の簡単な意味を出す）
-   データ: data/glossary.json [{term, aliases[], yomi, short, src_name, src_url}]（src_* は官邸・各府省・JAXA などの公式ページ。wiki は使わない）
+   データ: data/glossary.json [{term, aliases[], yomi, short, src_name, src_url}]（src_* は官邸・各府省・JAXA などの公式ページ。それ以外の項目は見ない）
    使い方: YG.apply(要素) … 要素の中の各 <article>（無ければ要素全体）ごとに、各用語の最初の1回を
            <button class="term"> で包む。何度呼んでも二重には包まない。
    API: window.YG = { load(url) -> Promise<entries>, apply(root) -> Promise, close() } */

@@ -217,4 +217,6 @@ footer .footer-links a { color: var(--text); }
   :root { --paper: #fff; --paper-2: #f3f3f3; --ink: #000; --text: #000; --muted: #444; --sub: #444; --rule: #ccc; --accent: #b23a2b; }
   body { background: #fff; color: #000; padding-top: 0; }
   body::before, .site-header { display: none; }
+  .explain { background: none; border-color: #ccc; }
+  .explain dt { color: #000; }
 }
