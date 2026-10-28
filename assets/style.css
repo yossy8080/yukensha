@@ -123,8 +123,18 @@ main { padding: 40px 0 72px; }
 .points { margin: 0 0 12px; padding-left: 1.2em; }
 .points li { margin: 2px 0; }
 .points li::marker { color: var(--accent); }
+.explain {
+  margin: 0 0 26px; padding: 16px 18px; border-radius: 12px;
+  background: rgba(143, 208, 255, .05); border: 1px solid rgba(143, 208, 255, .18);
+}
+.explain-label, .points-label { margin: 0 0 8px; font-size: 13px; font-weight: 700; letter-spacing: .06em; color: var(--accent); }
+.explain dl { margin: 0; }
+.explain dt { font-weight: 700; color: var(--glow); }
+.explain dd { margin: 0 0 12px; line-height: 1.85; }
+.explain dd:last-child { margin-bottom: 0; }
 .source { margin: 0; font-size: 13px; color: var(--muted); }
 .source a { color: var(--text); }
+.source-refs { margin-top: 4px; }
 .tags { margin: 8px 0 0; display: flex; flex-wrap: wrap; gap: 6px; }
 .tag { font-size: 12px; color: var(--muted); border: 1px solid var(--rule); padding: 0 8px; border-radius: 999px; }
 
