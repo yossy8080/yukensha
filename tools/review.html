@@ -219,7 +219,8 @@ function tally() {
   Object.values(ostate).forEach((x) => { if (x === "approve") oa++; if (x === "reject") orj++; });
   const e = Object.keys(nedits).length, parts = [];
   if (oa) parts.push(`オピニオン公開 ${oa}件`); if (orj) parts.push(`オピニオン公開しない ${orj}件`);
-  if (a) parts.push(`公開する ${a}件`); if (r) parts.push(`公開しない ${r}件`);
+  const rw = Object.keys(state).filter((k) => state[k] === "approve" && rewriteOf(k)).length;
+  if (a) parts.push(`公開する ${a}件` + (rw ? `（うち書き直し ${rw}件：公開中の記事を置きかえ）` : "")); if (r) parts.push(`公開しない ${r}件`);
   if (e) parts.push(`修正 ${e}件`); if (u) parts.push(`非公開に戻す ${u}件`);
   document.getElementById("tally").textContent = parts.length ? "変更：" + parts.join("／") : "変更はまだありません";
   document.getElementById("go").disabled = !parts.length;
@@ -279,6 +280,8 @@ document.getElementById("go").addEventListener("click", async () => {
     const j = await post("/api/publish", { approve, reject, edits });
     out.push(j.error ? "エラー：" + j.error : `下書き：${j.published}件を公開、${j.updated ? `${j.updated}件を書き直し、` : ""}${j.rejected}件を公開しない（残り${j.remaining}件）。${j.git || ""}`);
   }
+  // 書き直しを公開した記事は、公開済みタブでの変更を送らない（置きかえた新しい版に古い変更がかぶさるのを防ぐ）
+  approve.filter(rewriteOf).forEach((k) => { delete nstate[k]; delete nedits[k]; });
   const unpublish = Object.keys(nstate).filter((k) => nstate[k] === "unpublish");
   if (unpublish.length || Object.keys(nedits).length) {
     const j = await post("/api/manage", { unpublish, edits: nedits });
