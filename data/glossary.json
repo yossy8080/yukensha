@@ -9,7 +9,6 @@
   {"term": "GDP", "aliases": [], "yomi": "じーでぃーぴー", "short": "国内総生産。国の中で一定の期間に新しく生み出されたモノやサービスの価値の合計。国の経済の大きさや、景気がよいかどうかを見るときに使われます。", "src_name": "内閣府", "src_url": "https://www.esri.cao.go.jp/jp/sna/otoiawase/faq/qa14.html"},
   {"term": "安全保障", "aliases": [], "yomi": "あんぜんほしょう", "short": "外国からの攻撃や脅威などから、国の独立や国民の命・財産を守ること。また、そのために行う外交や防衛などの取り組み全体のことです。", "src_name": "外務省", "src_url": "https://www.mofa.go.jp/mofaj/gaiko/bluebook/2026/html/chapter3_01_01.html"},
   {"term": "経済安全保障", "aliases": [], "yomi": "けいざいあんぜんほしょう", "short": "経済の面から国の安全を守る考え方。大切な物資を外国に頼りすぎないようにしたり、重要な技術が外に流れないようにしたりする取り組みが含まれます。", "src_name": "外務省", "src_url": "https://www.mofa.go.jp/mofaj/ecm/es/index.html"},
-  {"term": "覚書", "aliases": [], "yomi": "おぼえがき", "short": "国や組織どうしが、話し合って合意した内容や協力の方針を書きとめた文書。条約よりもゆるやかな約束として使われることが多いです。", "src_name": "", "src_url": ""},
   {"term": "官房長官", "aliases": [], "yomi": "かんぼうちょうかん", "short": "内閣官房長官。内閣の仕事をまとめる内閣官房のトップで、国務大臣の一人。政府の公式な考えを伝える記者会見を毎日のように行うため「政府の顔」とも呼ばれます。", "src_name": "参議院法制局", "src_url": "https://houseikyoku.sangiin.go.jp/column/column088.htm"},
   {"term": "所管", "aliases": [], "yomi": "しょかん", "short": "ある仕事や分野を、どの役所が受け持って管理しているかということ。たとえば「〇〇省の所管」は、その省が担当しているという意味です。", "src_name": "参議院法制局", "src_url": "https://houseikyoku.sangiin.go.jp/column/column088.htm"},
   {"term": "施行", "aliases": [], "yomi": "しこう", "short": "できあがった法律や決まりが、実際に効き目を持ちはじめること。法律は成立してすぐではなく、決められた日から施行されることが多いです。", "src_name": "参議院", "src_url": "https://www.sangiin.go.jp/jpn/shiryo/kids/html/shikumi/keyword.html"},
@@ -62,7 +61,5 @@
   {"term": "H3ロケット", "aliases": [], "yomi": "えいちすりーろけっと", "short": "JAXAが日本の企業とともに開発した、日本の新しい大型ロケット。人工衛星や探査機を宇宙へ運びます。H-IIAロケットの後をつぐ「基幹ロケット」です。", "src_name": "JAXA", "src_url": "https://www.rocket.jaxa.jp/rocket/h3/outline.html"},
   {"term": "MMX", "aliases": ["火星衛星探査機"], "yomi": "えむえむえっくす", "short": "JAXAの火星衛星探査計画（Martian Moons eXploration）とその探査機。火星の衛星フォボスに着陸して砂や石を取り、地球に持ち帰ることを目指します。", "src_name": "JAXA", "src_url": "https://www.jaxa.jp/projects/sas/mmx/index_j.html"},
   {"term": "サンプルリターン", "aliases": [], "yomi": "さんぷるりたーん", "short": "探査機がほかの天体まで行き、砂や石などの試料（サンプル）を取って地球に持ち帰ること。持ち帰った試料は地上の研究室でくわしく調べられます。", "src_name": "JAXA", "src_url": "https://www.isas.jaxa.jp/missions/spacecraft/current/hayabusa2.html"},
-  {"term": "JAXA", "aliases": ["宇宙航空研究開発機構"], "yomi": "じゃくさ", "short": "宇宙航空研究開発機構。ロケットや人工衛星、宇宙探査、航空技術の研究開発を行う国の研究機関（国立研究開発法人）です。", "src_name": "JAXA", "src_url": "https://www.jaxa.jp/about/jaxa/index_j.html"},
-  {"term": "談話", "aliases": [], "yomi": "だんわ", "short": "総理大臣や大臣が、ある出来事について政府や役所としての考えを文章で発表するもの。政府の公式な見解として公表されます。", "src_name": "", "src_url": ""},
-  {"term": "軌道", "aliases": [], "yomi": "きどう", "short": "人工衛星や探査機が宇宙で進む通り道。ロケットは、運んできた衛星や探査機を、目的に合った軌道にのせて切り離します。", "src_name": "", "src_url": ""}
+  {"term": "JAXA", "aliases": ["宇宙航空研究開発機構"], "yomi": "じゃくさ", "short": "宇宙航空研究開発機構。ロケットや人工衛星、宇宙探査、航空技術の研究開発を行う国の研究機関（国立研究開発法人）です。", "src_name": "JAXA", "src_url": "https://www.jaxa.jp/about/jaxa/index_j.html"}
 ]

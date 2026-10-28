@@ -34,11 +34,11 @@ const Y = (() => {
     return `<p class="source source-refs">背景の説明：${links}を参考に有権者が作成</p>`;
   }
 
-  // はじめての人へ（短い Q&A の背景）
+  // 背景の説明（短い Q&A。すべての記事を、前提知識のない人が読む前提で書く）
   function explain(it) {
     const qa = (it.explain || []).filter((x) => x && (x.q || x.a));
     if (!qa.length) return "";
-    return `<section class="explain" aria-label="はじめての人へ"><p class="explain-label" data-no-gloss>はじめての人へ</p><dl>${qa.map((x) => `<dt>${esc(x.q)}</dt><dd>${esc(x.a)}</dd>`).join("")}</dl></section>`;
+    return `<section class="explain" aria-label="背景の説明"><dl>${qa.map((x) => `<dt>${esc(x.q)}</dt><dd>${esc(x.a)}</dd>`).join("")}</dl></section>`;
   }
 
   function ministryLabel(it, srcMap) {

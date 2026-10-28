@@ -102,7 +102,7 @@ function editorHtml(d) {
   return `<div class="editor">
     <label>見出し</label><input class="e-title" value="${Y.esc(d.title)}">
     <label>要約</label><textarea class="e-summary">${Y.esc(d.summary)}</textarea>
-    <label>はじめての人へ（1行に1つ「質問｜答え」）</label><textarea class="e-explain">${Y.esc((d.explain || []).map((x) => `${x.q || ""}｜${x.a || ""}`).join("\n"))}</textarea>
+    <label>背景の説明（1行に1つ「質問｜答え」）</label><textarea class="e-explain">${Y.esc((d.explain || []).map((x) => `${x.q || ""}｜${x.a || ""}`).join("\n"))}</textarea>
     <label>ポイント（1行に1つ）</label><textarea class="e-points">${Y.esc((d.points || []).join("\n"))}</textarea>
   </div>`;
 }
