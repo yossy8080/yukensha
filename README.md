@@ -22,7 +22,8 @@
 - `data/sources.json` 集める発表元の一覧（府省を足すときはここに追加。`emblem` = フォールバック用の1文字、`model` = トップの 3D の物体。下の表を参照）
 - `data/news.json` 公開済みの記事
 - `drafts/` 下書き・候補（gitに入れない）
-- `tools/collect.py` 新着集め / `tools/fetch_page.py` 本文の取り出し / `tools/review_server.py` + `tools/review.html` 確認ページ
+- `assets/photos/` 記事の写真（下の「写真」を参照）
+- `tools/collect.py` 新着集め / `tools/fetch_page.py` 本文の取り出し / `tools/fetch_photo.py` 写真の取り込み / `tools/review_server.py` + `tools/review.html` 確認ページ
 
 ## トップの 3D の物体（`data/sources.json` の `model`）
 公式ロゴ・紋章（桐紋など）と赤十字のマークは権利の問題があるので使わず、その府省を代表する「物」で表しています。
@@ -47,6 +48,22 @@
 | mod | 防衛省 | shield | 盾（武器は出さない） |
 
 `hidden` の府省（国会会議録）はトップに出ないので `model` はありません。
+
+## 写真
+記事には写真を付けられます（`photos` 欄・任意）。写真のファイルは `assets/photos/<記事id>-1.jpg` のように置きます。
+```
+"photos": [{"src": "assets/photos/<記事id>-1.jpg", "alt": "写っているものの説明（日本語）",
+            "credit": "写真：首相官邸ホームページ", "page_url": "写真が載っている公式ページのURL",
+            "license": "PDL1.0", "people": true,
+            "ok_license": false, "ok_people": false}]
+```
+- **サイトに出る条件**：`ok_license` が true、かつ（`people` が false か `ok_people` が true）。確認が済んでいない写真は news.json に入っていても出ない
+- `ok_license`（ライセンスOK）・`ok_people`（人物OK）は Roy が管理ページでチェックする。Hermes は false のまま入れる
+- 1枚目は見出しのすぐ下、2枚目からはポイントの下に出る。写真の下にクレジットと「出典ページ ↗」のリンク
+- 公開・修正を保存すると、どれかの記事が使っている `assets/photos/` のファイルだけ git に入る（使っていない写真は入らない）
+- 取ってくる：`python tools/fetch_photo.py 画像のURL assets/photos/<記事id>-1.jpg --referer 写真が載っているページ`（手元のファイルでも可）。長い辺1600px・JPEG・EXIFなしにして「OK 幅x高さ バイト数」と出る（`width` `height` を photos に書いておくと読み込み中に文字がずれない）
+- **使ってよい写真**：首相官邸・各府省のサイトの写真で、PDL1.0 または政府標準利用規約（2.0版）で使えるものだけ。クレジットは「写真：〇〇ホームページ」と書く
+- **使わない写真**：通信社・報道機関・第三者のクレジットが付いた写真（例：「写真：共同通信」）、ロゴ・紋章・シンボルマーク。JAXA の写真は事前の許可が必要なので使わない
 
 ## ルール
 - 一次情報（政府の発表）だけを使う。新聞記事の本文は使わない
