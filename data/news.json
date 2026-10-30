@@ -1,5 +1,584 @@
 [
  {
+  "id": "2026-10-30-soumu-roudouryoku-9gatsu",
+  "date": "2026-10-30",
+  "ministry": "soumu",
+  "also": [
+   "mhlw"
+  ],
+  "featured": true,
+  "tags": [
+   "雇用",
+   "統計"
+  ],
+  "title": "9月の完全失業率2.4％、有効求人倍率1.19倍",
+  "summary": "総務省の労働力調査によると、9月の完全失業率（季節調整値）は2.4％で、前の月より0.1ポイント下がりました。厚生労働省によると、9月の有効求人倍率は1.19倍で、0.01ポイント上がりました。",
+  "explain": [
+   {
+    "q": "労働力調査ってだれが調べているの？",
+    "a": "総務省統計局が都道府県を通じて毎月行う調査です。全国から無作為に選んだ約4万世帯の15歳以上の約10万人に、仕事をしているかどうかなどをたずねます。結果は原則として調査月の翌月末に公表され、すべての大臣に伝えられるほか、政府の月例経済報告でも使われます。"
+   },
+   {
+    "q": "有効求人倍率って？",
+    "a": "ハローワーク（公共職業安定所）での求人の数を、仕事を探している人の数で割った値です。厚生労働省がハローワークの求人・求職・就職の状況をまとめ、「一般職業紹介状況」として毎月公表しています。1倍を上回ると、仕事を探す人1人あたり1件より多い求人があることになります。"
+   }
+  ],
+  "points": [
+   "就業者数は6896万人で、前年同月より33万人増えました（2か月連続の増加）。",
+   "完全失業者数は169万人で、前年同月より15万人減りました（2か月連続の減少）。",
+   "新規求人倍率は2.19倍（前月より0.13ポイント上昇）、正社員の有効求人倍率は1.01倍でした。",
+   "就業地別の有効求人倍率は、福井県と山梨県の1.74倍が最も高く、大阪府の0.96倍が最も低くなりました。"
+  ],
+  "refs": [
+   {
+    "title": "労働力調査（基本集計） 2026年（令和8年）9月分結果",
+    "site": "総務省統計局ホームページ",
+    "url": "https://www.stat.go.jp/data/roudou/sokuhou/tsuki/index.html"
+   },
+   {
+    "title": "労働力調査に関するQ&A（回答）",
+    "site": "総務省統計局ホームページ",
+    "url": "https://www.stat.go.jp/data/roudou/qa-1.html"
+   },
+   {
+    "title": "一般職業紹介状況(令和8年9月分)について",
+    "site": "厚生労働省ホームページ",
+    "url": "https://www.mhlw.go.jp/stf/newpage_76960.html"
+   }
+  ],
+  "source_url": "https://www.soumu.go.jp/menu_news/s-news/01toukei04_01000307.html",
+  "source_title": "労働力調査（基本集計）2026年（令和8年）9月分及び7～9月期平均",
+  "site": "総務省ホームページ",
+  "published_at": "2026-10-30T23:39:35+09:00"
+ },
+ {
+  "id": "2026-10-30-soumu-cpi-tokyo-10",
+  "date": "2026-10-30",
+  "ministry": "soumu",
+  "featured": true,
+  "tags": [
+   "物価",
+   "統計"
+  ],
+  "title": "東京都区部の10月の物価、前年より2.8％上昇",
+  "summary": "総務省が発表した東京都区部の10月の消費者物価指数（中旬速報値）は、総合で前年同月より2.8％上がりました。9月の2.7％から上昇幅が0.1ポイント広がりました。",
+  "explain": [
+   {
+    "q": "だれが、いつ発表しているの？",
+    "a": "総務省統計局が毎月作っています。東京都区部の値は、その月の中旬までの速報値として、全国の結果より先に公表されます。今回、東京都区部の10月分は10月30日に、全国の9月分は10月23日に公表されました。"
+   },
+   {
+    "q": "「生鮮食品を除く総合」って？",
+    "a": "天候で値段が大きく動く生鮮食品（野菜・果物・魚など）を除いて計算した指数です。さらにエネルギー（電気代・ガス代・ガソリンなど）も除いた「生鮮食品及びエネルギーを除く総合」も公表されています。"
+   }
+  ],
+  "points": [
+   "総合指数は103.5（2025年＝100）、前年同月比2.8％上昇。前月比（季節調整値）は0.5％上昇でした。",
+   "生鮮食品を除く総合は2.6％上昇、生鮮食品及びエネルギーを除く総合も2.6％上昇でした。",
+   "生鮮食品の動きで、総合の上昇幅が0.26ポイント広がりました。"
+  ],
+  "refs": [
+   {
+    "title": "2025年基準 消費者物価指数 東京都区部 2026年（令和8年）10月分（中旬速報値）",
+    "site": "総務省統計局ホームページ",
+    "url": "https://www.stat.go.jp/data/cpi/sokuhou/tsuki/index-t.html"
+   },
+   {
+    "title": "消費者物価指数（CPI）結果",
+    "site": "総務省統計局ホームページ",
+    "url": "https://www.stat.go.jp/data/cpi/1.html"
+   }
+  ],
+  "source_url": "https://www.soumu.go.jp/menu_news/s-news/01toukei08_01000356.html",
+  "source_title": "2025年基準 消費者物価指数 東京都区部 2026年(令和8年)10月分(中旬速報値)",
+  "site": "総務省ホームページ",
+  "published_at": "2026-10-30T23:39:35+09:00"
+ },
+ {
+  "id": "2026-10-30-mofa-kyu-chosen-roudousha",
+  "date": "2026-10-30",
+  "ministry": "mofa",
+  "featured": true,
+  "tags": [
+   "外交",
+   "韓国"
+  ],
+  "title": "韓国大法院の判決確定を受け、外務省が韓国側に申し入れ",
+  "summary": "10月30日、韓国の大法院（日本の最高裁判所にあたる）は、三菱重工に対する訴訟で損害賠償の支払いなどを命じる判決を確定させました。外務省は同じ日、韓国大使館の次席公使に、日本のこれまでの一貫した立場に基づいて申し入れを行いました。",
+  "explain": [
+   {
+    "q": "旧朝鮮半島出身労働者問題って？",
+    "a": "朝鮮半島出身の労働者をめぐって、韓国の裁判所で日本企業に損害賠償を命じる判決が出ている問題です。外務省は「旧朝鮮半島出身労働者問題」としてページをつくり、日本政府の対応をまとめています。"
+   },
+   {
+    "q": "これまでの流れは？",
+    "a": "2018年に韓国の大法院が判決を出し、2019年7月には外務大臣が、韓国が日韓請求権協定に基づく仲裁に応じる義務を果たしていないとする談話を出しました。2023年3月6日には韓国政府が解決のための措置を発表し、林外務大臣（当時）がコメントを出しています。"
+   },
+   {
+    "q": "同じような申し入れは前にもあった？",
+    "a": "外務省によると、判決に関する日本の立場の伝達は、令和7年12月11日、12月24日、令和8年1月15日、1月30日にも行われています。"
+   }
+  ],
+  "points": [
+   "申し入れたのは有吉孝史 外務省アジア大洋州局審議官（局長代理）で、相手は李相烈（イ・サンヨル）駐日韓国大使館次席公使です。",
+   "外務省は「これまでの我が国の一貫した立場に基づいて」申し入れを行ったと発表しました。"
+  ],
+  "refs": [
+   {
+    "title": "旧朝鮮半島出身労働者問題",
+    "site": "外務省ホームページ",
+    "url": "https://www.mofa.go.jp/mofaj/a_o/na/kr/page4_004516.html"
+   },
+   {
+    "title": "旧朝鮮半島出身労働者問題に関する韓国政府の発表を受けた林外務大臣によるコメント",
+    "site": "外務省ホームページ",
+    "url": "https://www.mofa.go.jp/mofaj/a_o/na/kr/page1_001524.html"
+   }
+  ],
+  "source_url": "https://www.mofa.go.jp/mofaj/press/release/pressit_000001_04394.html",
+  "source_title": "旧朝鮮半島出身労働者問題（韓国大法院判決に関する我が国の立場の韓国政府への伝達）",
+  "site": "外務省ホームページ",
+  "published_at": "2026-10-30T23:39:35+09:00"
+ },
+ {
+  "id": "2026-10-30-mofa-nichibeikan-denwa-kyogi",
+  "date": "2026-10-30",
+  "ministry": "mofa",
+  "featured": false,
+  "tags": [
+   "安全保障",
+   "北朝鮮"
+  ],
+  "title": "北朝鮮のミサイル発射を受け、日米韓が電話で協議",
+  "summary": "10月29日の北朝鮮による弾道ミサイル発射を受け、日本・アメリカ・韓国の外交当局が10月30日に電話で協議し、北朝鮮に挑発行動をやめるよう求めました。",
+  "explain": [
+   {
+    "q": "これまでの流れは？",
+    "a": "防衛省によると、北朝鮮は10月29日12時36分ごろ、弾道ミサイルの可能性があるものを発射しました。朝鮮半島東岸付近に落下したと推定され、日本の領域や排他的経済水域（EEZ）への飛来は確認されていません。"
+   },
+   {
+    "q": "だれが話し合ったの？",
+    "a": "日本の有吉孝史 外務省アジア大洋州局審議官、韓国外交部の白鏞塡（ペク・ヨンジン）朝鮮半島政策局長、アメリカのデービッド・ウィラゾル国務次官補代理の3人です。"
+   }
+  ],
+  "points": [
+   "3者は、北朝鮮の弾道ミサイル発射が関連する国連安保理決議に違反することを改めて確認しました。",
+   "北朝鮮に対し、地域と国際社会の平和と安全を脅かす挑発行動をやめるよう求めました。",
+   "引き続き日米韓で緊密に連携することを再確認しました。"
+  ],
+  "refs": [
+   {
+    "title": "北朝鮮からの弾道ミサイルの可能性があるものの発射に関する総理指示（12:38）",
+    "site": "首相官邸ホームページ",
+    "url": "https://www.kantei.go.jp/jp/105/discourse/20261029shiji.html"
+   }
+  ],
+  "source_url": "https://www.mofa.go.jp/mofaj/press/release/pressit_000001_04392.html",
+  "source_title": "北朝鮮に関する日米韓外交当局間電話協議",
+  "site": "外務省ホームページ",
+  "published_at": "2026-10-30T23:39:35+09:00"
+ },
+ {
+  "id": "2026-10-30-meti-chubu-denryoku-benmei",
+  "date": "2026-10-30",
+  "ministry": "meti",
+  "featured": false,
+  "tags": [
+   "エネルギー",
+   "原子力"
+  ],
+  "title": "経産省、中部電力に業務改善命令を出す方針　弁明の機会を通知",
+  "summary": "経済産業省は10月30日、中部電力から受け取った報告を検証した結果、電気事業法に基づく業務改善命令が必要と判断し、命令の前の手続きとして中部電力に「弁明の機会」を与えると書面で通知しました。",
+  "explain": [
+   {
+    "q": "業務改善命令って？",
+    "a": "電気事業法に定められた命令で、事業の運営が適切でないため電気の利用者の利益や電気事業の健全な発達に支障が出る、または出るおそれがあると認めるときに、経済産業大臣が事業者に業務の改善を命じるものです。"
+   },
+   {
+    "q": "「弁明の機会」って？",
+    "a": "行政手続法では、国が相手に不利益な処分をしようとするとき、事前に相手が意見を述べる手続きをとることになっています。今回はその一つの「弁明の機会」で、中部電力は弁明がある場合11月12日までに弁明書を出すよう求められています。"
+   },
+   {
+    "q": "これまでの流れは？",
+    "a": "経済産業省は9月、中部電力に報告を出すよう命じ（報告徴収命令）、10月29日にその回答を受け取りました。今回はその内容を検証した結果です。"
+   }
+  ],
+  "points": [
+   "命令の原因として、浜岡原子力発電所3号機・4号機の原子力規制委員会の審査で、基準地震動（原発の耐震設計の基準にする地震の揺れ）の策定に関する不適切な行為があったことなどを挙げました。",
+   "ほかに、内部通報制度の機能不全、業務運営体制の不備、ガバナンス機能の不全を挙げました。",
+   "予定する命令の内容は、役職員の責任の明確化や法令等遵守体制の抜本的な強化などを含む再発防止策をつくり、実施することです。"
+  ],
+  "refs": [
+   {
+    "title": "中部電力株式会社から9月25日に行った報告徴収命令に対する回答を受領しました",
+    "site": "経済産業省ホームページ",
+    "url": "https://www.meti.go.jp/press/2026/10/20261029010.html"
+   }
+  ],
+  "source_url": "https://www.meti.go.jp/press/2026/10/20261030007.html",
+  "source_title": "中部電力株式会社に対し、行政手続法に基づき弁明の機会の付与の通知を行いました",
+  "site": "経済産業省ホームページ",
+  "published_at": "2026-10-30T23:39:35+09:00"
+ },
+ {
+  "id": "2026-10-30-mofa-fusei-access-rouei",
+  "date": "2026-10-30",
+  "ministry": "mofa",
+  "featured": false,
+  "tags": [
+   "行政",
+   "サイバー"
+  ],
+  "title": "外務省に不正アクセス、氏名など約3,600件が漏えいの可能性",
+  "summary": "外務省は10月30日、外部とやり取りできるネットワークへの不正アクセスにより、メールアドレスや氏名など約3,600件の個人情報が外部に漏えいした可能性があると発表しました。",
+  "explain": [
+   {
+    "q": "外務省のネットワークはどうなっているの？",
+    "a": "外務省には、機密性の高い情報を外務省の職員の間だけでやり取りする「閉域ネットワーク」と、外部とやり取りできるネットワークの2系統があります。今回不正アクセスを受けたのは後者です。"
+   },
+   {
+    "q": "これからどうするの？",
+    "a": "外務省は、漏えいした可能性がある人を特定して個別に連絡するとしています。また、アクセス制御や認証方法の見直し、監視の強化、情報セキュリティ教育の再徹底などで再発防止に取り組むとしています。"
+   }
+  ],
+  "points": [
+   "不正アクセスは7月27日に検知され、外務省はすぐにアクセスの遮断や認証情報の無効化などを行いました。",
+   "漏えいした可能性がある約3,600件のうち、約900件は外務省以外の人の情報です。",
+   "確認作業の結果、機密性の高い情報が含まれていたことは確認されなかったとしています。"
+  ],
+  "refs": [],
+  "source_url": "https://www.mofa.go.jp/mofaj/press/release/pressit_000001_04395.html",
+  "source_title": "不正アクセスによる個人情報の漏えいの可能性について",
+  "site": "外務省ホームページ",
+  "published_at": "2026-10-30T23:39:35+09:00"
+ },
+ {
+  "id": "2026-10-30-kantei-chiiki-mirai-senryaku",
+  "date": "2026-10-30",
+  "ministry": "kantei",
+  "featured": false,
+  "tags": [
+   "地方",
+   "産業"
+  ],
+  "title": "地域の産業クラスター計画が100超に　総理が担当官9人を発令",
+  "summary": "高市総理は10月30日、地域未来戦略に関する会議に出席し、各地の『地域産業クラスター計画』などが合わせて100を超えたと述べ、年末までに『地域未来戦略実現フレーム』をつくる考えを示しました。",
+  "explain": [
+   {
+    "q": "地域未来戦略本部って？",
+    "a": "内閣官房に置かれた本部で、令和7年11月11日の閣議決定で設置されました。関係する副大臣などが集まる「地域未来戦略に関する関係副大臣等会議」も同じ日に開催が決まっています。"
+   },
+   {
+    "q": "これからどうなる？",
+    "a": "総理は、年末までにつくる『地域未来戦略実現フレーム』に、複数年度の予算措置、自治体の負担に配慮した地方財政措置、計画づくりの支援、既存予算とは別枠の「地域未来特別枠」での追加的な予算措置、人材育成への支援などを盛り込むと述べました。"
+   }
+  ],
+  "points": [
+   "会議では知事や市町村長が、医療・バイオ、次世代モビリティ、農林業、伝統工芸品産業などの計画を説明しました。",
+   "関係各省庁の局長級などからなる「地域未来戦略推進担当官」9人を発令したと述べました。",
+   "総理は藤井大臣に、市町村が計画をつくれるよう「伴走支援体制」を強化するよう指示しました。"
+  ],
+  "refs": [
+   {
+    "title": "地域未来戦略本部",
+    "site": "内閣官房ホームページ",
+    "url": "https://www.cas.go.jp/jp/seisaku/chiikimirai/index.html"
+   },
+   {
+    "title": "地域未来戦略本部（第８回）会議資料",
+    "site": "内閣官房ホームページ",
+    "url": "https://www.cas.go.jp/jp/seisaku/chiikimirai/kankei_fukudaijin/dai8/gijishidai.html"
+   }
+  ],
+  "source_url": "https://www.kantei.go.jp/jp/105/actions/202610/30chiikimirai.html",
+  "source_title": "総理の一日 地域未来戦略に関する関係副大臣等会議・地域未来戦略に関する総理報告",
+  "site": "首相官邸ホームページ",
+  "photos": [
+   {
+    "src": "assets/photos/2026-10-30-kantei-chiiki-mirai-senryaku-1.jpg",
+    "alt": "地域未来戦略の会議で発言する高市総理",
+    "credit": "出典：首相官邸ホームページ（有権者がサイズを縮小）",
+    "page_url": "https://www.kantei.go.jp/jp/105/actions/202610/30chiikimirai.html",
+    "license": "PDL1.0",
+    "people": true,
+    "ok_license": false,
+    "ok_people": false,
+    "width": 1600,
+    "height": 1174
+   }
+  ],
+  "published_at": "2026-10-30T23:39:35+09:00"
+ },
+ {
+  "id": "2026-10-30-maff-kome-ryutsu-9",
+  "date": "2026-10-30",
+  "ministry": "maff",
+  "featured": false,
+  "tags": [
+   "農業",
+   "物価"
+  ],
+  "title": "9月末のコメの民間在庫255万トン、前年より58万トン多く",
+  "summary": "農林水産省によると、9月末の全国のコメの民間在庫は255万玄米トン（玄米に換算した重さ）で、前年同月より58万玄米トン多くなりました。",
+  "explain": [
+   {
+    "q": "だれが調べているの？",
+    "a": "農林水産省が、米の出荷・販売業者や団体などから報告を受けて毎月まとめています。平成26年3月から、米の流通についてよりきめ細かい需給・価格の情報を出しています。"
+   },
+   {
+    "q": "「民間在庫」ってどこにあるコメ？",
+    "a": "出荷業者と販売業者が持っているコメの合計です。9月末は出荷段階が206万玄米トン（前年同月より61万トン多い）、販売段階が50万玄米トン（3万トン少ない）でした。"
+   }
+  ],
+  "points": [
+   "令和8年産米の9月末の集荷数量は98.9万玄米トンで、前年同月より4.1万トン多くなりました。",
+   "契約数量は66.9万玄米トンで、前年同月より57.3万トン少なくなりました。",
+   "9月の精米の販売価格は、小売事業者向けが前年同月比81.4％、中食・外食事業者向けが109.5％でした。"
+  ],
+  "refs": [
+   {
+    "title": "米の相対取引価格・数量、集荷・契約・販売状況、民間在庫の推移等",
+    "site": "農林水産省ホームページ",
+    "url": "https://www.maff.go.jp/j/seisan/keikaku/soukatu/aitaikakaku.html"
+   }
+  ],
+  "source_url": "https://www.maff.go.jp/j/press/nousan/kikaku/261030.html",
+  "source_title": "令和8年9月の米穀流通の動向（集荷、販売、民間在庫）",
+  "site": "農林水産省ホームページ",
+  "published_at": "2026-10-30T23:39:35+09:00"
+ },
+ {
+  "id": "2026-10-30-soumu-seiji-shikin-seirei",
+  "date": "2026-10-30",
+  "ministry": "soumu",
+  "featured": false,
+  "tags": [
+   "政治資金",
+   "制度"
+  ],
+  "title": "政治資金の収支報告書の電子化に合わせ政令を公布、1月施行",
+  "summary": "総務省は10月30日、政治資金規正法施行令と政党助成法施行令を改正する政令などを公布しました。令和9年1月1日から施行されます。",
+  "explain": [
+   {
+    "q": "なぜ改正するの？",
+    "a": "令和6年に成立した政治資金規正法の改正法（令和6年法律第64号）の一部が令和9年1月に施行されます。それに合わせてシステムを改修するため、電子データ（電磁的記録）の収支報告書などの写しを交付・閲覧できるよう規定を整えます。"
+   },
+   {
+    "q": "収支報告書の出し方は変わるの？",
+    "a": "総務省によると、令和9年1月1日以降に提出する収支報告書から、政党本部・政治資金団体と国会議員関係政治団体の会計責任者は、オンラインでの提出が義務づけられます。"
+   }
+  ],
+  "points": [
+   "総務省は8月26日から9月24日まで意見募集を行い、40件の意見が寄せられました。",
+   "政令などは10月30日に公布され、令和9年1月1日から施行されます。"
+  ],
+  "refs": [
+   {
+    "title": "政治資金についての紹介",
+    "site": "総務省ホームページ",
+    "url": "https://www.soumu.go.jp/senkyo/seiji_s/"
+   }
+  ],
+  "source_url": "https://www.soumu.go.jp/menu_news/s-news/01gyosei17_02000276.html",
+  "source_title": "政治資金規正法施行令及び政党助成法施行令の一部を改正する政令（案）等に対する意見募集の結果",
+  "site": "総務省ホームページ",
+  "published_at": "2026-10-30T23:39:35+09:00"
+ },
+ {
+  "id": "2026-10-29-hatsugen-gekihen-kanwa-kongo",
+  "date": "2026-10-29",
+  "ministry": "hatsugen",
+  "also": [
+   "meti"
+  ],
+  "featured": true,
+  "tags": [
+   "物価",
+   "エネルギー",
+   "予算"
+  ],
+  "speaker": "高市早苗 内閣総理大臣",
+  "scene": "記者会見",
+  "title": "電気・ガス支援は12月開始、燃料補助の基準価格は毎月5円上げへ",
+  "summary": "高市総理は10月29日の記者会見で、冬の電気・ガス料金の支援を12月から始めることと、ガソリンなど燃料油の補助について12月以降「基準価格」を毎月5円ずつ引き上げていくことを基本に対応すると述べました。",
+  "quotes": [
+   "電気料金については、１kWh当たり、１２月は１円、１月は４．５円、そして２月は４．５円の支援を実施することとします。",
+   "よって、今後の支援にあたっては、１２月以降、｢原油価格の動向｣を注視しつつ、春先に向けて｢基準価格｣を毎月５円ずつ引き上げていくことを基本に対応してまいります。"
+  ],
+  "explain": [
+   {
+    "q": "燃料油の「激変緩和措置」って？",
+    "a": "経済産業省・資源エネルギー庁の事業です。ガソリン・軽油・灯油・重油・航空機燃料の元売り（石油を仕入れて卸す会社）に補助金を出して卸価格を下げ、お店での価格を抑えます。中東情勢を踏まえた今回の措置は令和8年3月19日に始まり、10月29日以降の補助はガソリン1リットルあたり52.4円です。"
+   },
+   {
+    "q": "電気・ガス料金の支援はどういう仕組み？",
+    "a": "経済産業省の「電気・ガス料金負担軽減支援事業」です。国が決めた値引き単価で利用者の料金を値引きした電力会社・都市ガス会社に、その値引き分のお金を国が出します。経済産業省はこの事業を担う補助事業者の公募を出しています。"
+   },
+   {
+    "q": "これからどうなる？",
+    "a": "総理は、12月以降は原油価格の動きを見ながら春先に向けて基準価格を毎月5円ずつ上げることを基本にすると説明しました。補助を完全に終える見通しについては「予断をもって申し上げることはいたしません」と述べました。3月の電気・ガス支援は、気候やエネルギー価格の動きを見て検討するとしています。"
+   }
+  ],
+  "points": [
+   "電気料金の支援は1kWhあたり12月1円、1月4.5円、2月4.5円。標準的な家庭で12〜2月の3か月に電気・ガスあわせて7,000円程度の負担引き下げ効果と説明しました。",
+   "当面のガソリン支援の基金を確保するため、「中東情勢等対応予備費」の使用を指示したと述べました。",
+   "ガソリンの補助単価は1リットルあたり50円を超え、令和4年1月の措置開始以来の最高水準。基金への支出は累計約9.6兆円（高市内閣で約1.4兆円）と説明しました。",
+   "灯油については、価格が高い輸入灯油への財政措置など「流通円滑化対策」を強化すると述べました。"
+  ],
+  "refs": [
+   {
+    "title": "中東情勢を踏まえた緊急的激変緩和措置",
+    "site": "経済産業省 資源エネルギー庁",
+    "url": "http://www.nenryo-teigakuhikisage.go.jp/"
+   },
+   {
+    "title": "電気・ガス料金負担軽減支援事業補助金に係る補助事業者（小売事業者等）の公募について",
+    "site": "資源エネルギー庁ホームページ",
+    "url": "https://www.enecho.meti.go.jp/appli/public_offer/2026/1030_01.html"
+   }
+  ],
+  "source_url": "https://www.kantei.go.jp/jp/105/statement/2026/1029kaiken.html",
+  "source_title": "中東情勢を踏まえた「緊急的激変緩和措置」の今後の対応についての会見",
+  "site": "首相官邸ホームページ",
+  "photos": [
+   {
+    "src": "assets/photos/2026-10-29-hatsugen-gekihen-kanwa-kongo-1.jpg",
+    "alt": "記者会見で説明する高市総理",
+    "credit": "出典：首相官邸ホームページ（有権者がサイズを縮小）",
+    "page_url": "https://www.kantei.go.jp/jp/105/actions/202610/29kaiken.html",
+    "license": "PDL1.0",
+    "people": true,
+    "ok_license": false,
+    "ok_people": false,
+    "width": 1600,
+    "height": 1067
+   }
+  ],
+  "published_at": "2026-10-30T23:39:35+09:00"
+ },
+ {
+  "id": "2026-10-29-kantei-keizai-zaisei-shimon-15",
+  "date": "2026-10-29",
+  "ministry": "kantei",
+  "also": [
+   "cao"
+  ],
+  "featured": true,
+  "tags": [
+   "予算・財政",
+   "AI"
+  ],
+  "title": "経済財政諮問会議、来年度予算の編成方針とAIを議論",
+  "summary": "高市総理は10月29日、令和8年第15回経済財政諮問会議を開き、「予算編成の抜本見直し」と、AIによる経済・社会の変化を見すえた政策づくりについて議論しました。",
+  "explain": [
+   {
+    "q": "経済財政諮問会議って？",
+    "a": "内閣府に置かれ、総理や関係大臣、民間の有識者（民間議員）が経済と財政の方針を話し合う会議です。会議の資料や議事要旨は内閣府のホームページで公開されています。"
+   },
+   {
+    "q": "民間議員はどんな提案をした？",
+    "a": "令和9年度予算で「歳入・歳出両面から財政の全体像」を明らかにすること、新しく発行する国債の額を歳入・歳出両面の取り組みの結果として示すこと、「基金の見直し」や「国庫債務負担行為（何年かにわたる支出を国が前もって約束する仕組み）の活用拡大」などを提案しました。"
+   },
+   {
+    "q": "これからどうなる？",
+    "a": "総理は城内大臣に『令和9年度予算編成の基本方針』づくりを進めるよう指示しました。AIについては、古川大臣に年末までに『人工知能基本計画』を改定するよう、城内大臣にAIの影響を含む中長期の経済・社会のあり方を検討して来年の『骨太方針』に反映するよう求めました。"
+   }
+  ],
+  "points": [
+   "総理は、歳入・歳出の両面から「財政の全体像」を示す『令和9年度予算編成の基本方針』の策定を進めるよう城内大臣に指示しました。",
+   "補正予算は「当初予算中心」の運営に転換する一方、災害時や経済・物価情勢の変化への対応の考え方を明確にするよう求めました。",
+   "片山大臣には、内閣府と連携して税収見積もりの「精度」と「透明性」を高め、令和9年度予算編成に反映するよう求めました。",
+   "日本企業へのサイバー攻撃が相次いでいることを踏まえ、古川大臣に国民への「タイムリーな情報発信」を求めました。"
+  ],
+  "refs": [
+   {
+    "title": "経済財政諮問会議",
+    "site": "内閣府ホームページ",
+    "url": "https://www5.cao.go.jp/keizai-shimon/"
+   },
+   {
+    "title": "経済財政諮問会議（第15回）会議資料",
+    "site": "内閣府ホームページ",
+    "url": "https://www5.cao.go.jp/keizai-shimon/kaigi/minutes/2026/1029agenda.html"
+   }
+  ],
+  "source_url": "https://www.kantei.go.jp/jp/105/actions/202610/29keizai.html",
+  "source_title": "総理の一日 経済財政諮問会議",
+  "site": "首相官邸ホームページ",
+  "photos": [
+   {
+    "src": "assets/photos/2026-10-29-kantei-keizai-zaisei-shimon-15-1.jpg",
+    "alt": "経済財政諮問会議で発言する高市総理",
+    "credit": "出典：首相官邸ホームページ（有権者がサイズを縮小）",
+    "page_url": "https://www.kantei.go.jp/jp/105/actions/202610/29keizai.html",
+    "license": "PDL1.0",
+    "people": true,
+    "ok_license": false,
+    "ok_people": false,
+    "width": 1600,
+    "height": 1067
+   }
+  ],
+  "published_at": "2026-10-30T23:39:35+09:00"
+ },
+ {
+  "id": "2026-10-29-mod-admm-plus-13",
+  "date": "2026-10-29",
+  "ministry": "mod",
+  "featured": false,
+  "tags": [
+   "安全保障",
+   "外交"
+  ],
+  "title": "小泉防衛大臣、拡大ASEAN国防相会議で演説　豪州とも会談",
+  "summary": "小泉防衛大臣は10月29日、フィリピン・セブで開かれた第13回拡大ASEAN国防相会議（ADMMプラス）に出席して演説し、同じ日にオーストラリアのマールズ副首相兼国防大臣と会談しました。",
+  "explain": [
+   {
+    "q": "ADMMプラスってどんな会議？",
+    "a": "ASEAN（東南アジア諸国連合）の国々と、日本・オーストラリア・中国・インド・ニュージーランド・韓国・ロシア・アメリカの国防大臣などが、地域の安全保障について話し合う会議です。今年はフィリピンが議長国でした。"
+   },
+   {
+    "q": "演説で日本は何を伝えた？",
+    "a": "小泉大臣は、本年春に防衛装備移転の制限を見直したことと、国家安全保障戦略をはじめとする「三文書」を年内に改定・発表する予定であることを説明し、「専守防衛は、決して変わりません」と述べました。改定後は参加各国に自ら説明すると述べています。"
+   }
+  ],
+  "points": [
+   "小泉大臣は、地域の安定のために「See」「Sustain Together」「Speak」の「三つのS」を提案しました。",
+   "会議では、議長国フィリピンのもとで「若者・平和・安全保障」共同声明が採択されました。",
+   "日豪防衛相会談では、オーストラリアの汎用フリゲート事業の着実な進展を確認しました。日本の極超音速誘導弾事業などでオーストラリアの試験場を使うことについても話し合いました。"
+  ],
+  "refs": [
+   {
+    "title": "日豪防衛相会談について",
+    "site": "防衛省ホームページ",
+    "url": "https://www.mod.go.jp/j/approach/exchange/area/2026/20261029_aus-j.html"
+   },
+   {
+    "title": "日ASEAN防衛協力",
+    "site": "防衛省ホームページ",
+    "url": "https://www.mod.go.jp/j/approach/exchange/dialogue/j-asean/index.html"
+   }
+  ],
+  "source_url": "https://www.mod.go.jp/j/approach/exchange/dialogue/j-asean/admm_plus_13.html",
+  "source_title": "小泉防衛大臣による「第１３回拡大ＡＳＥＡＮ国防相会議」への出席について（概要）",
+  "site": "防衛省ホームページ",
+  "photos": [
+   {
+    "src": "assets/photos/2026-10-29-mod-admm-plus-13-1.jpg",
+    "alt": "第13回ADMMプラス会合の会場",
+    "credit": "出典：防衛省ホームページ（有権者がサイズを縮小）",
+    "page_url": "https://www.mod.go.jp/j/approach/exchange/dialogue/j-asean/admm_plus_13.html",
+    "license": "PDL1.0",
+    "people": true,
+    "ok_license": false,
+    "ok_people": false,
+    "width": 600,
+    "height": 400
+   }
+  ],
+  "published_at": "2026-10-30T23:39:35+09:00"
+ },
+ {
   "id": "2026-10-29-mod-kitachosen-missile",
   "date": "2026-10-29",
   "ministry": "mod",
@@ -48,7 +627,22 @@
   "source_url": "https://www.mod.go.jp/j/press/news/2026/10/29d.html",
   "source_title": "北朝鮮のミサイル等関連情報（続報）",
   "site": "防衛省ホームページ",
-  "published_at": "2026-10-29T21:43:18+09:00"
+  "published_at": "2026-10-29T21:43:18+09:00",
+  "photos": [
+   {
+    "src": "assets/photos/2026-10-29-mod-kitachosen-missile-1.jpg",
+    "alt": "展開した航空自衛隊のペトリオット発射機",
+    "credit": "出典：航空自衛隊ウェブサイト（有権者がサイズを縮小）",
+    "page_url": "https://www.mod.go.jp/asdf/equipment/other/Patriot/",
+    "license": "PDL1.0",
+    "people": false,
+    "ok_license": false,
+    "ok_people": false,
+    "width": 1600,
+    "height": 1067
+   }
+  ],
+  "updated_at": "2026-10-30T23:39:35+09:00"
  },
  {
   "id": "2026-10-29-meti-germany-kyodo-ikou-sengen",
@@ -102,7 +696,34 @@
   "source_url": "https://www.meti.go.jp/press/2026/10/20261029004.html",
   "source_title": "ドイツ連邦共和国連邦経済・エネルギー省と重要鉱物分野に関する共同意向宣言に署名しました",
   "site": "経済産業省ホームページ",
-  "published_at": "2026-10-29T21:43:18+09:00"
+  "published_at": "2026-10-29T21:43:18+09:00",
+  "photos": [
+   {
+    "src": "assets/photos/2026-10-29-meti-germany-kyodo-ikou-sengen-1.jpg",
+    "alt": "共同意向宣言に署名する経済産業大臣",
+    "credit": "出典：経済産業省ウェブサイト（有権者がサイズを縮小）",
+    "page_url": "https://www.meti.go.jp/press/2026/10/20261029004.html",
+    "license": "PDL1.0",
+    "people": true,
+    "ok_license": false,
+    "ok_people": false,
+    "width": 1471,
+    "height": 1600
+   },
+   {
+    "src": "assets/photos/2026-10-29-meti-germany-kyodo-ikou-sengen-2.jpg",
+    "alt": "EU・ドイツ国旗の前で署名するドイツ側代表",
+    "credit": "出典：経済産業省ウェブサイト（有権者がサイズを縮小）",
+    "page_url": "https://www.meti.go.jp/press/2026/10/20261029004.html",
+    "license": "PDL1.0",
+    "people": true,
+    "ok_license": false,
+    "ok_people": false,
+    "width": 1471,
+    "height": 1600
+   }
+  ],
+  "updated_at": "2026-10-30T23:39:35+09:00"
  },
  {
   "id": "2026-10-29-mofa-alps-iaea-tsuika-monitoring",
@@ -301,7 +922,34 @@
   "source_url": "https://www.kantei.go.jp/jp/tyoukanpress/202610/29_a.html",
   "source_title": "内閣官房長官記者会見 令和8年10月29日（木）午前",
   "site": "首相官邸ホームページ",
-  "published_at": "2026-10-29T21:43:18+09:00"
+  "published_at": "2026-10-29T21:43:18+09:00",
+  "photos": [
+   {
+    "src": "assets/photos/2026-10-29-hatsugen-chokan-seicho-tantokan-1.jpg",
+    "alt": "官邸の大会議室で開かれた地域未来戦略の会議",
+    "credit": "出典：首相官邸ホームページ（有権者がサイズを縮小）",
+    "page_url": "https://www.kantei.go.jp/jp/105/actions/202610/30chiikimirai.html",
+    "license": "PDL1.0",
+    "people": false,
+    "ok_license": false,
+    "ok_people": false,
+    "width": 1600,
+    "height": 1049
+   },
+   {
+    "src": "assets/photos/2026-10-29-hatsugen-chokan-seicho-tantokan-2.jpg",
+    "alt": "地域未来戦略の会議で席に着く高市総理ら",
+    "credit": "出典：首相官邸ホームページ（有権者がサイズを縮小）",
+    "page_url": "https://www.kantei.go.jp/jp/105/actions/202610/30chiikimirai.html",
+    "license": "PDL1.0",
+    "people": true,
+    "ok_license": false,
+    "ok_people": false,
+    "width": 1600,
+    "height": 1067
+   }
+  ],
+  "updated_at": "2026-10-30T23:39:35+09:00"
  },
  {
   "id": "2026-10-29-soumu-kinkyu-jishin-kunren",
@@ -400,7 +1048,34 @@
   "source_url": "https://www.kantei.go.jp/jp/105/actions/202610/28germany.html",
   "source_title": "日独首脳会談 | 総理の一日 | 首相官邸",
   "site": "首相官邸ホームページ",
-  "published_at": "2026-10-29T21:43:18+09:00"
+  "published_at": "2026-10-29T21:43:18+09:00",
+  "photos": [
+   {
+    "src": "assets/photos/2026-10-28-kantei-germany-shunou-1.jpg",
+    "alt": "握手する高市総理とメルツ首相",
+    "credit": "出典：首相官邸ホームページ（有権者がサイズを縮小）",
+    "page_url": "https://www.kantei.go.jp/jp/105/actions/202610/28germany.html",
+    "license": "PDL1.0",
+    "people": true,
+    "ok_license": false,
+    "ok_people": false,
+    "width": 1600,
+    "height": 1067
+   },
+   {
+    "src": "assets/photos/2026-10-28-kantei-germany-shunou-2.jpg",
+    "alt": "官邸で向かい合って行われた日独首脳会談",
+    "credit": "出典：首相官邸ホームページ（有権者がサイズを縮小）",
+    "page_url": "https://www.kantei.go.jp/jp/105/actions/202610/28germany.html",
+    "license": "PDL1.0",
+    "people": true,
+    "ok_license": false,
+    "ok_people": false,
+    "width": 1600,
+    "height": 1067
+   }
+  ],
+  "updated_at": "2026-10-30T23:39:35+09:00"
  },
  {
   "id": "2026-10-28-mod-nichi-asean-boueisho-10",
@@ -443,7 +1118,34 @@
   "source_url": "https://www.mod.go.jp/j/approach/exchange/dialogue/j-asean/admm_10.html",
   "source_title": "小泉防衛大臣による第１０回日ＡＳＥＡＮ防衛担当大臣会合への出席について（概要）",
   "site": "防衛省ホームページ",
-  "published_at": "2026-10-29T21:43:18+09:00"
+  "published_at": "2026-10-29T21:43:18+09:00",
+  "photos": [
+   {
+    "src": "assets/photos/2026-10-28-mod-nichi-asean-boueisho-10-1.jpg",
+    "alt": "日ASEAN防衛担当大臣会合の参加者の集合写真",
+    "credit": "出典：防衛省ウェブサイト（有権者がサイズを縮小）",
+    "page_url": "https://www.mod.go.jp/j/approach/exchange/dialogue/j-asean/admm_10.html",
+    "license": "PDL1.0",
+    "people": true,
+    "ok_license": false,
+    "ok_people": false,
+    "width": 600,
+    "height": 400
+   },
+   {
+    "src": "assets/photos/2026-10-28-mod-nichi-asean-boueisho-10-2.jpg",
+    "alt": "会合で席に着く小泉防衛大臣ら（セブ）",
+    "credit": "出典：防衛省ウェブサイト（有権者がサイズを縮小）",
+    "page_url": "https://www.mod.go.jp/j/approach/exchange/dialogue/j-asean/admm_10.html",
+    "license": "PDL1.0",
+    "people": true,
+    "ok_license": false,
+    "ok_people": false,
+    "width": 600,
+    "height": 400
+   }
+  ],
+  "updated_at": "2026-10-30T23:39:35+09:00"
  },
  {
   "id": "2026-10-28-mofa-msmt-kitachosen-seisai",
@@ -581,7 +1283,22 @@
   "source_url": "https://www.mod.go.jp/j/approach/anpo/2026/1028a_usa-j.html",
   "source_title": "日米防衛相会談について",
   "site": "防衛省ホームページ",
-  "published_at": "2026-10-28T20:38:35+09:00"
+  "published_at": "2026-10-28T20:38:35+09:00",
+  "photos": [
+   {
+    "src": "assets/photos/2026-10-28-mod-nichibei-boueisho-kaidan-1.jpg",
+    "alt": "航行するイージス護衛艦「まや」",
+    "credit": "出典：海上自衛隊ウェブサイト（有権者がサイズを縮小）",
+    "page_url": "https://www.mod.go.jp/msdf/equipment/ships/ddg/maya/",
+    "license": "PDL1.0",
+    "people": false,
+    "ok_license": false,
+    "ok_people": false,
+    "width": 1600,
+    "height": 1200
+   }
+  ],
+  "updated_at": "2026-10-30T23:39:35+09:00"
  },
  {
   "id": "2026-10-28-kantei-jimin-ishin-teigen-energy",
@@ -621,7 +1338,34 @@
   "source_url": "https://www.kantei.go.jp/jp/105/actions/202610/28teigen.html",
   "source_title": "総理の一日 自由民主党・中東情勢緊迫の長期化を踏まえたエネルギー安定供給・物価高対策に関する提言申入れ",
   "site": "首相官邸ホームページ",
-  "published_at": "2026-10-28T20:38:35+09:00"
+  "published_at": "2026-10-28T20:38:35+09:00",
+  "photos": [
+   {
+    "src": "assets/photos/2026-10-28-kantei-jimin-ishin-teigen-energy-1.jpg",
+    "alt": "自民党議員らから提言の申入れを受ける高市総理",
+    "credit": "出典：首相官邸ホームページ（有権者がサイズを縮小）",
+    "page_url": "https://www.kantei.go.jp/jp/105/actions/202610/28teigen.html",
+    "license": "PDL1.0",
+    "people": true,
+    "ok_license": false,
+    "ok_people": false,
+    "width": 1600,
+    "height": 1067
+   },
+   {
+    "src": "assets/photos/2026-10-28-kantei-jimin-ishin-teigen-energy-2.jpg",
+    "alt": "日本維新の会から提言書を受け取る高市総理",
+    "credit": "出典：首相官邸ホームページ（有権者がサイズを縮小）",
+    "page_url": "https://www.kantei.go.jp/jp/105/actions/202610/28teigen2.html",
+    "license": "PDL1.0",
+    "people": true,
+    "ok_license": false,
+    "ok_people": false,
+    "width": 1600,
+    "height": 1067
+   }
+  ],
+  "updated_at": "2026-10-30T23:39:35+09:00"
  },
  {
   "id": "2026-10-28-soumu-necchusho-hansou-2026",
@@ -763,7 +1507,34 @@
   "source_url": "https://www.env.go.jp/press/111118_00070.html",
   "source_title": "野鳥における高病原性鳥インフルエンザ発生状況について （疑い事例、宮城県栗原市）",
   "site": "環境省ホームページ",
-  "published_at": "2026-10-28T20:38:35+09:00"
+  "published_at": "2026-10-28T20:38:35+09:00",
+  "photos": [
+   {
+    "src": "assets/photos/2026-10-28-env-tori-influenza-kurihara-1.jpg",
+    "alt": "伊豆沼近くの田んぼから一斉に飛び立つマガンの群れ",
+    "credit": "出典：環境省 東北地方環境事務所ホームページ（有権者がサイズを縮小）",
+    "page_url": "https://tohoku.env.go.jp/blog/2025/12/page_00065.html",
+    "license": "PDL1.0",
+    "people": false,
+    "ok_license": false,
+    "ok_people": false,
+    "width": 1600,
+    "height": 1067
+   },
+   {
+    "src": "assets/photos/2026-10-28-env-tori-influenza-kurihara-2.jpg",
+    "alt": "青空を埋めつくして飛ぶマガンの大群",
+    "credit": "出典：環境省 東北地方環境事務所ホームページ（有権者がサイズを縮小）",
+    "page_url": "https://tohoku.env.go.jp/blog/2025/12/page_00065.html",
+    "license": "PDL1.0",
+    "people": false,
+    "ok_license": false,
+    "ok_people": false,
+    "width": 1600,
+    "height": 1067
+   }
+  ],
+  "updated_at": "2026-10-30T23:39:35+09:00"
  },
  {
   "id": "2026-10-28-mofa-srilanka-kelani-haisuikijo",
@@ -852,7 +1623,22 @@
   "source_url": "http://www.mlit.go.jp/report/press/kaiji01_hh_000599.html",
   "source_title": "日本・デンマークによる海事分野の連携を強化～海事産業の強靱化と脱炭素化を推進すべく、二国間海事当局の覚書に署名～",
   "site": "国土交通省ホームページ",
-  "published_at": "2026-10-28T20:38:35+09:00"
+  "published_at": "2026-10-28T20:38:35+09:00",
+  "photos": [
+   {
+    "src": "assets/photos/2026-10-28-mlit-denmark-kaiji-oboegaki-1.jpg",
+    "alt": "署名した覚書を掲げる日本とデンマークの海事当局トップ",
+    "credit": "出典：国土交通省ウェブサイト（有権者がサイズを縮小）",
+    "page_url": "https://www.mlit.go.jp/report/press/kaiji01_hh_000599.html",
+    "license": "PDL1.0",
+    "people": true,
+    "ok_license": false,
+    "ok_people": false,
+    "width": 737,
+    "height": 552
+   }
+  ],
+  "updated_at": "2026-10-30T23:39:35+09:00"
  },
  {
   "id": "2026-10-27-mof-katayama-fx-fusei-torihiki",
@@ -900,7 +1686,22 @@
   "source_url": "https://www.mof.go.jp/public_relations/conference/my20261027.html",
   "source_title": "片山財務大臣兼内閣府特命担当大臣閣議後記者会見の概要(令和8年10月27日(火曜日))",
   "site": "財務省ホームページ",
-  "published_at": "2026-10-28T20:38:35+09:00"
+  "published_at": "2026-10-28T20:38:35+09:00",
+  "photos": [
+   {
+    "src": "assets/photos/2026-10-27-mof-katayama-fx-fusei-torihiki-1.jpg",
+    "alt": "サイバーセキュリティ関係閣僚会議で発言する高市総理",
+    "credit": "出典：首相官邸ホームページ（有権者がサイズを縮小）",
+    "page_url": "https://www.kantei.go.jp/jp/105/actions/202610/26kaigi_cyber.html",
+    "license": "PDL1.0",
+    "people": true,
+    "ok_license": false,
+    "ok_people": false,
+    "width": 1600,
+    "height": 1067
+   }
+  ],
+  "updated_at": "2026-10-30T23:39:35+09:00"
  },
  {
   "id": "2026-10-27-moj-kyuuji-shiyou-fuufu-besshi",
@@ -953,7 +1754,22 @@
   "source_url": "http://www.moj.go.jp/hisho/kouhou/hisho08_01187.html",
   "source_title": "法務大臣閣議後記者会見の概要－令和８年１０月２７日（火）",
   "site": "法務省ホームページ",
-  "published_at": "2026-10-28T20:38:35+09:00"
+  "published_at": "2026-10-28T20:38:35+09:00",
+  "photos": [
+   {
+    "src": "assets/photos/2026-10-27-moj-kyuuji-shiyou-fuufu-besshi-1.jpg",
+    "alt": "演台で挨拶する山下法務大臣",
+    "credit": "出典：法務省ウェブサイト（有権者がサイズを縮小）",
+    "page_url": "https://www.moj.go.jp/hisho/kouhou/hisho06_01498.html",
+    "license": "PDL1.0",
+    "people": true,
+    "ok_license": false,
+    "ok_people": false,
+    "width": 750,
+    "height": 578
+   }
+  ],
+  "updated_at": "2026-10-30T23:39:35+09:00"
  },
  {
   "id": "2026-10-27-kantei-getsurei-10",
@@ -1019,7 +1835,33 @@
     "url": "https://www5.cao.go.jp/keizai3/getsurei/getsurei-index.html"
    }
   ],
-  "updated_at": "2026-10-28T17:15:00+09:00"
+  "updated_at": "2026-10-30T23:39:35+09:00",
+  "photos": [
+   {
+    "src": "assets/photos/2026-10-27-kantei-getsurei-10-1.jpg",
+    "alt": "関係閣僚会議の席に着く高市総理と閣僚",
+    "credit": "出典：首相官邸ホームページ（有権者がサイズを縮小）",
+    "page_url": "https://www.kantei.go.jp/jp/105/actions/202610/27getsurei.html",
+    "license": "PDL1.0",
+    "people": true,
+    "ok_license": false,
+    "ok_people": false,
+    "width": 1600,
+    "height": 1067
+   },
+   {
+    "src": "assets/photos/2026-10-27-kantei-getsurei-10-2.jpg",
+    "alt": "官邸の会議室で開かれた月例経済報告の閣僚会議",
+    "credit": "出典：首相官邸ホームページ（有権者がサイズを縮小）",
+    "page_url": "https://www.kantei.go.jp/jp/105/actions/202610/27getsurei.html",
+    "license": "PDL1.0",
+    "people": true,
+    "ok_license": false,
+    "ok_people": false,
+    "width": 1600,
+    "height": 1051
+   }
+  ]
  },
  {
   "id": "2026-10-27-kantei-bangladesh-shunou",
@@ -1097,7 +1939,33 @@
     "url": "https://www.mofa.go.jp/mofaj/fp/ipc/page4_005828.html"
    }
   ],
-  "updated_at": "2026-10-28T17:15:00+09:00"
+  "updated_at": "2026-10-30T23:39:35+09:00",
+  "photos": [
+   {
+    "src": "assets/photos/2026-10-27-kantei-bangladesh-shunou-1.jpg",
+    "alt": "向かい合って座る日本とバングラデシュの代表団",
+    "credit": "出典：首相官邸ホームページ（有権者がサイズを縮小）",
+    "page_url": "https://www.kantei.go.jp/jp/105/actions/202610/27bangladesh.html",
+    "license": "PDL1.0",
+    "people": true,
+    "ok_license": false,
+    "ok_people": false,
+    "width": 1600,
+    "height": 1067
+   },
+   {
+    "src": "assets/photos/2026-10-27-kantei-bangladesh-shunou-2.jpg",
+    "alt": "会談に向かって官邸内を歩く高市総理と一行",
+    "credit": "出典：首相官邸ホームページ（有権者がサイズを縮小）",
+    "page_url": "https://www.kantei.go.jp/jp/105/actions/202610/27bangladesh.html",
+    "license": "PDL1.0",
+    "people": true,
+    "ok_license": false,
+    "ok_people": false,
+    "width": 1600,
+    "height": 1203
+   }
+  ]
  },
  {
   "id": "2026-10-27-soumu-fukushuto-seirei",
@@ -1270,7 +2138,21 @@
     "url": "https://www.kantei.go.jp/jp/105/actions/202610/26kaigi_cyber.html"
    }
   ],
-  "updated_at": "2026-10-28T17:15:00+09:00"
+  "updated_at": "2026-10-30T23:39:35+09:00",
+  "photos": [
+   {
+    "src": "assets/photos/2026-10-27-meti-cyber-soudan-madoguchi-1.jpg",
+    "alt": "官邸の会議室で開かれたサイバー関係閣僚会議",
+    "credit": "出典：首相官邸ホームページ（有権者がサイズを縮小）",
+    "page_url": "https://www.kantei.go.jp/jp/105/actions/202610/26kaigi_cyber.html",
+    "license": "PDL1.0",
+    "people": true,
+    "ok_license": false,
+    "ok_people": false,
+    "width": 1600,
+    "height": 934
+   }
+  ]
  },
  {
   "id": "2026-10-27-digital-myna-jichitai-shinsei",
@@ -1478,7 +2360,33 @@
     "url": "https://www.mofa.go.jp/mofaj/area/asean/index.html"
    }
   ],
-  "updated_at": "2026-10-28T17:15:00+09:00"
+  "updated_at": "2026-10-30T23:39:35+09:00",
+  "photos": [
+   {
+    "src": "assets/photos/2026-10-27-mod-admm-plus-1.jpg",
+    "alt": "各国の国防相が並ぶ拡大ASEAN国防相会議の会場",
+    "credit": "出典：防衛省ウェブサイト（有権者がサイズを縮小）",
+    "page_url": "https://www.mod.go.jp/j/approach/exchange/dialogue/j-asean/admm_plus_13.html",
+    "license": "PDL1.0",
+    "people": true,
+    "ok_license": false,
+    "ok_people": false,
+    "width": 600,
+    "height": 400
+   },
+   {
+    "src": "assets/photos/2026-10-27-mod-admm-plus-2.jpg",
+    "alt": "日ASEAN防衛担当大臣会合の参加者の集合写真",
+    "credit": "出典：防衛省ウェブサイト（有権者がサイズを縮小）",
+    "page_url": "https://www.mod.go.jp/j/approach/exchange/dialogue/j-asean/admm_10.html",
+    "license": "PDL1.0",
+    "people": true,
+    "ok_license": false,
+    "ok_people": false,
+    "width": 600,
+    "height": 400
+   }
+  ]
  },
  {
   "id": "2026-10-26-kantei-cyber-kakuryo-kaigi",
@@ -1549,7 +2457,33 @@
     "url": "https://aisi.go.jp/about/"
    }
   ],
-  "updated_at": "2026-10-28T17:15:00+09:00"
+  "updated_at": "2026-10-30T23:39:35+09:00",
+  "photos": [
+   {
+    "src": "assets/photos/2026-10-26-kantei-cyber-kakuryo-kaigi-1.jpg",
+    "alt": "サイバーセキュリティ関係閣僚会議で発言する高市総理",
+    "credit": "出典：首相官邸ホームページ（有権者がサイズを縮小）",
+    "page_url": "https://www.kantei.go.jp/jp/105/actions/202610/26kaigi_cyber.html",
+    "license": "PDL1.0",
+    "people": true,
+    "ok_license": false,
+    "ok_people": false,
+    "width": 1600,
+    "height": 1067
+   },
+   {
+    "src": "assets/photos/2026-10-26-kantei-cyber-kakuryo-kaigi-2.jpg",
+    "alt": "官邸の会議室で開かれたサイバー関係閣僚会議",
+    "credit": "出典：首相官邸ホームページ（有権者がサイズを縮小）",
+    "page_url": "https://www.kantei.go.jp/jp/105/actions/202610/26kaigi_cyber.html",
+    "license": "PDL1.0",
+    "people": true,
+    "ok_license": false,
+    "ok_people": false,
+    "width": 1600,
+    "height": 934
+   }
+  ]
  },
  {
   "id": "2026-10-26-kantei-seifu-yotou-renraku",
@@ -1619,7 +2553,33 @@
     "url": "https://www.kantei.go.jp/jp/105/actions/202607/13sei_yotou.html"
    }
   ],
-  "updated_at": "2026-10-28T17:15:00+09:00"
+  "updated_at": "2026-10-30T23:39:35+09:00",
+  "photos": [
+   {
+    "src": "assets/photos/2026-10-26-kantei-seifu-yotou-renraku-1.jpg",
+    "alt": "政府与党連絡会議で挨拶する高市総理",
+    "credit": "出典：首相官邸ホームページ（有権者がサイズを縮小）",
+    "page_url": "https://www.kantei.go.jp/jp/105/actions/202610/26sei_yotou.html",
+    "license": "PDL1.0",
+    "people": true,
+    "ok_license": false,
+    "ok_people": false,
+    "width": 1600,
+    "height": 1200
+   },
+   {
+    "src": "assets/photos/2026-10-26-kantei-seifu-yotou-renraku-2.jpg",
+    "alt": "政府与党連絡会議の会場の様子（総理と与党幹部）",
+    "credit": "出典：首相官邸ホームページ（有権者がサイズを縮小）",
+    "page_url": "https://www.kantei.go.jp/jp/105/actions/202610/26sei_yotou.html",
+    "license": "PDL1.0",
+    "people": true,
+    "ok_license": false,
+    "ok_people": false,
+    "width": 1600,
+    "height": 1067
+   }
+  ]
  },
  {
   "id": "2026-10-26-mofa-russia-houjin-kousoku",
@@ -1726,7 +2686,21 @@
     "url": "https://www.mofa.go.jp/mofaj/gaiko/summit/p_toyako08/index.html"
    }
   ],
-  "updated_at": "2026-10-28T17:15:00+09:00"
+  "updated_at": "2026-10-30T23:39:35+09:00",
+  "photos": [
+   {
+    "src": "assets/photos/2026-10-26-hatsugen-fukuda-danwa-1.jpg",
+    "alt": "福田元総理の逝去について会見する高市総理",
+    "credit": "出典：首相官邸ホームページ（有権者がサイズを縮小）",
+    "page_url": "https://www.kantei.go.jp/jp/105/actions/202610/26kaiken.html",
+    "license": "PDL1.0",
+    "people": true,
+    "ok_license": false,
+    "ok_people": false,
+    "width": 1280,
+    "height": 720
+   }
+  ]
  },
  {
   "id": "2026-10-26-hatsugen-cyber-kakuryo",
@@ -1784,7 +2758,33 @@
     "url": "https://www.cas.go.jp/jp/seisaku/cyber_anzen_hosyo_torikumi/index.html"
    }
   ],
-  "updated_at": "2026-10-28T17:15:00+09:00"
+  "updated_at": "2026-10-30T23:39:35+09:00",
+  "photos": [
+   {
+    "src": "assets/photos/2026-10-26-hatsugen-cyber-kakuryo-1.jpg",
+    "alt": "サイバーセキュリティ関係閣僚会議で発言する高市総理",
+    "credit": "出典：首相官邸ホームページ（有権者がサイズを縮小）",
+    "page_url": "https://www.kantei.go.jp/jp/105/actions/202610/26kaigi_cyber.html",
+    "license": "PDL1.0",
+    "people": true,
+    "ok_license": false,
+    "ok_people": false,
+    "width": 1600,
+    "height": 1067
+   },
+   {
+    "src": "assets/photos/2026-10-26-hatsugen-cyber-kakuryo-2.jpg",
+    "alt": "首相官邸で開かれたサイバーセキュリティ関係閣僚会議",
+    "credit": "出典：首相官邸ホームページ（有権者がサイズを縮小）",
+    "page_url": "https://www.kantei.go.jp/jp/105/actions/202610/26kaigi_cyber.html",
+    "license": "PDL1.0",
+    "people": true,
+    "ok_license": false,
+    "ok_people": false,
+    "width": 1600,
+    "height": 934
+   }
+  ]
  },
  {
   "id": "2026-10-26-mofa-finland-defense-equipment",
@@ -1847,7 +2847,33 @@
     "url": "https://www.mofa.go.jp/mofaj/press/release/press4_005926.html"
    }
   ],
-  "updated_at": "2026-10-28T17:15:00+09:00"
+  "updated_at": "2026-10-30T23:39:35+09:00",
+  "photos": [
+   {
+    "src": "assets/photos/2026-10-26-mofa-finland-defense-equipment-1.jpg",
+    "alt": "協定に署名する茂木外務大臣とハッカネン国防大臣",
+    "credit": "出典：外務省ウェブサイト（有権者がサイズを縮小）",
+    "page_url": "https://www.mofa.go.jp/mofaj/press/release/pressit_000001_04356.html",
+    "license": "PDL1.0",
+    "people": true,
+    "ok_license": false,
+    "ok_people": false,
+    "width": 1000,
+    "height": 714
+   },
+   {
+    "src": "assets/photos/2026-10-26-mofa-finland-defense-equipment-2.jpg",
+    "alt": "署名式後に会談する日本とフィンランドの両大臣",
+    "credit": "出典：外務省ウェブサイト（有権者がサイズを縮小）",
+    "page_url": "https://www.mofa.go.jp/mofaj/press/release/pressit_000001_04356.html",
+    "license": "PDL1.0",
+    "people": true,
+    "ok_license": false,
+    "ok_people": false,
+    "width": 1000,
+    "height": 714
+   }
+  ]
  },
  {
   "id": "2026-10-26-mlit-saigai-satei",
@@ -2056,7 +3082,33 @@
     "url": "https://www.kokuminhogo.go.jp/news/index.html"
    }
   ],
-  "updated_at": "2026-10-28T17:15:00+09:00"
+  "updated_at": "2026-10-30T23:39:35+09:00",
+  "photos": [
+   {
+    "src": "assets/photos/2026-10-26-soumu-missile-hinan-kunren-1.jpg",
+    "alt": "建物の壁際で身を低くする避難訓練の参加者",
+    "credit": "出典：内閣官房 国民保護ポータルサイト（有権者がサイズを縮小）",
+    "page_url": "https://www.kokuminhogo.go.jp/kunren/hinan/post-94.html",
+    "license": "PDL1.0",
+    "people": false,
+    "ok_license": false,
+    "ok_people": false,
+    "width": 511,
+    "height": 389
+   },
+   {
+    "src": "assets/photos/2026-10-26-soumu-missile-hinan-kunren-2.jpg",
+    "alt": "庁舎入口の前でしゃがみ身を守る訓練参加者",
+    "credit": "出典：内閣官房 国民保護ポータルサイト（有権者がサイズを縮小）",
+    "page_url": "https://www.kokuminhogo.go.jp/kunren/hinan/post-94.html",
+    "license": "PDL1.0",
+    "people": false,
+    "ok_license": false,
+    "ok_people": false,
+    "width": 519,
+    "height": 390
+   }
+  ]
  },
  {
   "id": "2026-10-23-moj-funani-shoken-denshika-houan",
@@ -2110,7 +3162,22 @@
   "source_url": "http://www.moj.go.jp/hisho/kouhou/hisho08_01186.html",
   "source_title": "法務大臣閣議後記者会見の概要－令和８年１０月２３日（金）",
   "site": "法務省ホームページ",
-  "published_at": "2026-10-28T20:38:35+09:00"
+  "published_at": "2026-10-28T20:38:35+09:00",
+  "photos": [
+   {
+    "src": "assets/photos/2026-10-23-moj-funani-shoken-denshika-houan-1.jpg",
+    "alt": "コンテナ船が並ぶ大阪港夢洲のコンテナターミナル",
+    "credit": "出典：国土交通省ウェブサイト（有権者がサイズを縮小）",
+    "page_url": "https://www.mlit.go.jp/kowan/index.html",
+    "license": "PDL1.0",
+    "people": false,
+    "ok_license": false,
+    "ok_people": false,
+    "width": 1200,
+    "height": 550
+   }
+  ],
+  "updated_at": "2026-10-30T23:39:35+09:00"
  },
  {
   "id": "2026-10-23-soumu-cpi-2026-09",
@@ -2264,7 +3331,21 @@
     "url": "https://www.meti.go.jp/press/2026/10/20261023003.html"
    }
   ],
-  "updated_at": "2026-10-28T17:15:00+09:00"
+  "updated_at": "2026-10-30T23:39:35+09:00",
+  "photos": [
+   {
+    "src": "assets/photos/2026-10-23-mlit-entotsu-chosa-1.jpg",
+    "alt": "熊本地震で上部が折れた工場の煙突を上から見た様子",
+    "credit": "出典：国土交通省ウェブサイト（有権者がサイズを縮小）",
+    "page_url": "https://www.mlit.go.jp/policy/shingikai/content/002026525.pdf",
+    "license": "PDL1.0",
+    "people": false,
+    "ok_license": false,
+    "ok_people": false,
+    "width": 411,
+    "height": 308
+   }
+  ]
  },
  {
   "id": "2026-10-23-mod-nichibei-godo-schwab",
@@ -2425,7 +3506,33 @@
     "url": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000132220.html"
    }
   ],
-  "updated_at": "2026-10-28T17:15:00+09:00"
+  "updated_at": "2026-10-30T23:39:35+09:00",
+  "photos": [
+   {
+    "src": "assets/photos/2026-10-23-mhlw-shinsotsu-rishoku-1.jpg",
+    "alt": "新卒応援ハローワークの相談窓口が並ぶ室内",
+    "credit": "出典：厚生労働省ホームページ（有権者がサイズを縮小）",
+    "page_url": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000132220.html",
+    "license": "PDL1.0",
+    "people": false,
+    "ok_license": false,
+    "ok_people": false,
+    "width": 416,
+    "height": 251
+   },
+   {
+    "src": "assets/photos/2026-10-23-mhlw-shinsotsu-rishoku-2.jpg",
+    "alt": "ハローワークの職員が応募書類の相談に応じる様子",
+    "credit": "出典：厚生労働省ホームページ（有権者がサイズを縮小）",
+    "page_url": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000132220.html",
+    "license": "PDL1.0",
+    "people": true,
+    "ok_license": false,
+    "ok_people": false,
+    "width": 576,
+    "height": 417
+   }
+  ]
  },
  {
   "id": "2026-10-23-mofa-chosei-tanko-dna",
@@ -2640,7 +3747,21 @@
     "url": "https://www.enecho.meti.go.jp/category/gekihen_lp/"
    }
   ],
-  "updated_at": "2026-10-28T17:15:00+09:00"
+  "updated_at": "2026-10-30T23:39:35+09:00",
+  "photos": [
+   {
+    "src": "assets/photos/2026-10-23-hatsugen-nenryo-hojo-minaoshi-1.jpg",
+    "alt": "首相官邸で記者会見する高市総理",
+    "credit": "出典：首相官邸ホームページ（有権者がサイズを縮小）",
+    "page_url": "https://www.kantei.go.jp/jp/105/actions/202610/23kaiken.html",
+    "license": "PDL1.0",
+    "people": true,
+    "ok_license": false,
+    "ok_people": false,
+    "width": 1280,
+    "height": 720
+   }
+  ]
  },
  {
   "id": "2026-10-23-env-mailmag-roei",
@@ -2754,7 +3875,33 @@
     "url": "https://www8.cao.go.jp/cstp/stmain/20240214.html"
    }
   ],
-  "updated_at": "2026-10-28T17:15:00+09:00"
+  "updated_at": "2026-10-30T23:39:35+09:00",
+  "photos": [
+   {
+    "src": "assets/photos/2026-10-22-kantei-ai-digital-kaigi-1.jpg",
+    "alt": "AI・デジタル改革推進会議の席に着く木原官房長官ら",
+    "credit": "出典：首相官邸ホームページ（有権者がサイズを縮小）",
+    "page_url": "https://www.kantei.go.jp/jp/pages/20261022choukan_aidigital.html",
+    "license": "PDL1.0",
+    "people": true,
+    "ok_license": false,
+    "ok_people": false,
+    "width": 1000,
+    "height": 667
+   },
+   {
+    "src": "assets/photos/2026-10-22-kantei-ai-digital-kaigi-2.jpg",
+    "alt": "首相官邸の会議室で開かれたAI・デジタル改革推進会議の全景",
+    "credit": "出典：首相官邸ホームページ（有権者がサイズを縮小）",
+    "page_url": "https://www.kantei.go.jp/jp/pages/20261022choukan_aidigital.html",
+    "license": "PDL1.0",
+    "people": true,
+    "ok_license": false,
+    "ok_people": false,
+    "width": 1000,
+    "height": 667
+   }
+  ]
  },
  {
   "id": "2026-10-22-digital-studio-roei",
@@ -3181,7 +4328,33 @@
     "url": "https://www.kanto.meti.go.jp/seisaku/chiiki_brand/index_densan.html"
    }
   ],
-  "updated_at": "2026-10-28T17:15:00+09:00"
+  "updated_at": "2026-10-30T23:39:35+09:00",
+  "photos": [
+   {
+    "src": "assets/photos/2026-10-22-meti-densan-new-items-1.jpg",
+    "alt": "ふたをずらして開けた箱根小田原からくり細工の木箱",
+    "credit": "出典：関東経済産業局ウェブサイト（有権者がサイズを縮小）",
+    "page_url": "https://www.kanto.meti.go.jp/press/20261022densan_press.html",
+    "license": "PDL1.0",
+    "people": false,
+    "ok_license": false,
+    "ok_people": false,
+    "width": 562,
+    "height": 400
+   },
+   {
+    "src": "assets/photos/2026-10-22-meti-densan-new-items-2.jpg",
+    "alt": "花模様の七宝で彩られた京七宝の花瓶",
+    "credit": "出典：経済産業省ウェブサイト（有権者がサイズを縮小）",
+    "page_url": "https://www.meti.go.jp/press/2026/10/20261022001.html",
+    "license": "PDL1.0",
+    "people": false,
+    "ok_license": false,
+    "ok_people": false,
+    "width": 411,
+    "height": 409
+   }
+  ]
  },
  {
   "id": "2026-10-22-mlit-seikan-260kmh",
@@ -3468,7 +4641,33 @@
     "url": "https://www.mof.go.jp/policy/budget/reference/statistics/term.htm"
    }
   ],
-  "updated_at": "2026-10-28T17:15:00+09:00"
+  "updated_at": "2026-10-30T23:39:35+09:00",
+  "photos": [
+   {
+    "src": "assets/photos/2026-10-21-kantei-shushin-1nen-1.jpg",
+    "alt": "官邸の会見場で演台に立ち話す高市総理",
+    "credit": "出典：首相官邸ホームページ（有権者がサイズを縮小）",
+    "page_url": "https://www.kantei.go.jp/jp/105/actions/202610/21kaiken.html",
+    "license": "PDL1.0",
+    "people": true,
+    "ok_license": false,
+    "ok_people": false,
+    "width": 1600,
+    "height": 1200
+   },
+   {
+    "src": "assets/photos/2026-10-21-kantei-shushin-1nen-2.jpg",
+    "alt": "両手を広げて説明する高市総理（就任1年会見）",
+    "credit": "出典：首相官邸ホームページ（有権者がサイズを縮小）",
+    "page_url": "https://www.kantei.go.jp/jp/105/actions/202610/21kaiken.html",
+    "license": "PDL1.0",
+    "people": true,
+    "ok_license": false,
+    "ok_people": false,
+    "width": 1600,
+    "height": 1200
+   }
+  ]
  },
  {
   "id": "2026-10-21-meti-ec-shijo",
@@ -3564,7 +4763,33 @@
     "url": "https://www.mofa.go.jp/mofaj/gaiko/page2_000009.html"
    }
   ],
-  "updated_at": "2026-10-28T17:15:00+09:00"
+  "updated_at": "2026-10-30T23:39:35+09:00",
+  "photos": [
+   {
+    "src": "assets/photos/2026-10-21-soumu-g7-digital-1.jpg",
+    "alt": "画面越しにG7オンライン会合へ参加する藤井総務大臣",
+    "credit": "出典：総務省ホームページ（有権者がサイズを縮小）",
+    "page_url": "https://www.soumu.go.jp/menu_news/s-news/01tsushin06_02000357.html",
+    "license": "PDL1.0",
+    "people": true,
+    "ok_license": false,
+    "ok_people": false,
+    "width": 650,
+    "height": 328
+   },
+   {
+    "src": "assets/photos/2026-10-21-soumu-g7-digital-2.jpg",
+    "alt": "オンライン会合で発言する藤井総務大臣",
+    "credit": "出典：総務省ホームページ（有権者がサイズを縮小）",
+    "page_url": "https://www.soumu.go.jp/menu_news/s-news/01tsushin06_02000357.html",
+    "license": "PDL1.0",
+    "people": true,
+    "ok_license": false,
+    "ok_people": false,
+    "width": 650,
+    "height": 402
+   }
+  ]
  },
  {
   "id": "2026-10-21-soumu-missile-kunren",
@@ -3626,7 +4851,33 @@
     "url": "https://www.fdma.go.jp/about/organization/post-18.html"
    }
   ],
-  "updated_at": "2026-10-28T17:15:00+09:00"
+  "updated_at": "2026-10-30T23:39:35+09:00",
+  "photos": [
+   {
+    "src": "assets/photos/2026-10-21-soumu-missile-kunren-1.jpg",
+    "alt": "体育館で頭を抱えて身を守る姿勢をとる住民",
+    "credit": "出典：内閣官房 国民保護ポータルサイト（有権者がサイズを縮小）",
+    "page_url": "https://www.kokuminhogo.go.jp/kunren/hinan/post-93.html",
+    "license": "PDL1.0",
+    "people": false,
+    "ok_license": false,
+    "ok_people": false,
+    "width": 508,
+    "height": 379
+   },
+   {
+    "src": "assets/photos/2026-10-21-soumu-missile-kunren-2.jpg",
+    "alt": "校舎内で床に伏せて頭を守る児童たち",
+    "credit": "出典：内閣官房 国民保護ポータルサイト（有権者がサイズを縮小）",
+    "page_url": "https://www.kokuminhogo.go.jp/kunren/hinan/post-93.html",
+    "license": "PDL1.0",
+    "people": false,
+    "ok_license": false,
+    "ok_people": false,
+    "width": 508,
+    "height": 381
+   }
+  ]
  },
  {
   "id": "2026-10-21-env-tori-influenza",
@@ -3741,7 +4992,33 @@
     "url": "https://www.cas.go.jp/jp/seisaku/chiikimirai/kankei_fukudaijin/dai2/shiryo1.pdf"
    }
   ],
-  "updated_at": "2026-10-28T17:15:00+09:00"
+  "updated_at": "2026-10-30T23:39:35+09:00",
+  "photos": [
+   {
+    "src": "assets/photos/2026-10-20-kantei-kuni-chiho-kyogi-1.jpg",
+    "alt": "国と地方の協議の場で挨拶する高市総理",
+    "credit": "出典：首相官邸ホームページ（有権者がサイズを縮小）",
+    "page_url": "https://www.kantei.go.jp/jp/105/actions/202610/20kunitochihou.html",
+    "license": "PDL1.0",
+    "people": true,
+    "ok_license": false,
+    "ok_people": false,
+    "width": 1600,
+    "height": 1067
+   },
+   {
+    "src": "assets/photos/2026-10-20-kantei-kuni-chiho-kyogi-2.jpg",
+    "alt": "国と地方の協議の場の会議全体の様子",
+    "credit": "出典：首相官邸ホームページ（有権者がサイズを縮小）",
+    "page_url": "https://www.kantei.go.jp/jp/105/actions/202610/20kunitochihou.html",
+    "license": "PDL1.0",
+    "people": true,
+    "ok_license": false,
+    "ok_people": false,
+    "width": 1600,
+    "height": 1067
+   }
+  ]
  },
  {
   "id": "2026-10-20-mof-katayama-kaiken",
@@ -4339,7 +5616,21 @@
     "url": "https://www.env.go.jp/council/content/i_02/000428915.pdf"
    }
   ],
-  "updated_at": "2026-10-28T17:15:00+09:00"
+  "updated_at": "2026-10-30T23:39:35+09:00",
+  "photos": [
+   {
+    "src": "assets/photos/2026-10-20-env-kuma-consulting-1.jpg",
+    "alt": "クマに襲われたときの防御姿勢をとる人（うつ伏せで首を守る）",
+    "credit": "出典：政府広報オンライン（有権者がサイズを縮小）",
+    "page_url": "https://www.gov-online.go.jp/article/202609/entry-11625.html",
+    "license": "PDL1.0（提供元の記載がない写真）",
+    "people": false,
+    "ok_license": false,
+    "ok_people": false,
+    "width": 960,
+    "height": 720
+   }
+  ]
  },
  {
   "id": "2026-10-20-mlit-jido-butsuryu-doro",
@@ -4455,7 +5746,21 @@
     "url": "https://www.mofa.go.jp/mofaj/press/release/pressit_000001_04324.html"
    }
   ],
-  "updated_at": "2026-10-28T17:15:00+09:00"
+  "updated_at": "2026-10-30T23:39:35+09:00",
+  "photos": [
+   {
+    "src": "assets/photos/2026-10-19-mod-malaysia-boeisho-kaidan-1.jpg",
+    "alt": "書簡を交換し握手する茂木外務大臣とマレーシアのカレド国防大臣",
+    "credit": "出典：外務省ウェブサイト（有権者がサイズを縮小）",
+    "page_url": "https://www.mofa.go.jp/mofaj/press/release/pressit_000001_04324.html",
+    "license": "PDL1.0",
+    "people": true,
+    "ok_license": false,
+    "ok_people": false,
+    "width": 1000,
+    "height": 714
+   }
+  ]
  },
  {
   "id": "2026-10-19-mofa-panama-jishin-enjo",
@@ -4514,7 +5819,21 @@
     "url": "https://www.jica.go.jp/about/index.html"
    }
   ],
-  "updated_at": "2026-10-28T17:15:00+09:00"
+  "updated_at": "2026-10-30T23:39:35+09:00",
+  "photos": [
+   {
+    "src": "assets/photos/2026-10-19-mofa-panama-jishin-enjo-1.jpg",
+    "alt": "倉庫内に張られた緊急援助物資の大型テント",
+    "credit": "出典：外務省ウェブサイト（有権者がサイズを縮小）",
+    "page_url": "https://www.mofa.go.jp/mofaj/gaiko/jindo/jindoushien2_3_2.html",
+    "license": "PDL1.0",
+    "people": false,
+    "ok_license": false,
+    "ok_people": false,
+    "width": 475,
+    "height": 353
+   }
+  ]
  },
  {
   "id": "2026-10-19-mof-stainless-futorenbai",
@@ -4731,7 +6050,33 @@
     "url": "https://www.mofa.go.jp/mofaj/area/ps_summit/index.html"
    }
   ],
-  "updated_at": "2026-10-28T17:15:00+09:00"
+  "updated_at": "2026-10-30T23:39:35+09:00",
+  "photos": [
+   {
+    "src": "assets/photos/2026-10-19-env-pre-cop31-1.jpg",
+    "alt": "プレCOP31閣僚級会合の参加者が海辺で並ぶ集合写真",
+    "credit": "出典：環境省ホームページ（有権者がサイズを縮小）",
+    "page_url": "https://www.env.go.jp/press/press_05732.html",
+    "license": "PDL1.0",
+    "people": true,
+    "ok_license": false,
+    "ok_people": false,
+    "width": 495,
+    "height": 371
+   },
+   {
+    "src": "assets/photos/2026-10-19-env-pre-cop31-2.jpg",
+    "alt": "会合でマイクを持ち発言する日本の出席者",
+    "credit": "出典：環境省ホームページ（有権者がサイズを縮小）",
+    "page_url": "https://www.env.go.jp/press/press_05732.html",
+    "license": "PDL1.0",
+    "people": true,
+    "ok_license": false,
+    "ok_people": false,
+    "width": 497,
+    "height": 373
+   }
+  ]
  },
  {
   "id": "2026-10-19-soumu-fcc-oboegaki",
@@ -5018,7 +6363,21 @@
     "url": "https://www.mof.go.jp/policy/international_policy/mdbs/wb/index.htm"
    }
   ],
-  "updated_at": "2026-10-28T17:15:00+09:00"
+  "updated_at": "2026-10-30T23:39:35+09:00",
+  "photos": [
+   {
+    "src": "assets/photos/2026-10-16-mof-imf-enzetsu-1.jpg",
+    "alt": "バンコクでタイの副首相兼財務大臣と握手する片山財務大臣",
+    "credit": "出典：財務省ウェブサイト（有権者がサイズを縮小）",
+    "page_url": "https://www.mof.go.jp/policy/international_policy/convention/dialogue/20261014103034.html",
+    "license": "PDL1.0",
+    "people": true,
+    "ok_license": false,
+    "ok_people": false,
+    "width": 1600,
+    "height": 1067
+   }
+  ]
  },
  {
   "id": "2026-10-16-mlit-chiiki-kotsu",
@@ -5140,7 +6499,21 @@
     "url": "https://www.maff.go.jp/j/zyukyu/anpo/1.html"
    }
   ],
-  "updated_at": "2026-10-28T17:15:00+09:00"
+  "updated_at": "2026-10-30T23:39:35+09:00",
+  "photos": [
+   {
+    "src": "assets/photos/2026-10-15-kantei-kakuryo-kaiken-1.jpg",
+    "alt": "閣僚人事について記者会見する高市総理",
+    "credit": "出典：首相官邸ホームページ（有権者がサイズを縮小）",
+    "page_url": "https://www.kantei.go.jp/jp/105/actions/202610/15kaiken.html",
+    "license": "PDL1.0",
+    "people": true,
+    "ok_license": false,
+    "ok_people": false,
+    "width": 1280,
+    "height": 720
+   }
+  ]
  },
  {
   "id": "2026-10-15-meti-nichibei-handoutai",
@@ -5263,7 +6636,21 @@
     "url": "https://www.fdma.go.jp/disaster/info/items/20260728kumamotojishin62.pdf"
    }
   ],
-  "updated_at": "2026-10-28T17:15:00+09:00"
+  "updated_at": "2026-10-30T23:39:35+09:00",
+  "photos": [
+   {
+    "src": "assets/photos/2026-10-15-mhlw-kumamoto-joseikin-1.jpg",
+    "alt": "ヘリの窓から熊本地震の被災地を上空視察する高市総理",
+    "credit": "出典：首相官邸ホームページ（有権者がサイズを縮小）",
+    "page_url": "https://www.kantei.go.jp/jp/105/actions/202608/03sisatsu.html",
+    "license": "PDL1.0",
+    "people": true,
+    "ok_license": false,
+    "ok_people": false,
+    "width": 1600,
+    "height": 1067
+   }
+  ]
  },
  {
   "id": "2026-10-15-soumu-datacenter",
@@ -5385,7 +6772,21 @@
     "url": "https://www.kantei.go.jp/jp/105/statement/2026/1015kaiken.html"
    }
   ],
-  "updated_at": "2026-10-28T17:15:00+09:00"
+  "updated_at": "2026-10-30T23:39:35+09:00",
+  "photos": [
+   {
+    "src": "assets/photos/2026-10-14-kantei-norin-kotai-1.jpg",
+    "alt": "農林水産大臣の交代について会見する高市総理",
+    "credit": "出典：首相官邸ホームページ（有権者がサイズを縮小）",
+    "page_url": "https://www.kantei.go.jp/jp/105/actions/202610/14kaiken.html",
+    "license": "PDL1.0",
+    "people": true,
+    "ok_license": false,
+    "ok_people": false,
+    "width": 1280,
+    "height": 720
+   }
+  ]
  },
  {
   "id": "2026-10-14-mofa-jinken-riji",
@@ -5593,7 +6994,21 @@
     "url": "https://www.mofa.go.jp/mofaj/a_o/na2/pressit_000001_00722.html"
    }
   ],
-  "updated_at": "2026-10-28T17:15:00+09:00"
+  "updated_at": "2026-10-30T23:39:35+09:00",
+  "photos": [
+   {
+    "src": "assets/photos/2026-10-12-mod-kitachosen-missile-1.jpg",
+    "alt": "青い海を航行するイージス護衛艦「みょうこう」",
+    "credit": "出典：海上自衛隊ウェブサイト（有権者がサイズを縮小）",
+    "page_url": "https://www.mod.go.jp/msdf/equipment/ships/ddg/kongou/",
+    "license": "PDL1.0",
+    "people": false,
+    "ok_license": false,
+    "ok_people": false,
+    "width": 1600,
+    "height": 1067
+   }
+  ]
  },
  {
   "id": "2026-10-05-hatsugen-shoshin-hyomei",
@@ -5665,6 +7080,20 @@
     "url": "https://www.cao.go.jp/minister/2609_g_hosono/kaiken/20260925kaiken.html"
    }
   ],
-  "updated_at": "2026-10-28T17:15:00+09:00"
+  "updated_at": "2026-10-30T23:39:35+09:00",
+  "photos": [
+   {
+    "src": "assets/photos/2026-10-05-hatsugen-shoshin-hyomei-1.jpg",
+    "alt": "本会議場の演壇で所信表明演説をする高市総理",
+    "credit": "出典：首相官邸ホームページ（有権者がサイズを縮小）",
+    "page_url": "https://www.kantei.go.jp/jp/105/statement/2026/1005shoshinhyomei.html",
+    "license": "PDL1.0",
+    "people": true,
+    "ok_license": false,
+    "ok_people": false,
+    "width": 1600,
+    "height": 1066
+   }
+  ]
  }
 ]
