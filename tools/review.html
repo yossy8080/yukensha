@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<base href="/"><!-- 写真の src（assets/photos/…）を /review/ からでも正しく読むため -->
 <title>有権者 — 管理ページ</title>
 <link rel="stylesheet" href="/assets/style.css">
 <style>
@@ -48,6 +49,23 @@
   .stats div { padding: 14px 0; border-bottom: 1px solid var(--rule); }
   .stats b { display: block; font-family: var(--serif); font-size: 28px; }
   .stats span { color: var(--muted); font-size: 13px; }
+  /* 写真の確認 */
+  .ph-badge { display: inline-block; margin: 0 0 8px; padding: 0 8px; font-size: 12px; font-weight: 700; color: #1a1205; background: #f0b84a; }
+  .ph-review { margin: 0 0 22px; border-top: 1px dashed var(--rule); padding-top: 12px; }
+  .ph-review h4 { margin: 0 0 8px; font-size: 14px; color: var(--muted); font-weight: 700; }
+  .ph { display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: 16px; padding: 10px 0; border-bottom: 1px solid var(--rule); font-size: 14px; }
+  @media (max-width: 560px) { .ph { grid-template-columns: 1fr; } }
+  .ph img { width: 240px; max-width: 100%; height: 160px; object-fit: cover; border-radius: 6px; background: var(--paper-2); }
+  .ph-missing img { display: none; }
+  .ph-missing .ph-thumb::after { content: "画像ファイルが見つかりません"; display: block; padding: 20px 10px; color: var(--accent); border: 1px dashed var(--accent); border-radius: 6px; }
+  .ph p { margin: 0 0 4px; line-height: 1.6; }
+  .ph-meta, .ph code { color: var(--muted); font-size: 12px; }
+  .ph label { display: flex; align-items: center; gap: 8px; min-height: 36px; cursor: pointer; }
+  .ph input { width: 18px; height: 18px; accent-color: var(--accent); }
+  .ph-state { font-weight: 700; }
+  .ph[data-ok="1"] .ph-state { color: #7fd69a; }
+  .ph[data-ok="0"] .ph-state { color: #f0b84a; }
+  .ph-del { font: inherit; font-size: 13px; background: none; color: var(--text); border: 1px solid var(--rule); padding: 4px 12px; min-height: 36px; cursor: pointer; margin-top: 4px; }
 </style>
 </head>
 <body>
@@ -73,6 +91,7 @@
       <button data-all="approve">全部「公開する」にする</button>
       <button data-all="later">全部「あとで」に戻す</button>
       <button id="rw-all" hidden>書き直しをすべて『公開する』にする</button>
+      <button id="ph-all-lic" hidden>表示中の写真のライセンスOKをすべてチェック</button>
       <span class="rw-count" id="rw-count"></span>
     </div>
     <div id="drafts"></div>
@@ -130,15 +149,32 @@ function rewriteHtml(pub) {
   return `<details class="rw-now"><summary>いまの公開版を見る</summary>${Y.article(pub, sources).replace(/ id="[^"]*"/, "")}</details>`;
 }
 
-function renderDrafts() {
-  const box = document.getElementById("drafts");
-  const rw = drafts.filter((d) => rewriteOf(d.id)).length;
-  document.getElementById("rw-all").hidden = !rw;
-  document.getElementById("rw-count").textContent = rw ? `うち書き直し ${rw}件` : "";
-  box.innerHTML = !drafts.length ? Y.empty("確認待ちの下書きはありません。") : drafts.map((d0) => {
-    const d = { ...d0, ...(edits[d0.id] || {}) }, s = state[d.id] || "later", pub = rewriteOf(d.id);
-    return `<section class="draft" data-kind="draft" data-id="${Y.esc(d.id)}" data-state="${s}">
+// 写真の確認欄（サイトに出るのは「ライセンスOK」かつ「人物なし／人物OK」の写真だけ）
+function photosHtml(d) {
+  const ps = Array.isArray(d.photos) ? d.photos : [];
+  if (!ps.length) return "";
+  return `<div class="ph-review"><h4>写真（${ps.length}枚）</h4>${ps.map((p, i) => {
+    const ok = Y.photoOk(p), people = p.people !== false;
+    return `<div class="ph" data-i="${i}" data-ok="${ok ? 1 : 0}">
+      <div class="ph-thumb"><img src="${Y.esc(p.src)}" alt="" loading="lazy" onerror="this.closest('.ph').classList.add('ph-missing')"></div>
+      <div>
+        <p>${Y.esc(p.alt || "（説明なし）")}</p>
+        <p class="ph-meta">${Y.esc(p.credit || "（クレジットなし）")}｜ライセンス：${Y.esc(p.license || "（未記入）")}｜${p.page_url ? `<a href="${Y.esc(p.page_url)}" target="_blank" rel="noopener">出典ページ ↗</a>` : "出典ページなし"}<br><code>${Y.esc(p.src)}</code></p>
+        <label><input type="checkbox" class="ph-lic" ${p.ok_license === true ? "checked" : ""}> ライセンスOK（出典を確認した）</label>
+        ${people ? `<label><input type="checkbox" class="ph-ppl" ${p.ok_people === true ? "checked" : ""}> 人物OK（肖像の問題なし）</label>` : `<p class="ph-meta">人物なし</p>`}
+        <p class="ph-state">${ok ? "サイトに出ます" : "まだサイトに出ません"}</p>
+        <button class="ph-del" type="button">この写真を外す</button>
+      </div>
+    </div>`;
+  }).join("")}</div>`;
+}
+
+function draftCard(d0) {
+  const d = { ...d0, ...(edits[d0.id] || {}) }, s = state[d.id] || "later", pub = rewriteOf(d.id);
+  const noPhoto = !(d.photos || []).some(Y.photoOk);
+  return `<section class="draft" data-kind="draft" data-id="${Y.esc(d.id)}" data-state="${s}">
       <div class="controls">
+        ${noPhoto ? `<p class="ph-badge">写真なし</p>` : ""}
         <fieldset>
           <label><input type="radio" name="s-${d.id}" value="approve" ${s === "approve" ? "checked" : ""}> 公開する</label>
           <label><input type="radio" name="s-${d.id}" value="reject" ${s === "reject" ? "checked" : ""}> 公開しない</label>
@@ -147,20 +183,15 @@ function renderDrafts() {
         <label><input type="checkbox" class="feat" ${d.featured ? "checked" : ""}> 国全体のページにも載せる</label>
         <p><button class="edit-btn" type="button">文章を直す</button></p>
       </div>
-      <div>${pub ? `<p class="rw-badge">書き直し（公開中の記事を置きかえ）</p>` : ""}${Y.article(d, sources)}${pub ? rewriteHtml(pub) : ""}${editorHtml(d)}</div>
+      <div>${pub ? `<p class="rw-badge">書き直し（公開中の記事を置きかえ）</p>` : ""}${Y.article(d, sources)}${photosHtml(d)}${pub ? rewriteHtml(pub) : ""}${editorHtml(d)}</div>
     </section>`;
-  }).join("");
 }
 
-function renderNews() {
-  const q = document.getElementById("q").value.trim(), fm = document.getElementById("fm").value;
-  const list = news.filter((n) => (!fm || n.ministry === fm || (n.also || []).includes(fm)) &&
-    (!q || (n.title + n.summary + (n.points || []).join("")).includes(q)));
-  document.getElementById("news").innerHTML = !list.length ? Y.empty("該当する記事はありません。") : list.map((n0) => {
-    const n = { ...n0, ...(nedits[n0.id] || {}) }, s = nstate[n.id] || "keep";
-    const dirty = nedits[n.id] || s === "unpublish" ? 1 : 0;
-    const pub = n0.published_at ? `公開：${n0.published_at.slice(5, 16).replace("T", " ")}` : "";
-    return `<section class="draft" data-kind="news" data-id="${Y.esc(n.id)}" data-state="${s}" data-dirty="${dirty}">
+function newsCard(n0) {
+  const n = { ...n0, ...(nedits[n0.id] || {}) }, s = nstate[n.id] || "keep";
+  const dirty = nedits[n.id] || s === "unpublish" ? 1 : 0;
+  const pub = n0.published_at ? `公開：${n0.published_at.slice(5, 16).replace("T", " ")}` : "";
+  return `<section class="draft" data-kind="news" data-id="${Y.esc(n.id)}" data-state="${s}" data-dirty="${dirty}">
       <div class="controls">
         <fieldset>
           <label><input type="radio" name="n-${n.id}" value="keep" ${s === "keep" ? "checked" : ""}> 公開したまま</label>
@@ -170,9 +201,42 @@ function renderNews() {
         <p><button class="edit-btn" type="button">文章を直す</button></p>
         <p style="color:var(--muted);font-size:12px">${Y.esc(pub)}<br><a href="https://yossy8080.github.io/yukensha/ministries.html?m=${Y.esc(n.ministry)}#${Y.esc(n.id)}" target="_blank" rel="noopener">公開サイトで見る</a></p>
       </div>
-      <div>${Y.article(n, sources)}${editorHtml(n)}</div>
+      <div>${Y.article(n, sources)}${photosHtml(n)}${editorHtml(n)}</div>
     </section>`;
-  }).join("");
+}
+
+function renderDrafts() {
+  const box = document.getElementById("drafts");
+  const rw = drafts.filter((d) => rewriteOf(d.id)).length;
+  document.getElementById("rw-all").hidden = !rw;
+  document.getElementById("rw-count").textContent = rw ? `うち書き直し ${rw}件` : "";
+  document.getElementById("ph-all-lic").hidden = !drafts.some((d) => (photosOf(d, edits)).length);
+  box.innerHTML = !drafts.length ? Y.empty("確認待ちの下書きはありません。") : drafts.map(draftCard).join("");
+}
+
+function renderNews() {
+  const q = document.getElementById("q").value.trim(), fm = document.getElementById("fm").value;
+  const list = news.filter((n) => (!fm || n.ministry === fm || (n.also || []).includes(fm)) &&
+    (!q || (n.title + n.summary + (n.points || []).join("")).includes(q)));
+  document.getElementById("news").innerHTML = !list.length ? Y.empty("該当する記事はありません。") : list.map(newsCard).join("");
+}
+
+// 写真の一覧（直している途中ならその内容）。写真を変えるときは、この写しを直して edits に入れる
+function photosOf(item, eds) {
+  const e = eds[item.id];
+  return ((e && e.photos) || item.photos || []).map((p) => ({ ...p }));
+}
+
+// 1つの記事の写真を変えて、そのカードだけ描き直す
+function changePhotos(sec, fn) {
+  const id = sec.dataset.id, [, eds] = store(sec);
+  const item = (sec.dataset.kind === "news" ? news : drafts).find((x) => x.id === id);
+  if (!item) return;
+  const ps = photosOf(item, eds);
+  fn(ps);
+  eds[id] = { ...(eds[id] || {}), photos: ps };
+  sec.outerHTML = sec.dataset.kind === "news" ? newsCard(item) : draftCard(item);
+  tally();
 }
 
 function renderOpinion() {
@@ -221,6 +285,9 @@ function tally() {
   if (oa) parts.push(`オピニオン公開 ${oa}件`); if (orj) parts.push(`オピニオン公開しない ${orj}件`);
   const rw = Object.keys(state).filter((k) => state[k] === "approve" && rewriteOf(k)).length;
   if (a) parts.push(`公開する ${a}件` + (rw ? `（うち書き直し ${rw}件：公開中の記事を置きかえ）` : "")); if (r) parts.push(`公開しない ${r}件`);
+  // 公開・公開しないを選んでいない下書きの変更（写真の確認など）は、下書きのまま保存する
+  const de = Object.keys(edits).filter((k) => !["approve", "reject"].includes(state[k])).length;
+  if (de) parts.push(`下書きの変更 ${de}件`);
   if (e) parts.push(`修正 ${e}件`); if (u) parts.push(`非公開に戻す ${u}件`);
   document.getElementById("tally").textContent = parts.length ? "変更：" + parts.join("／") : "変更はまだありません";
   document.getElementById("go").disabled = !parts.length;
@@ -234,6 +301,13 @@ function store(sec) { return sec.dataset.kind === "news" ? [nstate, nedits] : se
 
 document.addEventListener("change", (e) => {
   const sec = e.target.closest(".draft"); if (!sec) return;
+  const ph = e.target.closest(".ph");
+  if (ph) {
+    const i = +ph.dataset.i, on = e.target.checked;
+    if (e.target.classList.contains("ph-lic")) return changePhotos(sec, (ps) => (ps[i].ok_license = on));
+    if (e.target.classList.contains("ph-ppl")) return changePhotos(sec, (ps) => (ps[i].ok_people = on));
+    return;
+  }
   const id = sec.dataset.id, [st, ed] = store(sec);
   if (e.target.type === "radio") { st[id] = e.target.value; sec.dataset.state = e.target.value; }
   if (e.target.classList.contains("feat")) ed[id] = { ...(ed[id] || {}), featured: e.target.checked };
@@ -258,6 +332,18 @@ document.addEventListener("click", (e) => {
   }
   if (t.dataset.all) { drafts.forEach((d) => (state[d.id] = t.dataset.all)); render(); }
   if (t.id === "rw-all") { drafts.filter((d) => rewriteOf(d.id)).forEach((d) => (state[d.id] = "approve")); render(); }
+  if (t.classList.contains("ph-del")) {
+    const sec = t.closest(".draft"), i = +t.closest(".ph").dataset.i;
+    if (confirm("この写真を記事から外しますか？（画像ファイルは消えません）")) changePhotos(sec, (ps) => ps.splice(i, 1));
+  }
+  if (t.id === "ph-all-lic") {
+    // 下書きタブに出ている写真すべてに「ライセンスOK」を付ける（人物OKは1枚ずつ確かめる）
+    drafts.forEach((d) => {
+      const ps = photosOf(d, edits);
+      if (ps.some((p) => p.ok_license !== true)) edits[d.id] = { ...(edits[d.id] || {}), photos: ps.map((p) => ({ ...p, ok_license: true })) };
+    });
+    render();
+  }
   const tb = t.closest("[data-tab]");
   if (tb) {
     tab = tb.dataset.tab;
@@ -276,9 +362,9 @@ document.getElementById("go").addEventListener("click", async () => {
   const out = [];
   const approve = Object.keys(state).filter((k) => state[k] === "approve");
   const reject = Object.keys(state).filter((k) => state[k] === "reject");
-  if (approve.length || reject.length) {
+  if (approve.length || reject.length || Object.keys(edits).length) {
     const j = await post("/api/publish", { approve, reject, edits });
-    out.push(j.error ? "エラー：" + j.error : `下書き：${j.published}件を公開、${j.updated ? `${j.updated}件を書き直し、` : ""}${j.rejected}件を公開しない（残り${j.remaining}件）。${j.git || ""}`);
+    out.push(j.error ? "エラー：" + j.error : !j.published && !j.updated && !j.rejected ? `下書きの変更を保存しました（下書き${j.remaining}件）。` : `下書き：${j.published}件を公開、${j.updated ? `${j.updated}件を書き直し、` : ""}${j.rejected}件を公開しない（残り${j.remaining}件）。${j.git || ""}`);
   }
   // 書き直しを公開した記事は、公開済みタブでの変更を送らない（置きかえた新しい版に古い変更がかぶさるのを防ぐ）
   approve.filter(rewriteOf).forEach((k) => { delete nstate[k]; delete nedits[k]; });

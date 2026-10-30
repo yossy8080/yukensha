@@ -8,7 +8,7 @@
   1. 選んだ下書きを data/news.json に追加（公開済みになる）
      すでに公開中の記事と同じ id の下書きは「書き直し」として、その記事を置きかえる
   2. 「公開しない」を選んだものは drafts/rejected.json に移す
-  3. git にコミットする（GitHubとつながっていれば push もする）
+  3. git にコミットする（記事が使っている写真 assets/photos/ も一緒に。GitHubとつながっていれば push もする）
 自分のPCの中だけで動き、外からはアクセスできません（127.0.0.1 のみ）。
 """
 import datetime as dt
@@ -28,11 +28,50 @@ OPINION_DRAFTS = ROOT / "drafts" / "opinion_drafts.json"
 REVIEW_HTML = Path(__file__).resolve().parent / "review.html"
 PORT = int(os.environ.get("YUKENSHA_PORT", "5600"))
 JST = dt.timezone(dt.timedelta(hours=9))
-EDITABLE = ("title", "summary", "points", "featured", "tags", "explain", "refs")
+EDITABLE = ("title", "summary", "points", "featured", "tags", "explain", "refs", "photos")
+PHOTO_DIR = "assets/photos/"
+
+
+def clean_photos(v) -> list:
+    """photos は辞書のリストだけ通す。写真のファイルは assets/photos/ の中にあるものだけ（.. は使えない）。
+    おかしいものがあれば保存せずにエラーにする（どの写真か分かるように返す）。"""
+    if not isinstance(v, list):
+        raise ValueError("photos はリストにしてください")
+    out = []
+    for x in v:
+        if not isinstance(x, dict):
+            raise ValueError("photos の中身は {src, alt, …} の形にしてください")
+        src = str(x.get("src") or "").strip().replace("\\", "/")
+        if not src.startswith(PHOTO_DIR) or ".." in src or not (ROOT / src).is_file():
+            raise ValueError(f"写真のファイルがありません（assets/photos/ の中に置いてください）: {src}")
+        item = {"src": src}
+        for f in ("alt", "credit", "page_url", "license"):
+            item[f] = str(x.get(f) or "").strip()
+        item["people"] = x.get("people") is not False  # 書いていなければ「人物あり」として扱う（確認が必要な側に倒す）
+        item["ok_license"] = x.get("ok_license") is True
+        item["ok_people"] = x.get("ok_people") is True
+        for f in ("width", "height"):
+            if isinstance(x.get(f), int) and x[f] > 0:
+                item[f] = x[f]
+        out.append(item)
+    return out
+
+
+def photo_files(items) -> list:
+    """記事が使っている写真のファイル（assets/photos/ の中にあって、実際にあるものだけ）。"""
+    files = set()
+    for n in items:
+        for p in n.get("photos") or []:
+            src = str(p.get("src") or "") if isinstance(p, dict) else ""
+            if src.startswith(PHOTO_DIR) and ".." not in src and (ROOT / src).is_file():
+                files.add(src)
+    return sorted(files)
 
 
 def clean(k, v):
     """explain / refs は辞書のリストだけ通す（文字の項目だけ残し、空の行は捨てる）。"""
+    if k == "photos":
+        return clean_photos(v)
     keys = {"explain": ("q", "a"), "refs": ("title", "site", "url")}.get(k)
     if not keys:
         return v
@@ -49,7 +88,7 @@ def apply_edits(item: dict, e: dict):
     for k in EDITABLE:
         if k in e:
             v = clean(k, e[k])
-            if k in ("explain", "refs") and not v:
+            if k in ("explain", "refs", "photos") and not v:
                 item.pop(k, None)  # 空にしたら項目ごと消す（前と同じ表示に戻る）
             else:
                 item[k] = v
@@ -103,6 +142,8 @@ def publish(body: dict) -> dict:
     for d in drafts:
         apply_edits(d, edits.get(d["id"], {}))
         if d["id"] in approve:
+            if "photos" in d:  # 公開する記事の写真は、ファイルがそろっているか確かめる（足りなければ何も保存しない）
+                apply_edits(d, {"photos": d["photos"]})
             d["published_at"] = now
             published.append(d)
         elif d["id"] in reject:
@@ -125,7 +166,8 @@ def publish(body: dict) -> dict:
             news.append(p)
             new += 1
     news.sort(key=lambda n: (n["date"], n.get("published_at", "")), reverse=True)
-    write(NEWS, news)
+    if published:  # 下書きの写真の確認だけを保存したときは、公開済みの記事には触らない
+        write(NEWS, news)
     write(DRAFTS, remaining)
     if rejected:
         write(REJECTED, read(REJECTED, []) + rejected)
@@ -140,10 +182,14 @@ def publish(body: dict) -> dict:
 
 
 def save_git(message: str) -> str:
-    """data/news.json をコミットしてGitHubに送る。結果をやさしい日本語で返す。"""
+    """data/news.json と、記事が使っている写真をコミットしてGitHubに送る。結果をやさしい日本語で返す。
+    写真は news.json のどれかの記事が使っているものだけ入れる（使っていない写真は git に入れない）。"""
     if not (ROOT / ".git").exists():
         return ""
     git("add", "data/news.json")
+    photos = photo_files(read(NEWS, []))
+    if photos:
+        git("add", "--", *photos)
     code, out = git("commit", "-m", message)
     if code != 0:
         return "（記録用のコミットはできませんでしたが、保存は完了しています）"
