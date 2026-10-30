@@ -32,9 +32,10 @@ EDITABLE = ("title", "summary", "points", "featured", "tags", "explain", "refs",
 PHOTO_DIR = "assets/photos/"
 
 
-def clean_photos(v) -> list:
+def clean_photos(v, need_file=True) -> list:
     """photos は辞書のリストだけ通す。写真のファイルは assets/photos/ の中にあるものだけ（.. は使えない）。
-    おかしいものがあれば保存せずにエラーにする（どの写真か分かるように返す）。"""
+    おかしいものがあれば保存せずにエラーにする（どの写真か分かるように返す）。
+    need_file=False（下書きのまま残すとき）は、ファイルがまだ無くてもよい（ほかの下書きの公開を止めないため）。"""
     if not isinstance(v, list):
         raise ValueError("photos はリストにしてください")
     out = []
@@ -42,11 +43,13 @@ def clean_photos(v) -> list:
         if not isinstance(x, dict):
             raise ValueError("photos の中身は {src, alt, …} の形にしてください")
         src = str(x.get("src") or "").strip().replace("\\", "/")
-        if not src.startswith(PHOTO_DIR) or ".." in src or not (ROOT / src).is_file():
+        if not src.startswith(PHOTO_DIR) or ".." in src or (need_file and not (ROOT / src).is_file()):
             raise ValueError(f"写真のファイルがありません（assets/photos/ の中に置いてください）: {src}")
         item = {"src": src}
         for f in ("alt", "credit", "page_url", "license"):
             item[f] = str(x.get(f) or "").strip()
+        if not item["page_url"].startswith(("https://", "http://")):
+            item["page_url"] = ""  # javascript: などのリンクは入れない
         item["people"] = x.get("people") is not False  # 書いていなければ「人物あり」として扱う（確認が必要な側に倒す）
         item["ok_license"] = x.get("ok_license") is True
         item["ok_people"] = x.get("ok_people") is True
@@ -68,10 +71,10 @@ def photo_files(items) -> list:
     return sorted(files)
 
 
-def clean(k, v):
+def clean(k, v, need_file=True):
     """explain / refs は辞書のリストだけ通す（文字の項目だけ残し、空の行は捨てる）。"""
     if k == "photos":
-        return clean_photos(v)
+        return clean_photos(v, need_file)
     keys = {"explain": ("q", "a"), "refs": ("title", "site", "url")}.get(k)
     if not keys:
         return v
@@ -84,14 +87,14 @@ def clean(k, v):
     return out
 
 
-def apply_edits(item: dict, e: dict):
+def apply_edits(item: dict, e: dict, need_file=True):
     for k in EDITABLE:
         if k in e:
-            v = clean(k, e[k])
-            if k in ("explain", "refs", "photos") and not v:
+            v = clean(k, e[k], need_file)
+            if k in ("explain", "refs") and not v:
                 item.pop(k, None)  # 空にしたら項目ごと消す（前と同じ表示に戻る）
             else:
-                item[k] = v
+                item[k] = v  # photos は空でも [] で残す（書き直しで「写真を全部外した」と分かるように）
 
 
 
@@ -140,7 +143,7 @@ def publish(body: dict) -> dict:
 
     published, rejected, remaining = [], [], []
     for d in drafts:
-        apply_edits(d, edits.get(d["id"], {}))
+        apply_edits(d, edits.get(d["id"], {}), need_file=d["id"] in approve)
         if d["id"] in approve:
             if "photos" in d:  # 公開する記事の写真は、ファイルがそろっているか確かめる（足りなければ何も保存しない）
                 apply_edits(d, {"photos": d["photos"]})
@@ -157,7 +160,10 @@ def publish(body: dict) -> dict:
     new, updated = 0, 0
     for p in published:
         if p["id"] in pos:
-            p["published_at"] = news[pos[p["id"]]].get("published_at", now)
+            old = news[pos[p["id"]]]
+            if "photos" not in p and old.get("photos"):
+                p["photos"] = old["photos"]  # 書き直しに photos 欄が無ければ、公開中の写真（と確認の結果）を引き継ぐ
+            p["published_at"] = old.get("published_at", now)
             p["updated_at"] = now
             news[pos[p["id"]]] = p
             updated += 1

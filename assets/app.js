@@ -65,8 +65,9 @@ const Y = (() => {
   function photo(p) {
     const w = Number(p.width) || 0, h = Number(p.height) || 0;
     const size = w && h ? ` width="${w}" height="${h}" style="aspect-ratio:${w}/${h}"` : "";
-    const link = p.page_url ? `（<a href="${esc(p.page_url)}" target="_blank" rel="noopener">出典ページ ↗</a>）` : "";
-    return `<figure class="photo"><img src="${esc(p.src)}" alt="${esc(p.alt)}" loading="lazy" decoding="async"${size}><figcaption>${esc(p.credit)}${link}</figcaption></figure>`;
+    const link = /^https?:\/\//.test(p.page_url || "") ? `（<a href="${esc(p.page_url)}" target="_blank" rel="noopener">出典ページ ↗</a>）` : "";
+    const cap = esc(p.credit) + link;
+    return `<figure class="photo"><img src="${esc(p.src)}" alt="${esc(p.alt)}" loading="lazy" decoding="async"${size}>${cap ? `<figcaption>${cap}</figcaption>` : ""}</figure>`;
   }
 
   // 1件の記事（大きい表示）

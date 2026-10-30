@@ -159,7 +159,7 @@ function photosHtml(d) {
       <div class="ph-thumb"><img src="${Y.esc(p.src)}" alt="" loading="lazy" onerror="this.closest('.ph').classList.add('ph-missing')"></div>
       <div>
         <p>${Y.esc(p.alt || "（説明なし）")}</p>
-        <p class="ph-meta">${Y.esc(p.credit || "（クレジットなし）")}｜ライセンス：${Y.esc(p.license || "（未記入）")}｜${p.page_url ? `<a href="${Y.esc(p.page_url)}" target="_blank" rel="noopener">出典ページ ↗</a>` : "出典ページなし"}<br><code>${Y.esc(p.src)}</code></p>
+        <p class="ph-meta">${Y.esc(p.credit || "（クレジットなし）")}｜ライセンス：${Y.esc(p.license || "（未記入）")}｜${/^https?:\/\//.test(p.page_url || "") ? `<a href="${Y.esc(p.page_url)}" target="_blank" rel="noopener">出典ページ ↗</a>` : "出典ページなし"}<br><code>${Y.esc(p.src)}</code></p>
         <label><input type="checkbox" class="ph-lic" ${p.ok_license === true ? "checked" : ""}> ライセンスOK（出典を確認した）</label>
         ${people ? `<label><input type="checkbox" class="ph-ppl" ${p.ok_people === true ? "checked" : ""}> 人物OK（肖像の問題なし）</label>` : `<p class="ph-meta">人物なし</p>`}
         <p class="ph-state">${ok ? "サイトに出ます" : "まだサイトに出ません"}</p>
