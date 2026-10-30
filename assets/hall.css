@@ -184,6 +184,10 @@
 }
 .hall-reader .headline:focus { outline: none; }
 .hall-reader .summary { font-size: clamp(18px, 2.2vw, 20px); line-height: 1.9; margin: 0 0 26px; color: #e3e9f2; }
+.hall-reader .photo { margin: 0 0 26px; }
+.hall-reader .photo img { border-radius: 10px; background: rgba(143, 208, 255, .06); }
+.hall-reader .photo figcaption { margin-top: 8px; font-size: 13px; color: var(--sub, #93a1b5); }
+.hall-reader .photo figcaption a { color: var(--glow, #d6ecff); }
 .hall-reader .quotes { margin: 0 0 28px; padding: 6px 0 6px 20px; border-left: 2px solid var(--glow-2, #8fd0ff); }
 .hall-reader .quotes blockquote { font-size: clamp(18px, 2.2vw, 21px); line-height: 1.85; margin: 0 0 10px; }
 .hall-reader .quotes figcaption { font-size: 14px; }

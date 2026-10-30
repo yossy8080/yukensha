@@ -1,7 +1,8 @@
 /* 有権者 — 共通スクリプト
    データ: data/sources.json（府省の一覧）, data/news.json（公開済みの記事）
    記事の形: {id, date, ministry, also[], featured, tags[], title, summary, points[], source_url, source_title, site,
-             explain[{q, a}]（任意・はじめての人向けの背景）, refs[{title, site, url}]（任意・背景の説明に使った公式ページ）} */
+             explain[{q, a}]（任意・はじめての人向けの背景）, refs[{title, site, url}]（任意・背景の説明に使った公式ページ）,
+             photos[{src, alt, credit, page_url, license, people, ok_license, ok_people, width?, height?}]（任意・写真。README の「写真」を参照）} */
 
 const Y = (() => {
   const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -56,18 +57,34 @@ const Y = (() => {
     return `<figure class="quotes">${it.quotes.map((q) => `<blockquote>「${esc(q)}」</blockquote>`).join("")}${who ? `<figcaption>— ${who}</figcaption>` : ""}</figure>`;
   }
 
+  // 写真を出してよいか：ライセンスを Roy が確認済み、かつ人物が写っていないか人物も確認済み
+  // （確認が済んでいない写真は news.json に入っていても出さない）
+  const photoOk = (p) => !!p && !!p.src && p.ok_license === true && (p.people === false || p.ok_people === true);
+
+  // 写真1枚（説明文 alt・クレジット・出典ページへのリンク）
+  function photo(p) {
+    const w = Number(p.width) || 0, h = Number(p.height) || 0;
+    const size = w && h ? ` width="${w}" height="${h}" style="aspect-ratio:${w}/${h}"` : "";
+    const link = /^https?:\/\//.test(p.page_url || "") ? `（<a href="${esc(p.page_url)}" target="_blank" rel="noopener">出典ページ ↗</a>）` : "";
+    const cap = esc(p.credit) + link;
+    return `<figure class="photo"><img src="${esc(p.src)}" alt="${esc(p.alt)}" loading="lazy" decoding="async"${size}>${cap ? `<figcaption>${cap}</figcaption>` : ""}</figure>`;
+  }
+
   // 1件の記事（大きい表示）
   function article(it, srcMap) {
     const pts = (it.points || []).map((p) => `<li>${esc(p)}</li>`).join("");
     const tags = (it.tags || []).map((t) => `<span class="tag">${esc(t)}</span>`).join("");
     const ex = explain(it);
+    const ph = (Array.isArray(it.photos) ? it.photos : []).filter(photoOk).map(photo);
     return `
       <article class="item" id="${esc(it.id)}">
         <p class="kicker"><time datetime="${esc(it.date)}">${fmtDate(it.date)}</time>${ministryLabel(it, srcMap)}</p>
         <h3 class="headline">${esc(it.title)}</h3>
+        ${ph[0] || ""}
         <p class="summary">${esc(it.summary)}</p>
         ${ex}${quotes(it)}
         ${pts ? `${ex ? `<p class="points-label" data-no-gloss>今回のポイント</p>` : ""}<ul class="points">${pts}</ul>` : ""}
+        ${ph.slice(1).join("")}
         ${sourceLine(it)}${refsLine(it)}
         ${tags ? `<p class="tags">${tags}</p>` : ""}
       </article>`;
@@ -118,7 +135,7 @@ const Y = (() => {
     </article>`;
   }
 
-  return { esc, load, fmtDate, byDateDesc, article, row, empty, markNav, quotes, visible, opinion };
+  return { esc, load, fmtDate, byDateDesc, article, row, empty, markNav, quotes, visible, opinion, photoOk };
 })();
 
 document.addEventListener("DOMContentLoaded", Y.markNav);
