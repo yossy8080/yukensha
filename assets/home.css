@@ -60,6 +60,9 @@ html.webgl .flow { display: none; }
   display: grid; place-items: center; text-align: center; padding: calc(var(--header-h) + 24px) 20px 120px;
 }
 .hero-inner { position: relative; z-index: 1; max-width: 960px; }
+/* 日本のサイトだとひと目でわかる見出し。国旗は加工せず正しい比率（縦2:横3、円の直径は縦の3/5）で小さく置く */
+.hero-eyebrow { margin: 0 0 6px; display: inline-flex; align-items: center; gap: 12px; font-size: clamp(14px, 1.5vw, 18px); letter-spacing: .24em; color: var(--text); }
+.hinomaru { flex: none; border-radius: 1px; box-shadow: 0 0 0 1px rgba(255, 255, 255, .25), 0 2px 10px rgba(0, 0, 0, .5); }
 .hero-title {
   margin: 0; font-family: var(--serif); font-weight: 800;
   font-size: clamp(76px, 17vw, 230px); line-height: 1.05; letter-spacing: .18em; text-indent: .18em;
