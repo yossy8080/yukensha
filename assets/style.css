@@ -132,6 +132,14 @@ main { padding: 40px 0 72px; }
 .explain dt { font-weight: 700; color: var(--glow); }
 .explain dd { margin: 0 0 12px; line-height: 1.85; }
 .explain dd:last-child { margin-bottom: 0; }
+/* 写真（本文の幅いっぱい。縦長でも画面の6割まで。縦横比を先に決めて、読み込み中に文字がずれないようにする） */
+.photo { margin: 4px 0 16px; }
+.photo img {
+  display: block; width: 100%; height: auto; max-height: 60vh; aspect-ratio: 3 / 2; object-fit: cover;
+  border-radius: 10px; background: var(--paper-2);
+}
+.photo figcaption { margin-top: 6px; font-size: 13px; line-height: 1.6; color: var(--muted); }
+.photo figcaption a { color: var(--text); }
 .source { margin: 0; font-size: 13px; color: var(--muted); }
 .source a { color: var(--text); }
 .source-refs { margin-top: 4px; }
@@ -219,4 +227,6 @@ footer .footer-links a { color: var(--text); }
   body::before, .site-header { display: none; }
   .explain { background: none; border-color: #ccc; }
   .explain dt { color: #000; }
+  .photo { break-inside: avoid; }
+  .photo img { max-height: 10cm; background: none; }
 }
