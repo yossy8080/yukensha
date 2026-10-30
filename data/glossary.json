@@ -280,5 +280,12 @@
  {"term": "基地交付金", "aliases": ["国有提供施設等所在市町村助成交付金"], "yomi": "きちこうふきん", "short": "アメリカ軍や自衛隊の飛行場・演習場などがある市町村に国が毎年配るお金です。固定資産税の代わりの性格があり、使い道は自由（一般財源）です。", "src_name": "総務省", "src_url": "https://www.soumu.go.jp/main_content/000319694.pdf"},
  {"term": "調整交付金", "aliases": ["施設等所在市町村調整交付金"], "yomi": "ちょうせいこうふきん", "short": "アメリカ軍の建物などに固定資産税がかからないことや、米軍人などへの市町村民税の非課税の影響を考えて、市町村に配られるお金です。使い道は自由（一般財源）です。", "src_name": "総務省", "src_url": "https://www.soumu.go.jp/main_content/000319694.pdf"},
  {"term": "国際海事機関", "aliases": ["IMO"], "yomi": "こくさいかいじきかん", "short": "海や船の分野を担当する国連の専門機関です。船の安全や海の汚染を防ぐための国際ルールを作り、国際海運の温室効果ガス対策も話し合っています。", "src_name": "国土交通省", "src_url": "https://www.mlit.go.jp/maritime/content/001889546.pdf"},
- {"term": "自由で開かれたインド太平洋", "aliases": ["FOIP"], "yomi": "じゆうでひらかれたいんどたいへいよう", "short": "日本政府が進めている、インド太平洋地域についての外交の考え方です。英語の頭文字でFOIPとも呼ばれます。", "src_name": "外務省", "src_url": "https://www.mofa.go.jp/mofaj/gaiko/page25_001766.html"}
+ {"term": "自由で開かれたインド太平洋", "aliases": ["FOIP"], "yomi": "じゆうでひらかれたいんどたいへいよう", "short": "日本政府が進めている、インド太平洋地域についての外交の考え方です。英語の頭文字でFOIPとも呼ばれます。", "src_name": "外務省", "src_url": "https://www.mofa.go.jp/mofaj/gaiko/page25_001766.html"},
+  {"term": "経済財政諮問会議", "aliases": [], "yomi": "けいざいざいせいしもんかいぎ", "short": "内閣府に置かれた会議。総理や関係大臣、民間の有識者（民間議員）が経済と財政の方針を話し合い、資料や議事要旨は内閣府が公開しています。", "src_name": "内閣府", "src_url": "https://www5.cao.go.jp/keizai-shimon/"},
+  {"term": "完全失業率", "aliases": ["完全失業者"], "yomi": "かんぜんしつぎょうりつ", "short": "仕事を探しているのに仕事についていない人（完全失業者）の割合。総務省統計局が毎月の労働力調査で調べ、雇用情勢を表す重要な指標とされています。", "src_name": "総務省統計局", "src_url": "https://www.stat.go.jp/data/roudou/qa-1.html"},
+  {"term": "有効求人倍率", "aliases": ["新規求人倍率"], "yomi": "ゆうこうきゅうじんばいりつ", "short": "ハローワークでの求人数を、仕事を探している人の数で割った値。厚生労働省が「一般職業紹介状況」として毎月公表しています。", "src_name": "厚生労働省", "src_url": "https://www.mhlw.go.jp/stf/newpage_76960.html"},
+  {"term": "業務改善命令", "aliases": [], "yomi": "ぎょうむかいぜんめいれい", "short": "法律にもとづき、監督する官庁が事業者に業務の改善を命じること。電気事業では電気事業法により経済産業大臣が命じます。", "src_name": "経済産業省", "src_url": "https://www.meti.go.jp/press/2026/10/20261030007.html"},
+  {"term": "弁明の機会", "aliases": [], "yomi": "べんめいのきかい", "short": "行政手続法の手続き。国が相手に不利益な処分をする前に、相手が書面などで意見を述べられるようにするものです。", "src_name": "経済産業省", "src_url": "https://www.meti.go.jp/press/2026/10/20261030007.html"},
+  {"term": "日韓請求権協定", "aliases": [], "yomi": "にっかんせいきゅうけんきょうてい", "short": "1965年の日韓国交正常化の際に結ばれた協定。外務省は旧朝鮮半島出身労働者問題のページで日本政府の対応をまとめています。", "src_name": "外務省", "src_url": "https://www.mofa.go.jp/mofaj/a_o/na/kr/page4_004516.html"},
+  {"term": "政治資金規正法", "aliases": [], "yomi": "せいじしきんきせいほう", "short": "政治団体の届出や政治資金の収支の公開などを定めた法律。政治団体は毎年、収支報告書を提出します。", "src_name": "総務省", "src_url": "https://www.soumu.go.jp/senkyo/seiji_s/"}
 ]
