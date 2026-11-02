@@ -3,6 +3,7 @@
   {"id": "kantei", "name": "首相官邸", "short": "官邸", "site": "首相官邸ホームページ", "home": "https://www.kantei.go.jp/", "type": "kantei_html", "url": "https://www.kantei.go.jp/jp/news/index.html", "model": "kantei", "emblem": "邸"},
   {"id": "cao", "name": "内閣府", "short": "内閣府", "site": "内閣府ホームページ", "home": "https://www.cao.go.jp/", "type": "rss", "url": "https://www.cao.go.jp/rss/news.rdf", "model": "compass", "emblem": "内"},
   {"id": "digital", "name": "デジタル庁", "short": "デジタル", "site": "デジタル庁ウェブサイト", "home": "https://www.digital.go.jp/", "type": "rss", "url": "https://www.digital.go.jp/rss/news.xml", "model": "phone", "emblem": "デ"},
+  {"id": "bousai", "name": "防災庁", "short": "防災", "site": "防災庁ウェブサイト", "home": "https://www.bousai.go.jp/", "type": "rss", "url": "https://www.bousai.go.jp/news.xml", "model": "helmet", "emblem": "災"},
   {"id": "soumu", "name": "総務省", "short": "総務", "site": "総務省ホームページ", "home": "https://www.soumu.go.jp/", "type": "rss", "url": "https://www.soumu.go.jp/news.rdf", "model": "tower", "emblem": "総"},
   {"id": "moj", "name": "法務省", "short": "法務", "site": "法務省ホームページ", "home": "https://www.moj.go.jp/", "type": "rss", "url": "https://www.moj.go.jp/news.xml", "model": "scales", "emblem": "法"},
   {"id": "mofa", "name": "外務省", "short": "外務", "site": "外務省ホームページ", "home": "https://www.mofa.go.jp/mofaj/", "type": "mofa_html", "url": "https://www.mofa.go.jp/mofaj/press/release/index.html", "model": "globe", "emblem": "外"},
