@@ -479,12 +479,60 @@ BUILD.shield = (add) => {
   add(warp(T(sphere(0.12, 16, 10), { sz: 0.5, y: -0.66, z: 0.09 }), bulge), 1.6);
 };
 
+// 防災ヘルメット：前後に長いドーム、頭頂の稜線、前のつば、裾の縁、あご紐（ロゴ・文字は入れない）
+BUILD.helmet = (add) => {
+  const A = 0.95, B = 0.85, C = 1.1; // ドームの半径（横・高さ・前後）
+  // 後ろの裾を少し下げる（首の後ろを覆う形）
+  const drop = (v) => { v.y -= 0.16 * Math.max(0, -v.z / C) * Math.pow(Math.max(0, 1 - v.y / B), 3); };
+  add(warp(T(new THREE.SphereGeometry(1, 40, 16, 0, PI * 2, 0, PI / 2), { sx: A, sy: B, sz: C }), drop), 0.5);
+  // 頭頂の稜線（前から後ろへ）
+  const ridge = [];
+  for (let k = 0; k <= 20; k++) {
+    const t = 0.18 + (k / 20) * (PI - 0.36);
+    const v = V(0, (B + 0.05) * Math.sin(t), (C + 0.05) * Math.cos(t));
+    drop(v);
+    ridge.push(v);
+  }
+  add(tube(ridge, 0.05, 60, 6), 1.8);
+  // 裾の縁
+  const rim = [];
+  for (let k = 0; k < 64; k++) {
+    const a = (k / 64) * PI * 2, v = V((A + 0.02) * Math.cos(a), 0, (C + 0.02) * Math.sin(a));
+    drop(v);
+    rim.push(v);
+  }
+  add(tube(rim, 0.035, 128, 5, true), 2);
+  // 前のつば：裾から前へ短く張り出し、先が少し下がる
+  const a0 = 0.2, ext = (a) => 0.3 * Math.pow(Math.sin(a), 1.5);
+  const brim = new THREE.Shape(), edge = [];
+  for (let k = 0; k <= 24; k++) {
+    const a = a0 + (k / 24) * (PI - 2 * a0), e = 1 + ext(a);
+    const x = A * Math.cos(a) * e, z = C * Math.sin(a) * e;
+    if (k) brim.lineTo(x, z); else brim.moveTo(x, z);
+    edge.push(V(x, 0, z));
+  }
+  for (let k = 24; k >= 0; k--) {
+    const a = a0 + (k / 24) * (PI - 2 * a0);
+    brim.lineTo(A * Math.cos(a) * 0.98, C * Math.sin(a) * 0.98);
+  }
+  const sag = (v) => { v.y -= 0.45 * Math.max(0, Math.hypot(v.x / A, v.z / C) - 1); };
+  add(warp(T(extrude(brim, 0.03, 0, 24), { rx: PI / 2, y: 0.015 }), sag), 0.7);
+  add(tube(edge.map((v) => { sag(v); return v; }), 0.025, 48, 5), 2);
+  // あご紐：両側の留め具から下へ垂れて、あごの下で U 字に
+  const strap = [V(0.94, -0.02, 0.12), V(0.84, -0.34, 0.26), V(0.52, -0.62, 0.42), V(0, -0.72, 0.5),
+    V(-0.52, -0.62, 0.42), V(-0.84, -0.34, 0.26), V(-0.94, -0.02, 0.12)];
+  add(tube(strap, 0.018, 48, 5), 1.4);
+  for (const s of [-1, 1]) add(T(sphere(0.055, 10, 8), { x: s * 0.94, y: -0.02, z: 0.12 }), 1.6);
+  add(T(box(0.14, 0.08, 0.04), { rz: 0.3, x: 0.42, y: -0.65, z: 0.45 }), 1.4);
+};
+
 /* ── 組み立て・正規化 ── */
 // 見やすい向き（カメラは少し上から見る。建物は屋根が見えるように、本は手前に起こす）
 const POSE = {
   diet: { rx: 0.14, ry: -0.18 }, kantei: { rx: 0.34, ry: -0.22 }, compass: { rx: -0.12 }, phone: { rz: -0.1, ry: -0.2 },
   tower: { ry: 0.4 }, scales: { rx: 0.08 }, globe: {}, coins: { rx: 0.22, ry: -0.1 }, book: { rx: 0.95 },
   heart: { rx: 0.22 }, rice: { ry: -0.2 }, gear: { ry: -0.15 }, bridge: { rx: 0.14, ry: -0.32 }, leaf: { rz: -0.5 }, shield: {},
+  helmet: { rx: 0.12, ry: -0.75 },
 };
 export const MODEL_KEYS = Object.keys(BUILD);
 const cache = new Map();
