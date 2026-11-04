@@ -1,3 +1,6 @@
 drafts/
 __pycache__/
 *.pyc
+
+# 作業用コピー（git worktree）。サイトには公開しない
+_作業用コピー/
