@@ -318,5 +318,21 @@ class Handler(SimpleHTTPRequestHandler):
 
 
 if __name__ == "__main__":
+    # Windowsでは同じポートに2つ目のサーバーが重ねて立ち上がってしまうので、使用中なら止める
+    class Server(ThreadingHTTPServer):
+        allow_reuse_address = False
+
+        def server_bind(self):
+            import socket
+            if hasattr(socket, "SO_EXCLUSIVEADDRUSE"):
+                self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_EXCLUSIVEADDRUSE, 1)
+            super().server_bind()
+
+    try:
+        srv = Server(("127.0.0.1", PORT), Handler)
+    except OSError:
+        print(f"ポート{PORT}はもう使われています。別の「確認ページを開く.cmd」の黒い画面が開いていないか確認して、それを閉じてからもう一度開いてください。")
+        raise SystemExit(1)
+    print(f"フォルダ: {ROOT}")
     print(f"確認ページ: http://localhost:{PORT}/review   サイト: http://localhost:{PORT}/   （止めるときは Ctrl+C）")
-    ThreadingHTTPServer(("127.0.0.1", PORT), Handler).serve_forever()
+    srv.serve_forever()
