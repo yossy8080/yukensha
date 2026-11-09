@@ -1,7 +1,7 @@
 /* 有権者 — 公約チェッカー（pledges.html）の組み立てと演出（ES module）
    1. data/pledges.json から「政党の章」（3D の上に重なるカード）・テーマ×党の一覧・公約の詳細を作る
    2. 達成率はここで stage（段階 0〜4）から計算する（データに数値は書かない。式は scorePledges）
-   3. 3D はトップと同じ仕組み（scene3d.js）。章＝政党。配色だけ PALETTES で変える（?v=a / b / c、既定 a）
+   3. 3D はトップと同じ仕組み（scene3d.js）。章＝政党。配色だけ PALETTES で変える（?v=a / b / c、既定 c（Royが11/9に選択））
    4. 公約の詳細は #p=<公約の id> で開くパネル（<dialog>）
    WebGL2 が使えない・動きを減らす設定のときは 3D なし（CSS の夜空と文字のエンブレム）で同じ内容を読める。 */
 
@@ -79,7 +79,7 @@ export const PALETTES = {
     },
   },
 };
-export const DEFAULT_VARIANT = "a";
+export const DEFAULT_VARIANT = "c";
 export function variantOf(search) {
   const v = new URLSearchParams(search || "").get("v");
   return v && Object.prototype.hasOwnProperty.call(PALETTES, v) ? v : DEFAULT_VARIANT;
