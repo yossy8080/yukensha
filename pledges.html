@@ -2,28 +2,47 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>有権者 — 公約トラッカー</title>
-<meta name="description" content="首相・大臣・与党・野党の公約を、「約束したこと → 今どうなっているか → 出典」の形で追う予定のページです（準備中）。">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>有権者 — 公約チェッカー：各党の約束と、その後の動き</title>
+<meta name="description" content="直近の国政選挙（2026年2月 衆議院選挙）で各党が約束したことと、その後それぞれが何をしたかを、出典つきで並べます。達成の段階は記録された事実だけで決め、良い・悪いの評価は載せていません。">
 <link rel="canonical" href="https://yossy8080.github.io/yukensha/pledges.html">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="有権者">
-<meta property="og:title" content="有権者 — 公約トラッカー">
-<meta property="og:description" content="首相・大臣・与党・野党の公約を、「約束したこと → 今どうなっているか → 出典」の形で追う予定のページです（準備中）。">
+<meta property="og:title" content="有権者 — 公約チェッカー：各党の約束と、その後の動き">
+<meta property="og:description" content="直近の国政選挙（2026年2月 衆議院選挙）で各党が約束したことと、その後それぞれが何をしたかを、出典つきで並べます。良い・悪いの評価は載せていません。">
 <meta property="og:url" content="https://yossy8080.github.io/yukensha/pledges.html">
 <meta property="og:image" content="https://yossy8080.github.io/yukensha/assets/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:locale" content="ja_JP">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#05080f">
+<script>
+document.documentElement.classList.add("js");
+/* 配色の試作（?v=a / b / c、既定 a）。3D が無いときの CSS の夜空もこれで変える */
+(function () { var m = /[?&]v=([abc])(?:&|$)/.exec(location.search); document.documentElement.setAttribute("data-v", m ? m[1] : "a"); })();
+</script>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2304080f'/%3E%3Ccircle cx='16' cy='16' r='9' fill='none' stroke='%238fd0ff' stroke-width='2'/%3E%3Ccircle cx='16' cy='16' r='2.6' fill='%23e8452c'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&family=Shippori+Mincho:wght@700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="assets/home.css">
+<link rel="stylesheet" href="assets/pledges.css">
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+  }
+}
+</script>
 <script data-goatcounter="https://yossy8080.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </head>
-<body>
+<body class="home pledges">
+<div class="night" aria-hidden="true"></div>
+<canvas id="scene" aria-hidden="true"></canvas>
+
 <header class="site-header">
   <div class="site-header-inner">
     <a class="site-logo" href="index.html">有権者</a>
@@ -38,19 +57,77 @@
     </nav>
   </div>
 </header>
-<main class="wrap">
-<h1 class="page-title">公約トラッカー</h1>
-<p class="lead">首相・大臣・与党・野党の公約を、「約束したこと → 今どうなっているか → 出典」の形で追う予定です。</p>
-<div class="placeholder"><h3>準備中</h3><p>国全体・省庁別のニュースが安定してから作り始めます。</p></div>
+
+<main id="top">
+  <section class="hero" id="hero" aria-labelledby="hero-title">
+    <div class="hero-inner">
+      <p class="hero-eyebrow">各党の約束と、その後の動き</p>
+      <h1 class="hero-title" id="hero-title">公約チェッカー</h1>
+      <p class="hero-lead">直近の国政選挙（2026年2月 衆議院選挙）で各党が約束したことと、<br class="pc-br">その後それぞれが何をしたかを、出典つきで並べます。</p>
+      <p class="hero-note">出典は公式の記録だけ。良い・悪いの評価は載せない。段階は記録された事実だけで決める。</p>
+      <p class="pc-election" id="pc-election"></p>
+      <div class="pc-dummy" id="pc-dummy" role="note" hidden></div>
+    </div>
+    <a class="hero-scroll" href="#parties"><span>スクロール</span></a>
+  </section>
+
+  <section class="stream" id="parties" aria-labelledby="parties-title">
+    <header class="stream-head reveal">
+      <p class="eyebrow">Parties</p>
+      <h2 class="stream-title" id="parties-title">党ごとの達成率</h2>
+      <p class="stream-meta" id="parties-meta"></p>
+      <p class="stream-note">衆議院の議席が多い順に並べています。テーマを押すと、その公約の内容・段階・行動の記録がひらきます。「取り組み度」はどの党でもできること、「実現度」は法律・予算・制度になった割合です（<a href="#method">決め方</a>）。</p>
+    </header>
+    <div id="chapters" class="chapters"></div>
+  </section>
+
+  <section class="pc-section" id="compare" aria-labelledby="compare-title">
+    <header class="pc-head reveal">
+      <p class="eyebrow">Compare</p>
+      <h2 class="pc-title" id="compare-title">テーマ×党で比べる</h2>
+      <p class="pc-lead">数字はそのテーマの公約の段階（0〜4）の平均を、100%に直したものです。セルを押すと詳細がひらきます。与党は政府を動かせるので「実現度」が上がりやすく、野党は法律を通す力が小さいので「取り組み度」もあわせて見てください。</p>
+    </header>
+    <div id="compare-body" class="pc-compare"></div>
+  </section>
+
+  <section class="pc-section" id="method" aria-labelledby="method-title">
+    <header class="pc-head reveal">
+      <p class="eyebrow">Method</p>
+      <h2 class="pc-title" id="method-title">達成率の決め方</h2>
+    </header>
+    <div class="pc-method">
+      <p>公約ひとつずつに、記録された事実（国会の会議録・議案・政府や党の公式発表）だけを見て「段階」0〜4をつけます。どの段階も、与党・野党のどちらでも届くように決めています。</p>
+      <table class="pc-stage-table">
+        <caption class="pc-vh">段階の表</caption>
+        <thead><tr><th scope="col">段階</th><th scope="col">名前</th><th scope="col">与党の例</th><th scope="col">野党の例</th></tr></thead>
+        <tbody id="method-stages"></tbody>
+      </table>
+      <ul class="pc-rules">
+        <li>「〇〇をやめさせる」のような反対の公約は、その政策が止まった・変わったら段階4です。</li>
+        <li><b>テーマの達成率</b> ＝ そのテーマの公約の段階の平均 ÷ 4 × 100（%）。<b>党全体</b>は、その党のすべての公約の平均です。</li>
+        <li><b>取り組み度</b> ＝ 段階1（国会で求めた）以上に届いた公約の割合。議席の数に関係なく、どの党でもできることです。</li>
+        <li><b>実現度</b> ＝ 段階4（実現した）の公約の割合。</li>
+        <li>野党は法律を通す力が小さいので、達成率だけで比べると不利になります。そのため「取り組み度」と「実現度」を分けて見せています。与党は政府を動かせるので、実現度が上がりやすいことに注意してください。</li>
+        <li>出典が見つからない行動は載せず、段階にも数えません。良い・悪いの評価はしません。</li>
+      </ul>
+    </div>
+  </section>
 </main>
+
+<dialog class="pc-dialog" id="pc-detail" aria-labelledby="pc-detail-title">
+  <div class="pc-dialog-bar"><button type="button" class="pc-close" aria-label="詳細を閉じる">閉じる <span aria-hidden="true">×</span></button></div>
+  <div class="pc-dialog-body" id="pc-detail-body"></div>
+</dialog>
+
 <footer>
   <div class="wrap">
     <p>有権者 — 要約はAI（Hermes）が下書きし、運営者が確認してから公開しています。誤りに気づいたら<a href="https://docs.google.com/forms/d/e/1FAIpQLSe30fi9qbWSkPtcU4dDkXgr1NCUvGQTBiDIa5CZJVfiiUH3nQ/viewform" target="_blank" rel="noopener">お問い合わせフォーム</a>からお知らせください。</p>
     <p>各記事は、政府のウェブサイト（公共データ利用規約 PDL1.0 等）の情報をもとに、有権者が要約・加工して作成したものです。正確な内容は必ず出典をご確認ください。</p>
+    <p>公約チェッカーは、各党の公式サイトの公約と、国会会議録・衆議院／参議院の議案・政府や各党の公式発表をもとに、有権者がまとめたものです。</p>
     <p class="footer-links"><a href="about.html">このサイトについて</a> ・ <a href="privacy.html">プライバシーポリシー</a> ・ <a href="https://docs.google.com/forms/d/e/1FAIpQLSe30fi9qbWSkPtcU4dDkXgr1NCUvGQTBiDIa5CZJVfiiUH3nQ/viewform" target="_blank" rel="noopener">お問い合わせ</a></p>
   </div>
 </footer>
 <script src="assets/app.js"></script>
-
+<script type="module" src="assets/pledges.js"></script>
 </body>
 </html>

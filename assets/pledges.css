@@ -1,0 +1,230 @@
+/* 有権者 — 公約チェッカー（pledges.html）だけのスタイル
+   土台はトップと同じ home.css（ヒーロー・章・カード・3D の背面）。ここでは配色の3案と、党のカード・一覧・詳細パネル・決め方を足す。
+   配色の3案は html[data-v="a|b|c"]（pledges.html の先頭で ?v= から決める）。3D の配色は pledges.js の PALETTES。 */
+
+:root {
+  --pc-accent: #ffd9a0;                 /* 棒・印の色（案ごとに変える。文字の色は変えない） */
+  --pc-accent-soft: rgba(255, 217, 160, .16);
+  --pc-panel: rgba(5, 9, 17, .82);      /* 表・説明の下敷き（文字を読みやすく） */
+  --pc-line: rgba(214, 236, 255, .14);
+}
+html[data-v="b"] { --pc-accent: #d8c4ff; --pc-accent-soft: rgba(216, 196, 255, .16); }
+html[data-v="c"] { --pc-accent: #9ff5d8; --pc-accent-soft: rgba(159, 245, 216, .14); }
+
+/* ── 背面（3D が無いときの夜空。3D があるときも読み込みまでの間に見える） ── */
+/* a 夜明け前：地平線にうっすら朝焼け、琥珀の星明かり */
+html[data-v="a"] .night {
+  background:
+    radial-gradient(70% 22% at 50% 61%, rgba(255, 168, 96, .16), transparent 70%),
+    radial-gradient(60% 30% at 32% 30%, rgba(255, 226, 180, .06), transparent 70%),
+    linear-gradient(180deg, #05080f 0%, #0b1226 40%, #241a2a 58%, #3a2418 61.5%, #0a0c16 62%, #03060c 100%);
+}
+/* b 紫の星雲 */
+html[data-v="b"] .night {
+  background:
+    radial-gradient(50% 28% at 36% 30%, rgba(190, 90, 240, .14), transparent 70%),
+    radial-gradient(40% 22% at 64% 40%, rgba(240, 100, 200, .09), transparent 70%),
+    linear-gradient(180deg, #06050f 0%, #100a24 45%, #1a1232 61.5%, #08061a 62%, #030209 100%);
+}
+/* c オーロラ */
+html[data-v="c"] .night {
+  background:
+    radial-gradient(80% 18% at 40% 34%, rgba(60, 230, 170, .12), transparent 70%),
+    radial-gradient(60% 14% at 62% 26%, rgba(60, 170, 230, .08), transparent 70%),
+    linear-gradient(180deg, #030a0e 0%, #06161e 45%, #0a2630 61.5%, #04121a 62%, #02070a 100%);
+}
+
+/* ── ヒーロー ── */
+.pledges .hero-title { font-size: clamp(46px, 9.5vw, 136px); letter-spacing: .12em; text-indent: .12em; }
+.pledges .hero-eyebrow { letter-spacing: .2em; }
+.pledges .hero-lead, .pledges .hero-note { text-shadow: 0 0 12px rgba(2, 6, 12, .9); }
+.pledges .hero-note { color: #b4c0d0; }
+.pc-election { margin: 18px auto 0; font-size: 14px; color: #b4c0d0; text-shadow: 0 0 12px rgba(2, 6, 12, .9); }
+.pc-election a { color: var(--text); }
+.pc-dummy {
+  margin: 22px auto 0; max-width: 640px; padding: 12px 18px; text-align: left;
+  border: 1px dashed var(--pc-accent); border-radius: 12px; background: rgba(4, 8, 15, .72);
+  font-size: 14px; line-height: 1.7;
+}
+.pc-dummy[hidden] { display: none; }
+.pc-dummy p { margin: 0; }
+.pc-dummy b { color: var(--pc-accent); }
+.pc-variants { margin-top: 6px !important; display: flex; flex-wrap: wrap; gap: 4px 14px; }
+.pc-variants a { color: var(--text); min-height: 32px; display: inline-flex; align-items: center; }
+.pc-variants a[aria-current="true"] { color: var(--pc-accent); font-weight: 700; text-decoration-thickness: 2px; }
+
+/* ── 党の章（トップの .ch-card を土台に） ── */
+.pledges .emblem-hit { cursor: default; }
+.pledges .ch-no b { color: var(--pc-accent); }
+.pc-card .ch-name { font-size: clamp(32px, 3.6vw, 54px); letter-spacing: .1em; margin-bottom: 8px; }
+.pc-meta { margin: 0 0 18px; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 14px; font-size: 16px; color: #c4cfdc; }
+.pc-note { width: 100%; font-size: 13px; color: var(--sub); }
+/* 与党/野党の印：文字で書き、枠の形（実線・点線）でも見分けられるようにする */
+.pc-side {
+  display: inline-flex; align-items: center; min-height: 24px; padding: 0 10px; border-radius: 999px;
+  font-size: 13px; font-weight: 700; letter-spacing: .08em; line-height: 1; color: var(--text); white-space: nowrap;
+}
+.pc-side[data-side="ruling"] { border: 1.5px solid var(--pc-accent); background: var(--pc-accent-soft); }
+.pc-side[data-side="opp"] { border: 1.5px dashed rgba(214, 236, 255, .6); }
+
+.pc-scores { margin: 0; display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 10px; }
+.pc-scores > div { padding: 10px 12px; border-radius: 12px; border: 1px solid var(--pc-line); background: rgba(4, 8, 15, .4); }
+.pc-scores dt { font-size: 13px; color: var(--sub); }
+.pc-scores dd { margin: 0; font-family: var(--serif); font-weight: 800; font-size: 26px; line-height: 1.3; font-variant-numeric: tabular-nums; }
+.pc-scores .pc-score-main dd { font-size: 36px; color: var(--pc-accent); }
+.pc-count { margin: 8px 0 14px; font-size: 13px; color: var(--sub); }
+
+.pc-themes { list-style: none; margin: 0 0 16px; padding: 0; border-top: 1px solid var(--pc-line); }
+.pc-themes li { border-bottom: 1px solid var(--pc-line); }
+.pc-themes a, .pc-row-none {
+  display: grid; grid-template-columns: 8.6em minmax(0, 1fr) 3.4em; align-items: center; gap: 12px;
+  min-height: 48px; padding: 6px 4px; text-decoration: none; color: var(--text); font-size: 16px;
+}
+.pc-themes a:hover { background: rgba(214, 236, 255, .05); color: var(--text); }
+.pc-themes a:hover .pc-tname { text-decoration: underline; }
+.pc-themes a::after { content: "→"; display: none; }
+.pc-val { text-align: right; font-weight: 700; font-variant-numeric: tabular-nums; }
+.pc-man { margin: 0; font-size: 13px; color: var(--sub); }
+.pc-man a { color: var(--text); }
+
+/* 棒（いつも数値の文字と並べる） */
+.pc-bar { position: relative; display: block; height: 8px; border-radius: 999px; background: rgba(214, 236, 255, .12); overflow: hidden; }
+.pc-bar i { position: absolute; inset: 0 auto 0 0; border-radius: inherit; background: var(--pc-accent); }
+
+/* ── 一覧・比較、決め方（3D の上の下敷きつきの面） ── */
+.pc-section { position: relative; max-width: 1200px; margin: 0 auto; padding: 14vh 20px 6vh; }
+.pc-head { text-align: center; max-width: 760px; margin: 0 auto 28px; }
+.pc-title { margin: 0; font-family: var(--serif); font-weight: 800; font-size: clamp(30px, 4.4vw, 54px); letter-spacing: .14em; line-height: 1.3; }
+.pc-lead { margin: 14px auto 0; color: #c4cfdc; font-size: 15px; max-width: 40em; }
+.pc-vh { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+.pc-table-wrap { border-radius: 18px; border: 1px solid var(--pc-line); background: var(--pc-panel); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); padding: 8px 12px; }
+.pc-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+.pc-table th, .pc-table td { padding: 8px 6px; border-bottom: 1px solid var(--pc-line); vertical-align: middle; }
+.pc-table thead th { font-weight: 700; font-size: 15px; text-align: left; }
+.pc-table thead th:first-child, .pc-table tbody th, .pc-table tfoot th { width: 9.5em; text-align: left; font-size: 15px; }
+.pc-th-name { display: block; font-family: var(--serif); font-size: 19px; margin-bottom: 4px; }
+.pc-table tbody tr:last-child th, .pc-table tbody tr:last-child td { border-bottom: 2px solid rgba(214, 236, 255, .25); }
+.pc-table tfoot th, .pc-table tfoot td { border-bottom: 0; }
+.pc-cell { display: grid; gap: 4px; padding: 8px 10px; min-height: 48px; border-radius: 10px; text-decoration: none; color: var(--text); }
+a.pc-cell:hover { background: rgba(214, 236, 255, .07); color: var(--text); }
+a.pc-cell:hover .pc-pct { text-decoration: underline; }
+.pc-pct { font-weight: 700; font-size: 18px; font-variant-numeric: tabular-nums; }
+.pc-n { font-size: 12px; color: var(--sub); }
+.pc-cell-none { color: var(--sub); font-size: 14px; }
+.pc-total { display: block; font-family: var(--serif); font-weight: 800; font-size: 24px; color: var(--pc-accent); font-variant-numeric: tabular-nums; padding: 0 10px; }
+.pc-sub { display: block; font-size: 12px; color: var(--sub); padding: 0 10px; }
+
+/* スマホ：党ごとの縦積み（横スクロールの表にしない） */
+.pc-stack { display: none; }
+.pc-stack-party { margin: 0 0 16px; padding: 16px; border-radius: 16px; border: 1px solid var(--pc-line); background: var(--pc-panel); }
+.pc-stack-party h3 { margin: 0 0 4px; font-family: var(--serif); font-size: 22px; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; }
+.pc-stack-all { margin: 0 0 8px; font-size: 14px; color: #c4cfdc; }
+.pc-stack-all b { color: var(--pc-accent); font-size: 18px; }
+.pc-stack-party ul { list-style: none; margin: 0; padding: 0; }
+.pc-stack-party li { display: grid; grid-template-columns: 7.2em minmax(0, 1fr); align-items: center; gap: 6px; border-top: 1px solid var(--pc-line); }
+.pc-stack-t { font-size: 15px; }
+.pc-stack-party .pc-cell { padding: 8px 4px; }
+
+/* 決め方 */
+.pc-method { max-width: 920px; margin: 0 auto; padding: 22px 26px; border-radius: 18px; border: 1px solid var(--pc-line); background: var(--pc-panel); }
+.pc-method > p { margin: 0 0 16px; }
+.pc-stage-table { width: 100%; border-collapse: collapse; margin: 0 0 18px; font-size: 15px; }
+.pc-stage-table th, .pc-stage-table td { padding: 10px 8px; border-bottom: 1px solid var(--pc-line); text-align: left; vertical-align: top; }
+.pc-stage-table thead th { font-size: 13px; color: var(--sub); font-weight: 700; }
+.pc-stage-table td b { white-space: nowrap; }
+.pc-rules { margin: 0; padding-left: 1.2em; }
+.pc-rules li { margin: 6px 0; }
+.pc-rules li::marker { color: var(--pc-accent); }
+.pc-step-n {
+  display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 50%;
+  border: 1.5px solid var(--pc-accent); font-weight: 700; font-variant-numeric: tabular-nums; font-size: 14px;
+}
+
+/* ── 公約の詳細パネル ── */
+.pc-dialog {
+  width: min(760px, calc(100vw - 32px)); max-height: min(88vh, 900px); padding: 0;
+  border: 1px solid rgba(214, 236, 255, .2); border-radius: 18px;
+  background: #070d18; color: var(--text); box-shadow: 0 30px 80px rgba(0, 0, 0, .6);
+  overflow: hidden; flex-direction: column;
+}
+.pc-dialog[open] { display: flex; }
+.pc-dialog::backdrop { background: rgba(2, 4, 8, .72); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); }
+.pc-dialog-bar { display: flex; justify-content: flex-end; padding: 8px 10px 0; flex: none; }
+.pc-close {
+  min-height: 44px; padding: 0 16px; border-radius: 999px; border: 1px solid rgba(214, 236, 255, .3);
+  background: rgba(214, 236, 255, .06); color: var(--text); font: inherit; font-size: 14px; cursor: pointer;
+}
+.pc-close:hover { border-color: var(--glow); }
+.pc-dialog-body { overflow-y: auto; padding: 0 28px 28px; overscroll-behavior: contain; }
+.pc-d-kicker { margin: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; font-size: 14px; color: #c4cfdc; }
+.pc-d-title { margin: 6px 0 4px; font-family: var(--serif); font-weight: 800; font-size: clamp(22px, 3vw, 30px); line-height: 1.45; }
+.pc-d-score { margin: 0 0 12px; font-size: 14px; color: #c4cfdc; }
+.pc-d-score b { color: var(--pc-accent); font-size: 18px; }
+.pc-dummy-inline { margin: 0 0 12px; padding: 6px 12px; border: 1px dashed var(--pc-accent); border-radius: 8px; font-size: 13px; }
+.pc-pledge { margin: 16px 0 0; padding: 18px 20px; border-radius: 14px; border: 1px solid var(--pc-line); background: rgba(214, 236, 255, .03); scroll-margin-top: 8px; }
+.pc-pledge.is-selected { border-color: var(--pc-accent); box-shadow: inset 3px 0 0 var(--pc-accent); }
+.pc-pledge-title { margin: 0 0 10px; font-family: var(--serif); font-size: 20px; line-height: 1.55; }
+.pc-quote { margin: 0 0 8px; padding: 2px 0 2px 14px; border-left: 2px solid var(--pc-accent); font-family: var(--serif); font-size: 16px; line-height: 1.7; }
+.pc-stage-now { margin: 14px 0 8px; font-size: 15px; }
+.pc-stage-now b { font-size: 20px; color: var(--pc-accent); }
+.pc-steps { list-style: none; margin: 0 0 12px; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; }
+.pc-steps li {
+  position: relative; display: grid; justify-items: center; align-content: start; gap: 4px; padding: 8px 4px; text-align: center;
+  border-radius: 10px; border: 1px dashed rgba(214, 236, 255, .2); color: var(--sub); font-size: 12px; line-height: 1.4;
+}
+.pc-steps li.is-done { border-style: solid; border-color: rgba(214, 236, 255, .3); color: #c4cfdc; }
+.pc-steps li.is-now { border: 2px solid var(--pc-accent); background: var(--pc-accent-soft); color: var(--text); font-weight: 700; }
+.pc-steps .pc-step-n { width: 24px; height: 24px; font-size: 12px; border-color: rgba(214, 236, 255, .35); }
+.pc-steps li.is-done .pc-step-n { background: rgba(214, 236, 255, .14); }
+.pc-steps li.is-now .pc-step-n { background: var(--pc-accent); color: #04080f; border-color: var(--pc-accent); }
+.pc-step-mark { font-size: 11px; letter-spacing: .06em; }
+.pc-status { margin: 0 0 12px; font-size: 15px; }
+.pc-status span { display: inline-block; margin-right: 8px; font-size: 13px; font-weight: 700; color: var(--pc-accent); }
+.pc-tl-title { margin: 14px 0 6px; font-size: 14px; letter-spacing: .08em; color: var(--sub); }
+.pc-timeline { list-style: none; margin: 0; padding: 0 0 0 18px; border-left: 1px solid rgba(214, 236, 255, .25); }
+.pc-timeline li { position: relative; padding: 0 0 14px; }
+.pc-timeline li::before { content: ""; position: absolute; left: -23px; top: 8px; width: 9px; height: 9px; border-radius: 50%; background: var(--pc-accent); }
+.pc-tl-head { margin: 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 10px; font-size: 13px; color: var(--sub); }
+.pc-tl-type { color: var(--text); font-weight: 700; }
+.pc-tl-stage { padding: 0 6px; border: 1px solid rgba(214, 236, 255, .3); border-radius: 6px; }
+.pc-tl-text { margin: 2px 0; font-size: 15px; }
+.pc-empty { margin: 0; font-size: 14px; color: var(--sub); }
+
+/* ── スマホ ── */
+@media (max-width: 760px) {
+  .pc-table-wrap { display: none; }
+  .pc-stack { display: block; }
+}
+@media (max-width: 720px) {
+  .pc-br { display: none; }
+  .pledges .hero-title { font-size: clamp(38px, 11.5vw, 60px); letter-spacing: .08em; text-indent: .08em; }
+  .pc-card .ch-name { font-size: clamp(26px, 8vw, 36px); letter-spacing: .06em; }
+  .pc-scores { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .pc-scores .pc-score-main { grid-column: 1 / -1; display: flex; align-items: baseline; justify-content: space-between; }
+  .pc-scores dd { font-size: 22px; }
+  .pc-scores .pc-score-main dd { font-size: 30px; }
+  .pc-themes a, .pc-row-none { grid-template-columns: 7.4em minmax(0, 1fr) 3em; gap: 8px; font-size: 15px; }
+  .pc-section { padding: 10vh 12px 4vh; }
+  .pc-method { padding: 16px; }
+  /* 段階表は1段ずつのカードに */
+  .pc-stage-table thead { display: none; }
+  .pc-stage-table, .pc-stage-table tbody, .pc-stage-table tr, .pc-stage-table th, .pc-stage-table td { display: block; width: 100%; }
+  .pc-stage-table tr { padding: 10px 0; border-bottom: 1px solid var(--pc-line); display: grid; grid-template-columns: 36px minmax(0, 1fr); column-gap: 10px; }
+  .pc-stage-table th { grid-row: 1 / span 3; padding: 0; border: 0; }
+  .pc-stage-table td { padding: 2px 0; border: 0; font-size: 14px; }
+  .pc-stage-table td[data-label]:not(:first-of-type)::before { content: attr(data-label) "："; color: var(--sub); font-size: 12px; display: block; }
+  .pc-dialog { width: 100vw; max-width: 100vw; max-height: 92vh; margin: auto 0 0; border-radius: 18px 18px 0 0; }
+  .pc-dialog-body { padding: 0 16px 24px; }
+  .pc-pledge { padding: 14px; }
+  .pc-steps { gap: 4px; }
+  .pc-steps li { padding: 6px 2px; font-size: 11px; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .pc-dialog[open] { animation: pc-in .25s ease-out; }
+}
+@keyframes pc-in { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+@media print {
+  .night, #scene, .pc-dialog { display: none !important; }
+  .pc-table-wrap, .pc-method, .pc-stack-party { background: none; }
+}
