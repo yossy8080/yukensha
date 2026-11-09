@@ -35,7 +35,7 @@ html[data-v="c"] .night {
 }
 
 /* ── ヒーロー ── */
-.pledges .hero-title { font-size: clamp(46px, 9.5vw, 136px); letter-spacing: .12em; text-indent: .12em; }
+.pledges .hero-title { font-size: clamp(46px, 8vw, 116px); letter-spacing: .12em; text-indent: .12em; white-space: nowrap; }
 .pledges .hero-eyebrow { letter-spacing: .2em; }
 .pledges .hero-lead, .pledges .hero-note { text-shadow: 0 0 12px rgba(2, 6, 12, .9); }
 .pledges .hero-note { color: #b4c0d0; }
@@ -93,7 +93,10 @@ html[data-v="c"] .night {
 
 /* ── 一覧・比較、決め方（3D の上の下敷きつきの面） ── */
 .pc-section { position: relative; max-width: 1200px; margin: 0 auto; padding: 14vh 20px 6vh; }
-.pc-head { text-align: center; max-width: 760px; margin: 0 auto 28px; }
+.pc-head {
+  text-align: center; max-width: 760px; margin: 0 auto 24px; padding: 22px 24px;
+  border-radius: 18px; background: rgba(5, 9, 17, .62); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+}
 .pc-title { margin: 0; font-family: var(--serif); font-weight: 800; font-size: clamp(30px, 4.4vw, 54px); letter-spacing: .14em; line-height: 1.3; }
 .pc-lead { margin: 14px auto 0; color: #c4cfdc; font-size: 15px; max-width: 40em; }
 .pc-vh { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
@@ -198,7 +201,7 @@ a.pc-cell:hover .pc-pct { text-decoration: underline; }
 }
 @media (max-width: 720px) {
   .pc-br { display: none; }
-  .pledges .hero-title { font-size: clamp(38px, 11.5vw, 60px); letter-spacing: .08em; text-indent: .08em; }
+  .pledges .hero-title { font-size: clamp(34px, 10.5vw, 60px); letter-spacing: .08em; text-indent: .08em; }
   .pc-card .ch-name { font-size: clamp(26px, 8vw, 36px); letter-spacing: .06em; }
   .pc-scores { grid-template-columns: 1fr 1fr; gap: 8px; }
   .pc-scores .pc-score-main { grid-column: 1 / -1; display: flex; align-items: baseline; justify-content: space-between; }
