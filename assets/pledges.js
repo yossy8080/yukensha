@@ -28,7 +28,7 @@ export const STAGES = [
   { name: "実現した", ruling: "法律の成立・予算の成立・制度の開始", opp: "公約と同じ内容が法律・予算・制度として実現（だれの提案でもよい）" },
 ];
 const MAX_STAGE = 4;
-const ENGAGED_MIN = 1; // 取り組み度：この段階以上に届いた公約の割合（段階1「国会で求めた」以上＝議席数に関係なくどの党でもできること）
+const ENGAGED_MIN = 2; // 取り組み度：段階2「具体案を出した」以上に届いた公約の割合（法案提出・提言など、議席数に関係なくどの党でもできること）
 
 /* ── 雰囲気の3案（3D の配色）。トップの濃紺の夜の海と「同じ世界の別の場所」に見える程度にとどめる ──
    中身は scene3d.js の palette（sea3d.js SEA_PALETTE / galaxy3d.js GALAXY_PALETTE / morph3d.js MORPH_PALETTE の一部を差し替え） */
