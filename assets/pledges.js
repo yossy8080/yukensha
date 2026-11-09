@@ -114,7 +114,8 @@ const $ = (s, el = document) => el.querySelector(s);
 const clamp01 = (v) => Math.max(0, Math.min(1, v));
 const pad2 = (n) => String(n).padStart(2, "0");
 const esc = (s) => Y.esc(s);
-const ext = (url, label) => url ? `<a href="${esc(url)}" target="_blank" rel="noopener">${label}</a>` : label;
+const ext = (url, label) => /^https?:\/\//.test(url || "") ? `<a href="${esc(url)}" target="_blank" rel="noopener">${label}</a>` : label;
+const pctOr = (s, key) => (s ? `${s[key]}%` : "—");
 const pct = (s) => (s ? `${s.rate}%` : "—");
 
 // 数値の横の棒（色だけで伝えないよう、数値の文字を必ず並べる。棒そのものは読み上げない）
@@ -154,8 +155,8 @@ function chapterHTML(p, i, n, st, themes) {
         <p class="pc-meta">${sideBadge(p)}<span>衆議院 ${esc(p.seats_shugiin)}議席</span>${p.side_note ? `<span class="pc-note">${esc(p.side_note)}</span>` : ""}</p>
         <dl class="pc-scores">
           <div class="pc-score-main"><dt>全体の達成率</dt><dd>${pct(a)}</dd></div>
-          <div><dt>取り組み度</dt><dd>${a ? a.engaged + "%" : "—"}</dd></div>
-          <div><dt>実現度</dt><dd>${a ? a.realized + "%" : "—"}</dd></div>
+          <div><dt>取り組み度</dt><dd>${pctOr(a, "engaged")}</dd></div>
+          <div><dt>実現度</dt><dd>${pctOr(a, "realized")}</dd></div>
         </dl>
         <p class="pc-count">公約 ${a ? a.n : 0}件をもとに計算</p>
         <ul class="pc-themes" aria-label="テーマごとの達成率">${rows}</ul>
@@ -177,7 +178,7 @@ function compareHTML(parties, stats, themes) {
   const body = themes.map((t) => `<tr><th scope="row">${esc(t.name)}</th>${parties.map((p) => `<td>${cellLink(p, t, stats[p.id].themes[t.id])}</td>`).join("")}</tr>`).join("");
   const all = parties.map((p) => {
     const a = stats[p.id].all;
-    return `<td><span class="pc-total">${pct(a)}</span><span class="pc-sub">取り組み度 ${a ? a.engaged : 0}%<br>実現度 ${a ? a.realized : 0}%</span></td>`;
+    return `<td><span class="pc-total">${pct(a)}</span><span class="pc-sub">取り組み度 ${pctOr(a, "engaged")}<br>実現度 ${pctOr(a, "realized")}</span></td>`;
   }).join("");
   const table = `<div class="pc-table-wrap"><table class="pc-table">
     <caption class="pc-vh">テーマ×党の達成率。セルを押すと、その党・テーマの公約の詳細がひらきます。</caption>
@@ -190,7 +191,7 @@ function compareHTML(parties, stats, themes) {
     const rows = themes.map((t) => `<li><span class="pc-stack-t">${esc(t.name)}</span>${cellLink(p, t, st.themes[t.id])}</li>`).join("");
     return `<section class="pc-stack-party" aria-labelledby="stack-${esc(p.id)}">
       <h3 id="stack-${esc(p.id)}">${esc(p.name)} ${sideBadge(p)}</h3>
-      <p class="pc-stack-all">全体 <b>${pct(a)}</b> ・取り組み度 ${a ? a.engaged : 0}% ・実現度 ${a ? a.realized : 0}%</p>
+      <p class="pc-stack-all">全体 <b>${pct(a)}</b> ・取り組み度 ${pctOr(a, "engaged")} ・実現度 ${pctOr(a, "realized")}</p>
       <ul>${rows}</ul></section>`;
   }).join("");
   return table + `<div class="pc-stack">${stack}</div>`;
@@ -238,11 +239,12 @@ function setupDetail(data, onToggle) {
 
   function idFromHash() {
     const m = /^#p=(.+)$/.exec(location.hash);
-    return m ? decodeURIComponent(m[1]) : "";
+    if (!m) return "";
+    try { return decodeURIComponent(m[1]); } catch (e) { return m[1]; } // 壊れた URL でもページ全体は止めない
   }
   function open(id) {
     const hit = byId[id];
-    if (!hit) return false;
+    if (!hit) { close(); return false; } // 知らない id：前の公約を出したままにしない
     const { party, pledge } = hit;
     const group = party.pledges.filter((x) => x.theme === pledge.theme);
     const s = scorePledges(group);
@@ -315,7 +317,7 @@ async function main() {
 
   // 対象の選挙・更新日
   const el = data.election || {};
-  $("#pc-election").innerHTML = `対象：${ext(el.url, esc(el.name || ""))}（${el.date ? fmtDay(el.date) : ""}投開票）${data.updated ? ` ・ 更新 ${fmtDay(data.updated)}` : ""}`;
+  $("#pc-election").innerHTML = `対象：${ext(el.url, esc(el.name || ""))}${el.date ? `（${fmtDay(el.date)}投開票）` : ""}${data.updated ? ` ・ 更新 ${fmtDay(data.updated)}` : ""}`;
 
   // ダミーデータの注意と、配色の試作の切り替え
   if (data._dummy) {
