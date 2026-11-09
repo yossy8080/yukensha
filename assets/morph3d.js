@@ -1,7 +1,8 @@
 /* 有権者 — 光の粒子でできた府省の物体と、次の府省への変形
    すべての物体を同じ数の点で表し、今の形（position）→ 次の形（aTo）へ補間する。
    途中は天の川の帯に吸い込まれて渦を巻き、流れに沿ってほどけてから、次の形に集まる。
-   API: createMorph({ count, band }) -> { object, setShapes(a, b), update(u), pick(raycaster, which), dispose() } */
+   API: createMorph({ count, band, palette? }) -> { object, setShapes(a, b), update(u), pick(raycaster, which), dispose() }
+     palette（任意）= MORPH_PALETTE の一部を差し替える（省略するとトップと同じ色） */
 
 import * as THREE from "three";
 import { BAND_GLSL } from "./band3d.js";
@@ -12,7 +13,7 @@ attribute vec3 aTo;
 attribute vec4 aRnd; // x: ほどける順のゆらぎ, y: 帯の中の位置, z: 帯の中心からの距離, w: 帯をまわる角度
 attribute vec3 aCol;
 uniform float uP, uTime, uScale, uSize, uPR, uHover, uFlow, uS0, uSpan, uBright;
-uniform vec3 uCenter;
+uniform vec3 uCenter, uBandTint;
 uniform mat3 uRot;
 varying vec3 vCol;
 varying float vA;
@@ -52,7 +53,7 @@ void main() {
   gl_Position = projectionMatrix * mv;
   float edge = smoothstep(0.0, 0.12, fr) * smoothstep(1.0, 0.88, fr);
   vA = mix(1.0, edge * 0.7, wb) * uBright * (0.82 + 0.18 * sin(uTime * 1.7 + aRnd.y * 40.0)) * (1.0 + uHover * 0.55);
-  vCol = mix(aCol, vec3(0.78, 0.84, 1.0), wb * 0.35);
+  vCol = mix(aCol, uBandTint, wb * 0.35);
   float size = uSize * mix(1.0, 0.8, wb) * (0.7 + 0.6 * aRnd.x) * (1.0 + uHover * 0.12);
   gl_PointSize = clamp(size * uPR * 9.0 / -mv.z, 0.0, 10.0 * uPR);
 }`;
@@ -93,7 +94,19 @@ function rng(seed) {
   return () => ((s = (s * 1664525 + 1013904223) >>> 0) / 4294967296);
 }
 
-export function createMorph({ count, band }) {
+// 既定の配色（トップの物体）。色は [r, g, b]（0..1）、線と面は 16 進
+export const MORPH_PALETTE = {
+  violet: [0.82, 0.74, 1.0],   // 粒子の 1.2 割
+  amber: [1.0, 0.84, 0.62],    // 粒子の 1 割
+  base: [0.8, 0.88, 1.0],      // 残りの粒子（＋ jitter のばらつき）
+  jitter: [0.1, 0.06, 0],
+  bandTint: [0.78, 0.84, 1.0], // 帯の中にいるときの色
+  line: 0xa8d4ff,              // 輪郭線
+  surf: 0x8fc4ff,              // 面のにじみ
+};
+
+export function createMorph({ count, band, palette = {} }) {
+  const P = { ...MORPH_PALETTE, ...palette };
   const r = rng(99);
   const geo = new THREE.BufferGeometry();
   const posA = new Float32Array(count * 3), posB = new Float32Array(count * 3);
@@ -104,7 +117,13 @@ export function createMorph({ count, band }) {
     rnd.set([r(), r(), g, r()], i * 4);
     const k = r();
     // 青白い白を基調に、ほんのり紫と琥珀
-    const c = k < 0.12 ? [0.82, 0.74, 1.0] : k < 0.22 ? [1.0, 0.84, 0.62] : [0.8 + r() * 0.1, 0.88 + r() * 0.06, 1.0];
+    let c;
+    if (k < 0.12) c = P.violet;
+    else if (k < 0.22) c = P.amber;
+    else {
+      const u = r(), w = r(); // 乱数を引く回数・順番は前と同じ
+      c = [P.base[0] + u * P.jitter[0], P.base[1] + w * P.jitter[1], P.base[2] + w * P.jitter[2]];
+    }
     col.set(c, i * 3);
   }
   geo.setAttribute("position", new THREE.BufferAttribute(posA, 3));
@@ -118,6 +137,7 @@ export function createMorph({ count, band }) {
     uP: { value: 0.5 }, uTime: { value: 0 }, uScale: { value: 1 }, uSize: { value: 2.2 }, uPR: { value: 1 },
     uHover: { value: 0 }, uFlow: { value: 0 }, uS0: { value: 0.62 }, uSpan: { value: 0.035 }, uBright: { value: 1 },
     uCenter: { value: new THREE.Vector3() }, uRot: { value: new THREE.Matrix3() },
+    uBandTint: { value: new THREE.Vector3(...P.bandTint) },
   };
   const mat = new THREE.ShaderMaterial({
     vertexShader: VS, fragmentShader: FS, uniforms,
@@ -132,10 +152,10 @@ export function createMorph({ count, band }) {
   // 落ち着いた形に重ねる、ごく薄い輪郭線と面（今の形 A と次の形 B）
   const holders = [0, 1].map(() => {
     const h = new THREE.Group();
-    const lineMat = new THREE.LineBasicMaterial({ color: 0xa8d4ff, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false });
+    const lineMat = new THREE.LineBasicMaterial({ color: P.line, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false });
     const surfMat = new THREE.ShaderMaterial({
       vertexShader: SURF_VS, fragmentShader: SURF_FS, side: THREE.DoubleSide,
-      uniforms: { uC: { value: new THREE.Color(0x8fc4ff) }, uO: { value: 0 } },
+      uniforms: { uC: { value: new THREE.Color(P.surf) }, uO: { value: 0 } },
       transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
     });
     const lines = new THREE.LineSegments(new THREE.BufferGeometry(), lineMat);

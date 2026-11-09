@@ -1,7 +1,8 @@
 /* 有権者 — 天の川の帯（無数の星・星雲のにじみ・中央の暗い塵の筋・府省の節）
    帯の形は band3d.js の曲線。星はスクロール（flow）に合わせて奥から手前へ流れる。
    府省の節：帯の上に府省ごとの光の点を並べる。今の府省は物体の位置、これからの府省は奥（青白）、通り過ぎた府省は手前（琥珀）。
-   API: createGalaxy({ band, isMobile, nodes }) -> { object, update(u), dispose() } */
+   API: createGalaxy({ band, isMobile, nodes, palette? }) -> { object, update(u), dispose() }
+     palette（任意）= GALAXY_PALETTE の一部を差し替える（省略するとトップと同じ天の川） */
 
 import * as THREE from "three";
 import { BAND_GLSL } from "./band3d.js";
@@ -96,25 +97,29 @@ void main() {
 }`;
 const GLOW_FS = /* glsl */`
 ${NOISE_GLSL}
-uniform float uFlow, uDim;
+uniform float uFlow, uDim, uTime, uWave, uGain;
+uniform vec3 uGlowOuter, uGlowCore, uGlowAccent;
 varying float vS;
 varying float vV;
 varying float vFade;
 varying float vEdge;
 void main() {
   float sf = vS - uFlow;
-  float n = fbm(vec2(sf * 34.0, vV * 3.2));
-  float core = exp(-vV * vV * 6.0), body = exp(-vV * vV * 1.7);
+  // オーロラのような横のゆらぎ（既定は 0＝なし）
+  float vv = vV + uWave * (sin(sf * 15.0 + uTime * 0.3) * 0.5 + sin(sf * 41.0 - uTime * 0.21) * 0.25);
+  float n = fbm(vec2(sf * 34.0, vv * 3.2));
+  float core = exp(-vv * vv * 6.0), body = exp(-vv * vv * 1.7);
   float glow = (core * 0.6 + body * 0.28) * (0.35 + 1.0 * n);
   float l = exp(-pow((vV - lane(sf)) / 0.085, 2.0)) * smoothstep(0.3, 0.65, fbm(vec2(sf * 20.0, vV * 6.0) + 7.0));
   glow *= 1.0 - 0.8 * l;
-  vec3 col = mix(vec3(0.38, 0.47, 0.86), vec3(1.0, 0.86, 0.68), core * 0.55);
-  col = mix(col, vec3(0.72, 0.55, 0.98), smoothstep(0.55, 0.8, fbm(vec2(sf * 9.0, vV * 2.0) + 3.0)) * 0.45);
-  gl_FragColor = vec4(col * glow * 0.15 * vFade * vEdge * uDim, 1.0);
+  vec3 col = mix(uGlowOuter, uGlowCore, core * 0.55);
+  col = mix(col, uGlowAccent, smoothstep(0.55, 0.8, fbm(vec2(sf * 9.0, vv * 2.0) + 3.0)) * 0.45);
+  gl_FragColor = vec4(col * glow * uGain * vFade * vEdge * uDim, 1.0);
 }`;
 const DUST_FS = /* glsl */`
 ${NOISE_GLSL}
 uniform float uFlow, uDim;
+uniform vec3 uDust;
 varying float vS;
 varying float vV;
 varying float vFade;
@@ -123,7 +128,7 @@ void main() {
   float sf = vS - uFlow;
   float l = exp(-pow((vV - lane(sf)) / 0.075, 2.0)) * smoothstep(0.3, 0.65, fbm(vec2(sf * 20.0, vV * 6.0) + 7.0));
   l *= 0.7 + 0.3 * fbm(vec2(sf * 70.0, vV * 14.0));
-  gl_FragColor = vec4(0.008, 0.012, 0.024, l * 0.6 * vFade * vEdge * (0.5 + 0.5 * uDim));
+  gl_FragColor = vec4(uDust, l * 0.6 * vFade * vEdge * (0.5 + 0.5 * uDim));
 }`;
 
 /* ── 府省の節 ── */
@@ -131,6 +136,7 @@ const NODE_VS = /* glsl */`
 ${BAND_GLSL}
 attribute float aK;
 uniform float uF, uStep, uS0, uPR, uSettled, uDim, uTime;
+uniform vec3 uNodeAhead, uNodeBehind;
 varying vec3 vCol;
 varying float vA;
 void main() {
@@ -143,7 +149,7 @@ void main() {
   float cur = 1.0 - smoothstep(0.0, 0.6, abs(d));
   float vis = smoothstep(0.0, 0.05, s) * smoothstep(0.98, 0.88, s) * smoothstep(1.5, 5.0, dist);
   vis *= 1.0 - uSettled * cur * 0.92; // 今の府省の節は、物体そのものになっている
-  vCol = mix(vec3(0.74, 0.86, 1.0), vec3(1.0, 0.76, 0.48), smoothstep(0.35, -0.35, d));
+  vCol = mix(uNodeAhead, uNodeBehind, smoothstep(0.35, -0.35, d));
   vCol = mix(vCol, vec3(1.0), cur * 0.4);
   vA = vis * uDim * (0.85 + 0.15 * sin(uTime * 1.4 + aK * 1.7));
   gl_PointSize = clamp(56.0 * 8.0 / dist, 7.0, 72.0) * uPR;
@@ -171,7 +177,26 @@ function vnoise2(x, y) {
   return a + (b - a) * v;
 }
 
-export function createGalaxy({ band, isMobile, nodes = 0 }) {
+// 既定の配色（トップの天の川）。色は [r, g, b]（0..1）
+export const GALAXY_PALETTE = {
+  starWarm: [1.0, 0.82, 0.6],     // 星の 1 割：琥珀
+  starViolet: [0.8, 0.72, 1.0],   // 星の 1 割：紫
+  starBase: [0.82, 0.88, 1.0],    // 残りの星：青白（＋ starJitter のばらつき）
+  starJitter: [0.12, 0.08, 0],
+  nebula: [[0.62, 0.45, 0.95], [1.0, 0.7, 0.42], [0.45, 0.62, 1.0]], // 星雲のにじみ（4 割・2.5 割・残り）
+  glowOuter: [0.38, 0.47, 0.86],  // 帯の光：外側
+  glowCore: [1.0, 0.86, 0.68],    // 帯の光：中心
+  glowAccent: [0.72, 0.55, 0.98], // 帯の光：ところどころ
+  glowGain: 0.15,                 // 帯の光の強さ
+  wave: 0,                        // 帯のゆらぎ（オーロラ風。0＝なし）
+  dust: [0.008, 0.012, 0.024],    // 塵の筋
+  nodeAhead: [0.74, 0.86, 1.0],   // これからの章の節
+  nodeBehind: [1.0, 0.76, 0.48],  // 通り過ぎた章の節
+};
+
+export function createGalaxy({ band, isMobile, nodes = 0, palette = {} }) {
+  const P = { ...GALAXY_PALETTE, ...palette };
+  const v3 = (c) => new THREE.Vector3(c[0], c[1], c[2]);
   const object = new THREE.Group();
   const r = rng(2024);
   const gauss = () => (r() + r() + r() + r() - 2) / 2; // おおよそ -1..1、中心に集まる
@@ -189,7 +214,13 @@ export function createGalaxy({ band, isMobile, nodes = 0 }) {
     const k = r();
     aSize[i] = k < 0.04 ? 1.8 + r() * 1.0 : k < 0.28 ? 1.0 + r() * 0.6 : 0.5 + r() * 0.5;
     const c = r();
-    const rgb = c < 0.1 ? [1.0, 0.82, 0.6] : c < 0.2 ? [0.8, 0.72, 1.0] : [0.82 + r() * 0.12, 0.88 + r() * 0.08, 1.0];
+    let rgb;
+    if (c < 0.1) rgb = P.starWarm;
+    else if (c < 0.2) rgb = P.starViolet;
+    else {
+      const b = P.starBase, j = P.starJitter, u = r(), w = r(); // 乱数を引く回数・順番は前と同じ（星の並びを変えない）
+      rgb = [b[0] + u * j[0], b[1] + w * j[1], b[2] + w * j[2]];
+    }
     aCol.set(rgb, i * 3);
     i++;
   }
@@ -197,7 +228,7 @@ export function createGalaxy({ band, isMobile, nodes = 0 }) {
     aS[i] = r(); aOff[i * 2] = gauss() * 0.6; aOff[i * 2 + 1] = gauss() * 0.5;
     aSize[i] = 0.5 + r() * 0.9; aKind[i] = 1;
     const c = r();
-    aCol.set(c < 0.4 ? [0.62, 0.45, 0.95] : c < 0.65 ? [1.0, 0.7, 0.42] : [0.45, 0.62, 1.0], i * 3);
+    aCol.set(c < 0.4 ? P.nebula[0] : c < 0.65 ? P.nebula[1] : P.nebula[2], i * 3);
   }
   const starGeo = new THREE.BufferGeometry();
   starGeo.setAttribute("position", new THREE.BufferAttribute(new Float32Array(N * 3), 3)); // 位置はシェーダーで決める
@@ -228,7 +259,11 @@ export function createGalaxy({ band, isMobile, nodes = 0 }) {
   ribGeo.setAttribute("position", new THREE.BufferAttribute(new Float32Array((sv.length / 2) * 3), 3));
   ribGeo.setAttribute("aSV", new THREE.Float32BufferAttribute(sv, 2));
   ribGeo.setIndex(idx);
-  const ribU = { ...band.uniforms, uFlow: common.uFlow, uDim: common.uDim };
+  const ribU = {
+    ...band.uniforms, uFlow: common.uFlow, uDim: common.uDim, uTime: common.uTime,
+    uWave: { value: P.wave }, uGain: { value: P.glowGain }, uDust: { value: v3(P.dust) },
+    uGlowOuter: { value: v3(P.glowOuter) }, uGlowCore: { value: v3(P.glowCore) }, uGlowAccent: { value: v3(P.glowAccent) },
+  };
   // 帯は海面などで切られないよう深度テストをしない（海に近いところは RIBBON_VS の vFade で消える）
   const glowMat = new THREE.ShaderMaterial({ vertexShader: RIBBON_VS, fragmentShader: GLOW_FS, uniforms: ribU, transparent: true, depthWrite: false, depthTest: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide });
   const dustMat = new THREE.ShaderMaterial({ vertexShader: RIBBON_VS, fragmentShader: DUST_FS, uniforms: ribU, transparent: true, depthWrite: false, depthTest: false, side: THREE.DoubleSide });
@@ -243,7 +278,8 @@ export function createGalaxy({ band, isMobile, nodes = 0 }) {
   nodeGeo.setAttribute("aK", new THREE.BufferAttribute(Float32Array.from({ length: Math.max(1, nodes) }, (_, k) => k), 1));
   const nodeMat = new THREE.ShaderMaterial({
     vertexShader: NODE_VS, fragmentShader: NODE_FS,
-    uniforms: { ...band.uniforms, uF: { value: -1 }, uStep: { value: 0.055 }, uS0: { value: 0.62 }, uPR: common.uPR, uSettled: { value: 0 }, uDim: common.uDim, uTime: common.uTime },
+    uniforms: { ...band.uniforms, uF: { value: -1 }, uStep: { value: 0.055 }, uS0: { value: 0.62 }, uPR: common.uPR, uSettled: { value: 0 }, uDim: common.uDim, uTime: common.uTime,
+      uNodeAhead: { value: v3(P.nodeAhead) }, uNodeBehind: { value: v3(P.nodeBehind) } },
     transparent: true, depthWrite: false, depthTest: false, blending: THREE.AdditiveBlending,
   });
   const nodePts = new THREE.Points(nodeGeo, nodeMat);
