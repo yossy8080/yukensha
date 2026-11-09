@@ -1,7 +1,9 @@
 /* 有権者 — トップの WebGL シーン（夜の海、天の川の帯、光の粒子でできた府省の物体）
    home.js から dynamic import される。three の読み込みに失敗したら home.js がフォールバックに切り替える。
-   API: createScene({ canvas, chapters, dprMax, isMobile }) -> { update(state), pick(x, y), setHover(i), setPaused(b), dispose() }
+   API: createScene({ canvas, chapters, dprMax, isMobile, palette? }) -> { update(state), pick(x, y), setHover(i), setPaused(b), dispose() }
      chapters = [{ id, name, model }]（model = models3d.js の物体のキー）
+     palette（任意）= { clear, sea, galaxy, morph }（sea3d.js / galaxy3d.js / morph3d.js の *_PALETTE の一部を差し替える。
+       省略するとトップと同じ配色。公約チェッカー（pledges.js）が別の雰囲気にするのに使う）
      state = { hero: 0..1, f: 章の位置（-1=ヒーロー, 0..n-1=各章, n=章の後。小数はあいだ）, anchor: {x, y, size}（CSS px）, end: 0..1 }
    物体は画面に貼り付いた1つだけ。スクロール（f）に合わせて、今の府省の形 → 次の府省の形へ粒子が流れながら変形する。
    動きはすべて「経過時間」と「スクロール位置」で決める（描いたフレームの数には比例しない）。 */
@@ -24,22 +26,22 @@ const NODE_STEP = 0.055; // 帯の上の、府省の節どうしの間隔（帯�
 const clamp01 = (v) => Math.max(0, Math.min(1, v));
 const smooth = (t) => t * t * (3 - 2 * t);
 
-export function createScene({ canvas, chapters, dprMax = 1.75, isMobile = false }) {
+export function createScene({ canvas, chapters, dprMax = 1.75, isMobile = false, palette = {} }) {
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, powerPreference: "high-performance" });
   if (!renderer.getContext()) throw new Error("WebGL を使えません");
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.0;
-  renderer.setClearColor(0x04080f, 1);
+  renderer.setClearColor(palette.clear ?? 0x04080f, 1);
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 400);
-  const sea = createSea(scene, isMobile);
+  const sea = createSea(scene, isMobile, palette.sea);
   const band = createBand();
   const COUNT = isMobile ? 5000 : 10000;
-  const morph = createMorph({ count: COUNT, band });
+  const morph = createMorph({ count: COUNT, band, palette: palette.morph });
   scene.add(morph.object);
-  const galaxy = createGalaxy({ band, isMobile, nodes: chapters.length });
+  const galaxy = createGalaxy({ band, isMobile, nodes: chapters.length, palette: palette.galaxy });
   scene.add(galaxy.object);
 
   const composer = new EffectComposer(renderer);

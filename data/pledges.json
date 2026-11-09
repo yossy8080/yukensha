@@ -1,0 +1,2688 @@
+{
+ "updated": "2026-11-09",
+ "election": {
+  "name": "第51回衆議院議員総選挙",
+  "date": "2026-02-08",
+  "url": "https://www.soumu.go.jp/senkyo/senkyo_s/data/shugiin51/"
+ },
+ "themes": [
+  {
+   "id": "bukka",
+   "name": "物価・税"
+  },
+  {
+   "id": "chingin",
+   "name": "賃金・経済成長"
+  },
+  {
+   "id": "kosodate",
+   "name": "子育て・教育"
+  },
+  {
+   "id": "shakaihosho",
+   "name": "社会保障"
+  },
+  {
+   "id": "anzenhosho",
+   "name": "外交・安全保障"
+  }
+ ],
+ "parties": [
+  {
+   "id": "ldp",
+   "name": "自由民主党",
+   "short": "自民",
+   "side": "与党",
+   "side_note": "日本維新の会と連立政権を組んでいる。2026年9月17日発足の第2次高市改造内閣で、維新の中司宏衆議院議員が内閣府特命担当大臣として入閣した。",
+   "seats_shugiin": 316,
+   "manifesto": {
+    "title": "政権公約2026「日本列島を、強く豊かに。」",
+    "url": "https://www.jimin.jp/election/results/sen_shu51/political_promise/index.html",
+    "pdf": "https://storage2.jimin.jp/pdf/pamphlet/202601_manifest.pdf"
+   },
+   "pledges": [
+    {
+     "id": "ldp-bukka-1",
+     "theme": "bukka",
+     "text": "飲食料品を2年間に限り消費税の対象外とすることを、超党派の「国民会議」で財源やスケジュールを含め検討を加速する。",
+     "quote": "飲食料品は、2年間に限り消費税の対象としないことについて、今後「国民会議」において、財源やスケジュールの在り方など",
+     "src": {
+      "title": "政権公約2026 4. すべての世代の安心と次世代への責任。",
+      "url": "https://www.jimin.jp/election/results/sen_shu51/political_promise/manifesto/04/",
+      "page": "社会保障"
+     },
+     "stage": 3,
+     "status": "食料品の消費税率を2027年4月から2年間1％に引き下げる政府案（税率は0％ではなく1％、残りは支援金で給付）が2026-11-06に衆議院を通過し、参議院で審議中。",
+     "actions": [
+      {
+       "date": "2026-02-26",
+       "stage": 1,
+       "type": "その他",
+       "text": "政府と参加政党による「社会保障国民会議」の第1回会合が開かれた。",
+       "src": {
+        "title": "第1回社会保障国民会議 議事録",
+        "site": "内閣官房",
+        "url": "https://www.cas.go.jp/jp/seisaku/kokuminkaigi/contents/20260306/giziroku.pdf"
+       }
+      },
+      {
+       "date": "2026-07-29",
+       "stage": 3,
+       "type": "合意",
+       "text": "社会保障国民会議が、給付付き税額控除と経過措置（つなぎ）を含む中間とりまとめを決定した。",
+       "src": {
+        "title": "「社会保障国民会議」中間とりまとめ（令和8年7月29日）",
+        "site": "内閣官房",
+        "url": "https://www.cas.go.jp/jp/seisaku/kokuminkaigi/contents/20260729-4/01_siryou1.pdf"
+       }
+      },
+      {
+       "date": "2026-10-09",
+       "stage": 2,
+       "type": "閣議決定",
+       "text": "飲食料品の消費税率を臨時的に引き下げる法律案（閣法第1号）を閣議決定し、国会に提出した。",
+       "src": {
+        "title": "租税及び社会保険料による負担の軽減のための飲食料品に係る消費税率の臨時的な引下げ及び就業者負担軽減支援金の支給に関する法律案",
+        "site": "内閣法制局",
+        "url": "https://www.clb.go.jp/recent-laws/diet_bill/detail/id=5343"
+       }
+      },
+      {
+       "date": "2026-11-06",
+       "stage": 3,
+       "type": "審議入り",
+       "text": "同法律案が衆議院本会議で可決され（賛成：自民・維新）、参議院に送られた。",
+       "src": {
+        "title": "議案審議経過情報（閣法第222回国会1）",
+        "site": "衆議院",
+        "url": "https://www.shugiin.go.jp/Internet/itdb_gian.nsf/html/gian/keika/1DE342E.htm"
+       }
+      }
+     ]
+    },
+    {
+     "id": "ldp-bukka-2",
+     "theme": "bukka",
+     "text": "中・低所得者の税・社会保険料負担を軽くし手取りを増やす「給付付き税額控除」の制度設計を進める。",
+     "quote": "中・低所得者（若者・現役世代を含む）の税・社会保険料負担を軽減し、所得に応じて手取りが増えるように、「給付付き税額控除」の制度設計を進めます。",
+     "src": {
+      "title": "政権公約2026 4. すべての世代の安心と次世代への責任。",
+      "url": "https://www.jimin.jp/election/results/sen_shu51/political_promise/manifesto/04/",
+      "page": "社会保障"
+     },
+     "stage": 3,
+     "status": "基本方針を2026-08-05に閣議決定し、支援金（所得に連動した給付）を定める法律案が2026-11-06に衆議院を通過して参議院で審議中。",
+     "actions": [
+      {
+       "date": "2026-07-29",
+       "stage": 3,
+       "type": "合意",
+       "text": "第2回社会保障国民会議で、所得に連動した給付を行う新たな制度を令和11年度に本格導入するとする中間とりまとめを決定した。",
+       "src": {
+        "title": "第2回社会保障国民会議 議事録（2026-7-29）",
+        "site": "内閣官房",
+        "url": "https://www.cas.go.jp/jp/seisaku/kokuminkaigi/contents/20260729-3/giziroku.pdf"
+       }
+      },
+      {
+       "date": "2026-08-05",
+       "stage": 3,
+       "type": "閣議決定",
+       "text": "「給付付き税額控除」の制度導入の基本方針を閣議決定した。",
+       "src": {
+        "title": "「給付付き税額控除」の制度導入の基本方針の閣議決定についての会見",
+        "site": "首相官邸",
+        "url": "https://www.kantei.go.jp/jp/105/statement/2026/0805kaiken.html"
+       }
+      },
+      {
+       "date": "2026-10-09",
+       "stage": 2,
+       "type": "閣議決定",
+       "text": "「就業者負担軽減支援金」の支給を定める法律案（閣法第1号）を閣議決定し、国会に提出した。",
+       "src": {
+        "title": "租税及び社会保険料による負担の軽減のための飲食料品に係る消費税率の臨時的な引下げ及び就業者負担軽減支援金の支給に関する法律案",
+        "site": "内閣法制局",
+        "url": "https://www.clb.go.jp/recent-laws/diet_bill/detail/id=5343"
+       }
+      },
+      {
+       "date": "2026-11-06",
+       "stage": 3,
+       "type": "審議入り",
+       "text": "同法律案が衆議院本会議で可決され、参議院に送られた。",
+       "src": {
+        "title": "議案審議経過情報（閣法第222回国会1）",
+        "site": "衆議院",
+        "url": "https://www.shugiin.go.jp/Internet/itdb_gian.nsf/html/gian/keika/1DE342E.htm"
+       }
+      }
+     ]
+    },
+    {
+     "id": "ldp-chingin-1",
+     "theme": "chingin",
+     "text": "AI・半導体、量子、造船など17の戦略分野に投資を集中し、競争力強化と成長を進める。",
+     "quote": "AI・半導体、量子、核融合、バイオ、航空、宇宙、造船など17の戦略分野に投資を集中的に行い、国の競争力強化と成長を進めていきます。",
+     "src": {
+      "title": "政権公約2026 1. 強い経済で、笑顔あふれる暮らしを。",
+      "url": "https://www.jimin.jp/election/results/sen_shu51/political_promise/manifesto/01/",
+      "page": "危機管理投資・成長投資"
+     },
+     "stage": 2,
+     "status": "2026-07-21に「日本成長戦略」と戦略17分野の官民投資ロードマップが決定された。",
+     "actions": [
+      {
+       "date": "2026-06-11",
+       "stage": 2,
+       "type": "提言",
+       "text": "党日本成長戦略本部が、戦略17分野への投資促進などを盛り込んだ提言を高市総理に申し入れた。",
+       "src": {
+        "title": "官民の力を結集し成長を加速 日本成長戦略本部が提言",
+        "site": "自由民主党",
+        "url": "https://www.jimin.jp/news/policy/213459.html"
+       }
+      },
+      {
+       "date": "2026-07-21",
+       "stage": 2,
+       "type": "閣議決定",
+       "text": "17の戦略分野などを定めた「日本成長戦略」を閣議決定し、日本成長戦略本部が戦略17分野の官民投資ロードマップを決定した。",
+       "src": {
+        "title": "日本成長戦略本部／日本成長戦略会議",
+        "site": "内閣官房",
+        "url": "https://www.cas.go.jp/jp/seisaku/nipponseichosenryaku/index.html"
+       }
+      }
+     ]
+    },
+    {
+     "id": "ldp-chingin-2",
+     "theme": "chingin",
+     "text": "補正予算頼みをやめ、必要な予算は当初予算で組み、投資のための複数年の「新たな予算枠」をつくる。",
+     "quote": "投資のための「新たな予算枠」を設定し、市場の信認を得ながら複数年での機動的な財政出動を可能にします。",
+     "src": {
+      "title": "政権公約2026 1. 強い経済で、笑顔あふれる暮らしを。",
+      "url": "https://www.jimin.jp/election/results/sen_shu51/political_promise/manifesto/01/",
+      "page": "責任ある積極財政"
+     },
+     "stage": 2,
+     "status": "『「強く豊かな日本」投資枠』の創設は令和9年度（2027年度）予算の編成で検討中で、予算案はまだ出ていない。",
+     "actions": [
+      {
+       "date": "2026-07-21",
+       "stage": 2,
+       "type": "閣議決定",
+       "text": "「骨太方針2026」を閣議決定した。",
+       "src": {
+        "title": "経済財政運営と改革の基本方針2026",
+        "site": "内閣府",
+        "url": "https://www5.cao.go.jp/keizai-shimon/kaigi/cabinet/honebuto/2026/decision0721.html"
+       }
+      },
+      {
+       "date": "2026-07-30",
+       "stage": 2,
+       "type": "その他",
+       "text": "経済財政諮問会議が「令和9年度予算の全体像」で、『「強く豊かな日本」投資枠』の創設と補正予算依存からの脱却を令和9年度予算編成で進めるとした。",
+       "src": {
+        "title": "令和9年度予算の全体像（2026年7月30日 経済財政諮問会議）",
+        "site": "内閣府",
+        "url": "https://www5.cao.go.jp/keizai-shimon/kaigi/cabinet/zentaizou/r9_yosannnozentai.pdf"
+       }
+      }
+     ]
+    },
+    {
+     "id": "ldp-kosodate-1",
+     "theme": "kosodate",
+     "text": "標準的な出産費用の自己負担をなくすなど、出産の経済的負担を軽くする法案を次の国会に出す。",
+     "quote": "標準的な出産費用の自己負担の無償化など、妊娠・出産に伴う経済的負担を軽減するための法案を次期国会に提出します。",
+     "src": {
+      "title": "政権公約2026 4. すべての世代の安心と次世代への責任。",
+      "url": "https://www.jimin.jp/election/results/sen_shu51/political_promise/manifesto/04/",
+      "page": "こども・子育て"
+     },
+     "stage": 4,
+     "status": "出産の保険給付体系を見直す改正健康保険法が2026-05-29に成立した。法律は一部を除き2027-04-01施行で、給付水準などの制度の詳細は厚生労働省で検討中。",
+     "actions": [
+      {
+       "date": "2026-03-13",
+       "stage": 2,
+       "type": "閣議決定",
+       "text": "出産に係る保険給付体系の見直し等を含む健康保険法等改正案（閣法第25号）を閣議決定し、国会に提出した。",
+       "src": {
+        "title": "健康保険法等の一部を改正する法律案",
+        "site": "内閣法制局",
+        "url": "https://www.clb.go.jp/recent-laws/diet_bill/detail/id=5199"
+       }
+      },
+      {
+       "date": "2026-04-28",
+       "stage": 3,
+       "type": "審議入り",
+       "text": "同法案が衆議院本会議で可決された。",
+       "src": {
+        "title": "議案審議経過情報（閣法第221回国会25）",
+        "site": "衆議院",
+        "url": "https://www.shugiin.go.jp/internet/itdb_gian.nsf/html/gian/keika/1DE1FDE.htm"
+       }
+      },
+      {
+       "date": "2026-05-29",
+       "stage": 4,
+       "type": "成立",
+       "text": "同法案が参議院本会議で可決・成立した（2026-06-05公布）。",
+       "src": {
+        "title": "議案審議経過情報（閣法第221回国会25）",
+        "site": "衆議院",
+        "url": "https://www.shugiin.go.jp/internet/itdb_gian.nsf/html/gian/keika/1DE1FDE.htm"
+       }
+      }
+     ]
+    },
+    {
+     "id": "ldp-kosodate-2",
+     "theme": "kosodate",
+     "text": "高校授業料の無償化を機に、新たな財政支援で高校教育改革を進める。",
+     "quote": "その核となる高校について、「授業料無償化」を機に、新たな財政支援により高校教育改革を強力に進めます。",
+     "src": {
+      "title": "政権公約2026 4. すべての世代の安心と次世代への責任。",
+      "url": "https://www.jimin.jp/election/results/sen_shu51/political_promise/manifesto/04/",
+      "page": "教育"
+     },
+     "stage": 4,
+     "status": "授業料支援の拡充は2026年4月から始まった。高校教育改革のための「高等学校教育改革交付金（仮称）」は令和9年度予算の編成過程で検討するとされている。",
+     "actions": [
+      {
+       "date": "2026-02-13",
+       "stage": 2,
+       "type": "その他",
+       "text": "文部科学省が高校教育改革の基本方針（グランドデザイン）を公表し、「高校教育改革促進基金」を使うパイロットケースの公募を始めた。",
+       "src": {
+        "title": "高校教育改革に関する基本方針（グランドデザイン）公表",
+        "site": "文部科学省",
+        "url": "https://www.mext.go.jp/b_menu/activity/detail/2026/20260213.html"
+       }
+      },
+      {
+       "date": "2026-03-31",
+       "stage": 4,
+       "type": "成立",
+       "text": "所得制限をなくして高校授業料支援を拡充する改正高等学校等就学支援金法が成立した（4月施行）。",
+       "src": {
+        "title": "高等学校等就学支援金制度の拡充のための法律案…が参議院本会議において可決され、成立しました",
+        "site": "文部科学省",
+        "url": "https://www.mext.go.jp/b_menu/activity/detail/2026/20260331.html"
+       }
+      }
+     ]
+    },
+    {
+     "id": "ldp-shakaihosho-1",
+     "theme": "shakaihosho",
+     "text": "医療・福祉・介護分野で働く幅広い職種の賃上げを確実に行う。",
+     "quote": "地域医療・介護等の基盤を守るため、医療・福祉・介護分野で働く幅広い職種の方々の確実な賃上げを図ります。",
+     "src": {
+      "title": "政権公約2026 4. すべての世代の安心と次世代への責任。",
+      "url": "https://www.jimin.jp/election/results/sen_shu51/political_promise/manifesto/04/",
+      "page": "社会保障"
+     },
+     "stage": 4,
+     "status": "令和8年度予算が2026-04-07に成立し、介護職員等の処遇改善加算の拡充が2026年6月から始まった。",
+     "actions": [
+      {
+       "date": "2026-04-07",
+       "stage": 4,
+       "type": "成立",
+       "text": "医療の賃上げ対応（診療報酬改定）と介護報酬の期中改定を含む令和8年度予算が、政府案どおり成立した。",
+       "src": {
+        "title": "令和8年度予算",
+        "site": "財務省",
+        "url": "https://www.mof.go.jp/policy/budget/budger_workflow/budget/fy2026/index.html"
+       }
+      },
+      {
+       "date": "2026-06-01",
+       "stage": 4,
+       "type": "制度開始",
+       "text": "介護職員等処遇改善加算の拡充が令和8年6月から始まった。",
+       "src": {
+        "title": "介護職員の処遇改善：TOP・制度概要",
+        "site": "厚生労働省",
+        "url": "https://www.mhlw.go.jp/shogu-kaizen/"
+       }
+      }
+     ]
+    },
+    {
+     "id": "ldp-shakaihosho-2",
+     "theme": "shakaihosho",
+     "text": "社会保障支出の伸びを抑え、社会保険料などの負担を見直す。",
+     "quote": "社会保障支出の伸びを抑えるとともに、社会保険料等の負担を見直します。",
+     "src": {
+      "title": "政権公約2026 4. すべての世代の安心と次世代への責任。",
+      "url": "https://www.jimin.jp/election/results/sen_shu51/political_promise/manifesto/04/",
+      "page": "社会保障"
+     },
+     "stage": 4,
+     "status": "改正健康保険法が2026-05-29に成立した（2026-06-05公布、一部を除き2027-04-01施行）。",
+     "actions": [
+      {
+       "date": "2026-03-13",
+       "stage": 2,
+       "type": "閣議決定",
+       "text": "一部保険外療養の創設や後期高齢者医療の保険料算定への金融所得の反映などを含む健康保険法等改正案を閣議決定し、国会に提出した。",
+       "src": {
+        "title": "健康保険法等の一部を改正する法律案（法律案等概要）",
+        "site": "衆議院",
+        "url": "https://www.shugiin.go.jp/internet/itdb_rchome.nsf/html/rchome/Horitsu/kourouCECBE285728DB80E49258DD40021065D.htm"
+       }
+      },
+      {
+       "date": "2026-05-29",
+       "stage": 4,
+       "type": "成立",
+       "text": "同法案が参議院本会議で可決・成立した。",
+       "src": {
+        "title": "議案審議経過情報（閣法第221回国会25）",
+        "site": "衆議院",
+        "url": "https://www.shugiin.go.jp/internet/itdb_gian.nsf/html/gian/keika/1DE1FDE.htm"
+       }
+      }
+     ]
+    },
+    {
+     "id": "ldp-anzenhosho-1",
+     "theme": "anzenhosho",
+     "text": "2026年中に国家安全保障戦略を含む「三文書」を改定する。",
+     "quote": "本年中に国家安全保障戦略を含む「三文書」を改定し、新たな時代に対応した防衛体制を構築します。",
+     "src": {
+      "title": "政権公約2026 3. わが国を守る責任。国際秩序を担う日本外交。",
+      "url": "https://www.jimin.jp/election/results/sen_shu51/political_promise/manifesto/03/",
+      "page": "安全保障"
+     },
+     "stage": 2,
+     "status": "2026-11-09時点で三文書の改定は閣議決定されていない。政府は年末までの見直しを表明し、有識者会議での議論が続いている。",
+     "actions": [
+      {
+       "date": "2026-02-20",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "高市総理が施政方針演説で、本年中に三文書を前倒しで改定すると述べた。",
+       "src": {
+        "title": "第221回国会における高市内閣総理大臣施政方針演説",
+        "site": "首相官邸",
+        "url": "https://www.kantei.go.jp/jp/105/statement/2026/0220shiseihoshin.html"
+       }
+      },
+      {
+       "date": "2026-04-27",
+       "stage": 1,
+       "type": "その他",
+       "text": "「総合的な国力から安全保障を考える有識者会議」の第1回会合が官邸で開かれた。",
+       "src": {
+        "title": "総合的な国力から安全保障を考える有識者会議（総理の一日）",
+        "site": "首相官邸",
+        "url": "https://www.kantei.go.jp/jp/105/actions/202604/27sougouanzenhosyou.html"
+       }
+      },
+      {
+       "date": "2026-06-24",
+       "stage": 2,
+       "type": "提言",
+       "text": "党安全保障調査会が「新たな国家安全保障戦略等の策定に向けた提言」を高市総理と木原官房長官に申し入れた。",
+       "src": {
+        "title": "安全保障調査会が「新たな国家安全保障戦略等の策定に向けた提言」を申し入れ",
+        "site": "自由民主党",
+        "url": "https://www.jimin.jp/news/policy/213608.html"
+       }
+      },
+      {
+       "date": "2026-10-05",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "高市総理が所信表明演説で、年末までに三文書を見直すと述べた。",
+       "src": {
+        "title": "第222回国会における高市内閣総理大臣所信表明演説",
+        "site": "首相官邸",
+        "url": "https://www.kantei.go.jp/jp/105/statement/2026/1005shoshinhyomei.html"
+       }
+      }
+     ]
+    },
+    {
+     "id": "ldp-anzenhosho-2",
+     "theme": "anzenhosho",
+     "text": "国家情報会議設置法を早く成立させ、官邸直属の国家情報局をつくる。",
+     "quote": "国家情報会議設置法（仮称）を早期に成立させ、官邸直属の国家情報局を創設します。",
+     "src": {
+      "title": "政権公約2026 3. わが国を守る責任。国際秩序を担う日本外交。",
+      "url": "https://www.jimin.jp/election/results/sen_shu51/political_promise/manifesto/03/",
+      "page": "インテリジェンス"
+     },
+     "stage": 4,
+     "status": "国家情報会議設置法が2026-05-27に成立し、2026-07-31に施行されて国家情報局が発足した。",
+     "actions": [
+      {
+       "date": "2026-03-13",
+       "stage": 2,
+       "type": "閣議決定",
+       "text": "国家情報会議設置法案（閣法第24号）を閣議決定し、国会に提出した。",
+       "src": {
+        "title": "国家情報会議設置法案",
+        "site": "内閣法制局",
+        "url": "https://www.clb.go.jp/recent-laws/diet_bill/detail/id=5197"
+       }
+      },
+      {
+       "date": "2026-04-23",
+       "stage": 3,
+       "type": "審議入り",
+       "text": "同法案が衆議院本会議で可決された。",
+       "src": {
+        "title": "議案審議経過情報（閣法第221回国会24）",
+        "site": "衆議院",
+        "url": "https://www.shugiin.go.jp/internet/itdb_gian.nsf/html/gian/keika/1DE1FCA.htm"
+       }
+      },
+      {
+       "date": "2026-05-27",
+       "stage": 4,
+       "type": "成立",
+       "text": "同法案が参議院本会議で可決・成立した（2026-06-03公布、令和8年法律第28号）。",
+       "src": {
+        "title": "議案審議経過情報（閣法第221回国会24）",
+        "site": "衆議院",
+        "url": "https://www.shugiin.go.jp/internet/itdb_gian.nsf/html/gian/keika/1DE1FCA.htm"
+       }
+      },
+      {
+       "date": "2026-07-31",
+       "stage": 4,
+       "type": "制度開始",
+       "text": "国家情報会議設置法が施行され、内閣官房に国家情報局が置かれた。",
+       "src": {
+        "title": "国家情報会議・国家情報局",
+        "site": "内閣官房",
+        "url": "https://www.cas.go.jp/jp/gaiyou/jimu/nic_nib.html"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "ishin",
+   "name": "日本維新の会",
+   "short": "維新",
+   "side": "与党",
+   "side_note": "2025-10-20に自由民主党と連立政権合意書を結んだ。2026-09-17発足の第2次高市改造内閣で、維新の中司宏衆議院議員が内閣府特命担当大臣（こども政策・規制改革など）として入閣している。",
+   "side_src": [
+    {
+     "title": "自由民主党・日本維新の会 連立政権合意書",
+     "site": "日本維新の会",
+     "url": "https://o-ishin.jp/news/2025/10/20/17558.html"
+    },
+    {
+     "title": "内閣府特命担当大臣 中司宏｜第2次高市改造内閣 閣僚等名簿",
+     "site": "首相官邸",
+     "url": "https://www.kantei.go.jp/jp/105/meibo/daijin/nakatsuka_hiroshi.html"
+    }
+   ],
+   "seats_shugiin": 36,
+   "manifesto": {
+    "title": "コア・マニフェスト「動かすぞ、維新が。」／維新八策2026 個別政策集",
+    "url": "https://o-ishin.jp/policy/8saku2026.html"
+   },
+   "pledges": [
+    {
+     "id": "ishin-bukka-1",
+     "theme": "bukka",
+     "text": "飲食料品の消費税を2年間ゼロにする。",
+     "quote": "食料品消費税を2年間ゼロへ。",
+     "src": {
+      "title": "コア・マニフェスト「動かすぞ、維新が。」",
+      "url": "https://o-ishin.jp/coalition2025/img/index/core_manifesto_2026.pdf",
+      "page": "p.4"
+     },
+     "stage": 3,
+     "status": "飲食料品の消費税率を2027年4月1日から2年間8%から1%に下げる政府の法律案が、2026-11-06に衆議院で可決され、参議院で審議中。税率は0%ではなく1%で、1%分の範囲で就業者負担軽減支援金を支給する内容。",
+     "actions": [
+      {
+       "date": "2026-02-24",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "中司宏議員が衆議院本会議の代表質問で、食料品消費税ゼロについて総理に質問した。",
+       "src": {
+        "title": "第221回国会 衆議院 本会議 第3号（2026-02-24）中司宏議員の発言",
+        "site": "国会会議録検索システム",
+        "url": "https://kokkai.ndl.go.jp/txt/122105254X00320260224/11"
+       }
+      },
+      {
+       "date": "2026-07-30",
+       "stage": 2,
+       "type": "その他",
+       "text": "高市総理が会見で、飲食料品の消費税率を1%に下げ、令和9年4月から2年間先行させる方針を示した。",
+       "src": {
+        "title": "「飲食料品に係る消費税率の引下げ」及び「給付付き税額控除」についての会見",
+        "site": "首相官邸",
+        "url": "https://www.kantei.go.jp/jp/105/statement/2026/0730kaiken.html"
+       }
+      },
+      {
+       "date": "2026-09-15",
+       "stage": 2,
+       "type": "閣議決定",
+       "text": "「飲食料品消費税率の臨時的な引下げ及び就業者負担軽減支援金の導入に関する大綱」が閣議決定された。",
+       "src": {
+        "title": "令和8年9月15日（火）臨時閣議案件",
+        "site": "首相官邸",
+        "url": "https://www.kantei.go.jp/jp/kakugi/2026/kakugi-2026091502.html"
+       }
+      },
+      {
+       "date": "2026-10-09",
+       "stage": 2,
+       "type": "法案提出",
+       "text": "飲食料品の消費税率を臨時に引き下げる法律案（閣法222-1）が国会に提出された。",
+       "src": {
+        "title": "租税及び社会保険料による負担の軽減のための飲食料品に係る消費税率の臨時的な引下げ及び就業者負担軽減支援金の支給に関する法律案（経過）",
+        "site": "衆議院",
+        "url": "https://www.shugiin.go.jp/internet/itdb_gian.nsf/html/gian/keika/1DE342E.htm"
+       }
+      },
+      {
+       "date": "2026-11-06",
+       "stage": 3,
+       "type": "審議入り",
+       "text": "同法律案が衆議院本会議で可決され（自民・維新が賛成）、参議院に送られた。",
+       "src": {
+        "title": "同法律案（経過）",
+        "site": "衆議院",
+        "url": "https://www.shugiin.go.jp/internet/itdb_gian.nsf/html/gian/keika/1DE342E.htm"
+       }
+      }
+     ]
+    },
+    {
+     "id": "ishin-bukka-2",
+     "theme": "bukka",
+     "text": "低所得層にも支援が届く給付付き税額控除の制度を設計する。",
+     "quote": "勤労税額控除の考え方も含め、幅広い意見を踏まえつつ、給付付き税額控除の制度設計を実施します。",
+     "src": {
+      "title": "維新八策2026 個別政策集",
+      "url": "https://o-ishin.jp/coalition2025/img/index/ishin8saku2026.pdf",
+      "page": "p.3（No.2）"
+     },
+     "stage": 3,
+     "status": "政府は2026-08-05に給付付き税額控除の導入の基本方針を閣議決定し、「就業者負担軽減支援金」を含む法律案が2026-11-06に衆議院で可決された（参議院で審議中）。本格導入は令和11年度とされている。",
+     "actions": [
+      {
+       "date": "2026-03-09",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "池下卓議員が衆議院予算委員会で給付付き税額控除の制度の目的について質問した。",
+       "src": {
+        "title": "第221回国会 衆議院 予算委員会（2026-03-09）池下卓議員の発言",
+        "site": "国会会議録検索システム",
+        "url": "https://kokkai.ndl.go.jp/txt/122105261X00820260309/413"
+       }
+      },
+      {
+       "date": "2026-07-29",
+       "stage": 2,
+       "type": "その他",
+       "text": "社会保障国民会議が給付付き税額控除の「中間とりまとめ」を決めた。",
+       "src": {
+        "title": "中間とりまとめ（社会保障国民会議 令和8年7月29日）",
+        "site": "内閣官房",
+        "url": "https://www.cas.go.jp/jp/seisaku/kokuminkaigi/contents/20260729-4/01_siryou1.pdf"
+       }
+      },
+      {
+       "date": "2026-08-05",
+       "stage": 2,
+       "type": "閣議決定",
+       "text": "「『給付付き税額控除』の制度導入の基本方針」が閣議決定された。",
+       "src": {
+        "title": "「給付付き税額控除」の制度導入の基本方針（令和8年8月5日閣議決定）",
+        "site": "内閣官房",
+        "url": "https://www.cas.go.jp/jp/seisaku/kokuminkaigi/contents/20260805/01_siryou1.pdf"
+       }
+      },
+      {
+       "date": "2026-09-15",
+       "stage": 2,
+       "type": "閣議決定",
+       "text": "大綱が閣議決定され、所得に応じた給付を行う「就業者負担軽減支援金」を導入し、令和11年度に本格導入するとされた。",
+       "src": {
+        "title": "片山財務大臣兼内閣府特命担当大臣臨時閣議後記者会見の概要（令和8年9月15日）",
+        "site": "金融庁",
+        "url": "https://www.fsa.go.jp/common/conference/minister/2026b/20260915-1.html"
+       }
+      },
+      {
+       "date": "2026-11-06",
+       "stage": 3,
+       "type": "審議入り",
+       "text": "就業者負担軽減支援金の支給を含む法律案が衆議院で可決され、参議院に送られた。",
+       "src": {
+        "title": "租税及び社会保険料による負担の軽減のための飲食料品に係る消費税率の臨時的な引下げ及び就業者負担軽減支援金の支給に関する法律案（経過）",
+        "site": "衆議院",
+        "url": "https://www.shugiin.go.jp/internet/itdb_gian.nsf/html/gian/keika/1DE342E.htm"
+       }
+      }
+     ]
+    },
+    {
+     "id": "ishin-chingin-1",
+     "theme": "chingin",
+     "text": "最低賃金を生活費の実勢に合わせて引き上げる。",
+     "quote": "最低賃金の水準を実勢に合わせて引き上げます。",
+     "src": {
+      "title": "維新八策2026 個別政策集",
+      "url": "https://o-ishin.jp/coalition2025/img/index/ishin8saku2026.pdf",
+      "page": "p.4（No.24）"
+     },
+     "stage": 4,
+     "status": "2026年度の最低賃金は全国加重平均で56円上がり1,177円となり、2026年10月1日から12月2日にかけて順次発効する。維新の議員が国会で最低賃金の引き上げを求めた記録は、今回の検索では見つからなかった。",
+     "actions": [
+      {
+       "date": "2026-07-21",
+       "stage": 2,
+       "type": "閣議決定",
+       "text": "骨太方針2026が閣議決定され、最低賃金を遅くとも2030年代前半のできる限り早期に全国平均1,500円とする目標が書かれた。",
+       "src": {
+        "title": "経済財政運営と改革の基本方針2026",
+        "site": "内閣府",
+        "url": "https://www5.cao.go.jp/keizai-shimon/kaigi/cabinet/honebuto/2026/decision0721.html"
+       }
+      },
+      {
+       "date": "2026-09-03",
+       "stage": 4,
+       "type": "その他",
+       "text": "全都道府県で2026年度の最低賃金の改定額が答申され、全国加重平均は56円上がって1,177円となった（10月1日〜12月2日に順次発効）。",
+       "src": {
+        "title": "全ての都道府県で地域別最低賃金の改定額が答申されました",
+        "site": "厚生労働省",
+        "url": "https://www.mhlw.go.jp/stf/newpage_75950.html"
+       }
+      }
+     ]
+    },
+    {
+     "id": "ishin-chingin-2",
+     "theme": "chingin",
+     "text": "即時償却などを認める大胆な設備投資促進税制をつくる。",
+     "quote": "即時償却を含む投資へのインセンティブを付与する大胆な設備投資促進税制を創設し",
+     "src": {
+      "title": "維新八策2026 個別政策集",
+      "url": "https://o-ishin.jp/coalition2025/img/index/ishin8saku2026.pdf",
+      "page": "p.4（No.23）"
+     },
+     "stage": 4,
+     "status": "2026-03-31に所得税法等改正法が成立し、全業種を対象に即時償却または税額控除7%（建物等は4%）を認める特定生産性向上設備等投資促進税制がつくられた。",
+     "actions": [
+      {
+       "date": "2026-02-20",
+       "stage": 2,
+       "type": "法案提出",
+       "text": "特定生産性向上設備等投資促進税制の創設を含む所得税法等改正案が国会に提出された。",
+       "src": {
+        "title": "所得税法等の一部を改正する法律案（経過）",
+        "site": "衆議院",
+        "url": "https://www.shugiin.go.jp/internet/itdb_gian.nsf/html/gian/keika/1DE14D6.htm"
+       }
+      },
+      {
+       "date": "2026-03-13",
+       "stage": 3,
+       "type": "審議入り",
+       "text": "同法律案が衆議院で可決された（維新は賛成）。",
+       "src": {
+        "title": "所得税法等の一部を改正する法律案（経過）",
+        "site": "衆議院",
+        "url": "https://www.shugiin.go.jp/internet/itdb_gian.nsf/html/gian/keika/1DE14D6.htm"
+       }
+      },
+      {
+       "date": "2026-03-31",
+       "stage": 4,
+       "type": "成立",
+       "text": "所得税法等改正法が成立し（令和8年法律第12号）、即時償却または税額控除を認める特定生産性向上設備等投資促進税制がつくられた。",
+       "src": {
+        "title": "令和8年度 税制改正(国税)等について（ファイナンス2026年4月号）",
+        "site": "財務省",
+        "url": "https://www.mof.go.jp/public_relations/finance/202604/pdf/202604c.pdf"
+       }
+      },
+      {
+       "date": "2026-04-17",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "東徹議員が衆議院経済産業委員会で、大胆な投資促進税制を導入する法案について質問した。",
+       "src": {
+        "title": "第221回国会 衆議院 経済産業委員会 第4号（2026-04-17）東徹議員の発言",
+        "site": "国会会議録検索システム",
+        "url": "https://kokkai.ndl.go.jp/txt/122104080X00420260417/95"
+       }
+      }
+     ]
+    },
+    {
+     "id": "ishin-kosodate-1",
+     "theme": "kosodate",
+     "text": "小学校に続いて中学校の給食を無償化する。",
+     "quote": "中学校給食を無償化し、食育を推進するとともに",
+     "src": {
+      "title": "維新八策2026 個別政策集",
+      "url": "https://o-ishin.jp/coalition2025/img/index/ishin8saku2026.pdf",
+      "page": "p.16（No.195）"
+     },
+     "stage": 1,
+     "status": "国の学校給食費の負担軽減は2026年4月から公立小学校を対象に始まった。中学校について政府は国会で「課題を整理した上で検討」と答弁しており、令和9年度概算要求の給食費負担軽減も小学校段階が対象となっている。",
+     "actions": [
+      {
+       "date": "2026-03-27",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "参議院予算委員会で松本文部科学大臣が、中学校給食について小中学校の実施状況の違いを含めた課題を整理した上で検討すると答弁した。",
+       "src": {
+        "title": "第221回国会 参議院 予算委員会（2026-03-27）松本洋平国務大臣の発言",
+        "site": "国会会議録検索システム",
+        "url": "https://kokkai.ndl.go.jp/txt/122115261X00720260327/36"
+       }
+      },
+      {
+       "date": "2026-05-21",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "参議院文教科学委員会で松本文部科学大臣が、中学校の給食費の負担軽減について課題を整理した上で検討すると答弁した。",
+       "src": {
+        "title": "第221回国会 参議院 文教科学委員会（2026-05-21）松本洋平国務大臣の発言",
+        "site": "国会会議録検索システム",
+        "url": "https://kokkai.ndl.go.jp/txt/122115104X00720260521/14"
+       }
+      }
+     ]
+    },
+    {
+     "id": "ishin-kosodate-2",
+     "theme": "kosodate",
+     "text": "高校教育改革のグランドデザインを今年度中に作り、就学支援金を生徒に直接支給する。",
+     "quote": "高校教育改革グランドデザインを今年度中に策定し、来年度は都道府県毎の高校教育改革実行計画を策定します。",
+     "src": {
+      "title": "維新八策2026 個別政策集",
+      "url": "https://o-ishin.jp/coalition2025/img/index/ishin8saku2026.pdf",
+      "page": "p.16（No.196）"
+     },
+     "stage": 4,
+     "status": "文部科学省は2026-02-13に高校教育改革のグランドデザイン（N-E.X.T.ハイスクール構想）を公表した。就学支援金の生徒への直接支給は、2026-11-09時点で制度化の記録は見つからなかった。",
+     "actions": [
+      {
+       "date": "2026-02-13",
+       "stage": 4,
+       "type": "その他",
+       "text": "文部科学省が「高校教育改革に関する基本方針（グランドデザイン）」を公表し、高校教育改革促進基金によるパイロットケースの公募を始めた。",
+       "src": {
+        "title": "高校教育改革に関する基本方針（グランドデザイン）公表",
+        "site": "文部科学省",
+        "url": "https://www.mext.go.jp/b_menu/activity/detail/2026/20260213.html"
+       }
+      },
+      {
+       "date": "2026-03-26",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "金子道仁議員が参議院文教科学委員会で、就学支援金の生徒への直接支給を求めた。",
+       "src": {
+        "title": "第221回国会 参議院 文教科学委員会 第2号（2026-03-26）金子道仁議員の発言",
+        "site": "国会会議録検索システム",
+        "url": "https://kokkai.ndl.go.jp/txt/122115104X00220260326/155"
+       }
+      },
+      {
+       "date": "2026-07-21",
+       "stage": 2,
+       "type": "閣議決定",
+       "text": "骨太方針2026に、高等学校教育改革促進基金や交付金等の新たな財政支援の仕組みで高校教育改革を進めると書かれた。",
+       "src": {
+        "title": "経済財政運営と改革の基本方針2026",
+        "site": "内閣府",
+        "url": "https://www5.cao.go.jp/keizai-shimon/kaigi/cabinet/honebuto/2026/decision0721.html"
+       }
+      }
+     ]
+    },
+    {
+     "id": "ishin-shakaihosho-1",
+     "theme": "shakaihosho",
+     "text": "医療費を年4兆円以上減らし、現役世代の社会保険料を1人年6万円下げる。",
+     "quote": "現役世代１人当たりの社会保険料を年間６万円引き下げることを目指します。",
+     "src": {
+      "title": "維新八策2026 個別政策集",
+      "url": "https://o-ishin.jp/coalition2025/img/index/ishin8saku2026.pdf",
+      "page": "p.10（No.104）"
+     },
+     "stage": 3,
+     "status": "自民・維新は2026-07-07に13項目の社会保障改革の骨子に合意し、骨太方針2026で「現役世代の保険料率の上昇を止め、引き下げていくことを目指す」とされた。1人年6万円の引き下げを決めた文書は見つからなかった。",
+     "actions": [
+      {
+       "date": "2026-03-02",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "斎藤アレックス議員が衆議院予算委員会で、連立合意に基づき現役世代の社会保険料を下げる改革を進めるよう求めた。",
+       "src": {
+        "title": "第221回国会 衆議院 予算委員会（2026-03-02）斎藤アレックス議員の発言",
+        "site": "国会会議録検索システム",
+        "url": "https://kokkai.ndl.go.jp/txt/122105261X00320260302/8"
+       }
+      },
+      {
+       "date": "2026-07-07",
+       "stage": 3,
+       "type": "合意",
+       "text": "自民党と維新の社会保障制度改革協議体が、13項目の「社会保障改革項目に関する具体的な骨子」に合意した。",
+       "src": {
+        "title": "社会保障改革項目に関する具体的な骨子について与党間で合意しました",
+        "site": "日本維新の会",
+        "url": "https://o-ishin.jp/news/2026/07/07/18448.html"
+       }
+      },
+      {
+       "date": "2026-07-21",
+       "stage": 2,
+       "type": "閣議決定",
+       "text": "骨太方針2026に、骨子に基づき2026年度中に制度設計を行い、現役世代の保険料率の上昇を止め引き下げていくことを目指すと書かれた。",
+       "src": {
+        "title": "経済財政運営と改革の基本方針2026",
+        "site": "内閣府",
+        "url": "https://www5.cao.go.jp/keizai-shimon/kaigi/cabinet/honebuto/2026/decision0721.html"
+       }
+      },
+      {
+       "date": "2026-07-27",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "斎藤アレックス議員が衆議院予算委員会で、現役世代の社会保険料の負担を引き下げる改革について質問した。",
+       "src": {
+        "title": "第221回国会 衆議院 予算委員会 第17号（2026-07-27）斎藤アレックス議員の発言",
+        "site": "国会会議録検索システム",
+        "url": "https://kokkai.ndl.go.jp/txt/122105261X01720260727/79"
+       }
+      }
+     ]
+    },
+    {
+     "id": "ishin-shakaihosho-2",
+     "theme": "shakaihosho",
+     "text": "OTC類似薬（市販薬と似た処方薬）などの保険適用を見直す。",
+     "quote": "OTC類似薬等の保険適用見直しを始め、費用対効果に基づく医療行為や薬剤の保険適用見直しを進め",
+     "src": {
+      "title": "維新八策2026 個別政策集",
+      "url": "https://o-ishin.jp/coalition2025/img/index/ishin8saku2026.pdf",
+      "page": "p.10（No.111）"
+     },
+     "stage": 4,
+     "status": "2026-05-29に健康保険法等改正法が成立した。対象のOTC類似薬（77成分）を使う場合、薬剤費の4分の1を別途負担する仕組みが令和9年3月から施行される。",
+     "actions": [
+      {
+       "date": "2026-03-13",
+       "stage": 2,
+       "type": "法案提出",
+       "text": "OTC類似薬の保険給付の見直しを含む健康保険法等改正案（閣法221-25）が国会に提出された。",
+       "src": {
+        "title": "健康保険法等の一部を改正する法律案（経過）",
+        "site": "衆議院",
+        "url": "https://www.shugiin.go.jp/internet/itdb_gian.nsf/html/gian/keika/1DE1FDE.htm"
+       }
+      },
+      {
+       "date": "2026-04-09",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "伊東信久議員が衆議院本会議で、党を代表して健康保険法等改正案について質問した。",
+       "src": {
+        "title": "第221回国会 衆議院 本会議 第11号（2026-04-09）伊東信久議員の発言",
+        "site": "国会会議録検索システム",
+        "url": "https://kokkai.ndl.go.jp/txt/122105254X01120260409/17"
+       }
+      },
+      {
+       "date": "2026-04-28",
+       "stage": 3,
+       "type": "審議入り",
+       "text": "健康保険法等改正案が衆議院で可決された（維新は賛成）。",
+       "src": {
+        "title": "健康保険法等の一部を改正する法律案（経過）",
+        "site": "衆議院",
+        "url": "https://www.shugiin.go.jp/internet/itdb_gian.nsf/html/gian/keika/1DE1FDE.htm"
+       }
+      },
+      {
+       "date": "2026-05-29",
+       "stage": 4,
+       "type": "成立",
+       "text": "健康保険法等改正法が成立し（令和8年法律第31号）、OTC類似薬の薬剤費の4分の1を保険外の別途負担とする仕組みがつくられた。",
+       "src": {
+        "title": "医療保険制度改正法が成立しました",
+        "site": "厚生労働省",
+        "url": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/kenkou_iryou/iryouhoken/newpage_00014.html"
+       }
+      }
+     ]
+    },
+    {
+     "id": "ishin-anzenhosho-1",
+     "theme": "anzenhosho",
+     "text": "内閣情報調査室を格上げして国家情報局をつくり、スパイ防止関連法を速やかに成立させる。",
+     "quote": "内閣情報調査室及び内閣情報官を格上げし、「国家情報局」及び「国家情報局長」を創設する",
+     "src": {
+      "title": "維新八策2026 個別政策集",
+      "url": "https://o-ishin.jp/coalition2025/img/index/ishin8saku2026.pdf",
+      "page": "p.28〜29（No.393）"
+     },
+     "stage": 4,
+     "status": "国家情報会議設置法が2026-05-27に成立し、2026-07-31に国家情報局が発足した。スパイ防止関連の法律案は、2026-11-09時点で第222回国会の衆議院議案一覧に見当たらない。",
+     "actions": [
+      {
+       "date": "2026-03-13",
+       "stage": 2,
+       "type": "法案提出",
+       "text": "国家情報会議設置法案（閣法221-24）が国会に提出された。",
+       "src": {
+        "title": "国家情報会議設置法案（経過）",
+        "site": "衆議院",
+        "url": "https://www.shugiin.go.jp/internet/itdb_gian.nsf/html/gian/keika/1DE1FCA.htm"
+       }
+      },
+      {
+       "date": "2026-04-02",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "浦野靖人議員が衆議院本会議で、党を代表して国家情報会議設置法案について質問した。",
+       "src": {
+        "title": "第221回国会 衆議院 本会議 第10号（2026-04-02）浦野靖人議員の発言",
+        "site": "国会会議録検索システム",
+        "url": "https://kokkai.ndl.go.jp/txt/122105254X01020260402/14"
+       }
+      },
+      {
+       "date": "2026-04-23",
+       "stage": 3,
+       "type": "審議入り",
+       "text": "国家情報会議設置法案が衆議院で可決された（維新は賛成）。",
+       "src": {
+        "title": "国家情報会議設置法案（経過）",
+        "site": "衆議院",
+        "url": "https://www.shugiin.go.jp/internet/itdb_gian.nsf/html/gian/keika/1DE1FCA.htm"
+       }
+      },
+      {
+       "date": "2026-05-27",
+       "stage": 4,
+       "type": "成立",
+       "text": "国家情報会議設置法が参議院で可決・成立した（令和8年法律第28号）。",
+       "src": {
+        "title": "国家情報会議設置法案（経過）",
+        "site": "衆議院",
+        "url": "https://www.shugiin.go.jp/internet/itdb_gian.nsf/html/gian/keika/1DE1FCA.htm"
+       }
+      },
+      {
+       "date": "2026-07-31",
+       "stage": 4,
+       "type": "制度開始",
+       "text": "国家情報会議設置法が施行され、内閣情報調査室にかわり国家情報局が置かれた。",
+       "src": {
+        "title": "国家情報会議・国家情報局",
+        "site": "内閣官房",
+        "url": "https://www.cas.go.jp/jp/gaiyou/jimu/nic_nib.html"
+       }
+      }
+     ]
+    },
+    {
+     "id": "ishin-anzenhosho-2",
+     "theme": "anzenhosho",
+     "text": "防衛装備移転三原則の運用指針の「五類型」の制約をなくす。",
+     "quote": "「防衛装備移転三原則の運用指針」の五類型を撤廃し",
+     "src": {
+      "title": "維新八策2026 個別政策集",
+      "url": "https://o-ishin.jp/coalition2025/img/index/ishin8saku2026.pdf",
+      "page": "p.26（No.353）"
+     },
+     "stage": 4,
+     "status": "2026-04-21に防衛装備移転三原則と運用指針が改正され、国産完成品の移転を五類型（救難・輸送・警戒・監視・掃海）に限っていた制約がなくなった。",
+     "actions": [
+      {
+       "date": "2026-02-24",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "中司宏議員が衆議院本会議の代表質問で、運用指針の五類型の撤廃について総理に質問した。",
+       "src": {
+        "title": "第221回国会 衆議院 本会議 第3号（2026-02-24）中司宏議員の発言",
+        "site": "国会会議録検索システム",
+        "url": "https://kokkai.ndl.go.jp/txt/122105254X00320260224/11"
+       }
+      },
+      {
+       "date": "2026-03-06",
+       "stage": 2,
+       "type": "提言",
+       "text": "自民・維新の与党安全保障プロジェクトチームが、五類型撤廃に関する提言（3月4日付）を高市総理に申し入れた。",
+       "src": {
+        "title": "「防衛装備移転三原則の運用指針」の見直し（いわゆる5類型撤廃）に関する提言",
+        "site": "日本維新の会",
+        "url": "https://o-ishin.jp/news/2026/03/06/18215.html"
+       }
+      },
+      {
+       "date": "2026-04-21",
+       "stage": 4,
+       "type": "閣議決定",
+       "text": "防衛装備移転三原則の改正が閣議決定され、運用指針の改正が国家安全保障会議で決定され、五類型の制約がなくなった。",
+       "src": {
+        "title": "防衛装備移転三原則・運用指針の見直し",
+        "site": "防衛省",
+        "url": "https://www.mod.go.jp/j/press/news/2026/04/21a_03.pdf"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "chudo",
+   "name": "中道改革連合",
+   "short": "中道",
+   "side": "野党",
+   "side_note": "立憲民主党と公明党の衆院議員が2026年1月に結成。選挙後に野田・斉藤両共同代表が辞任し、2026-02-13に小川淳也代表を選出。3党の合流は実現せず、2026-09-16に小川代表が辞任して渡辺創代表を選出、衆院議員49人のうち48人が離党した（党は清算のため渡辺代表1人で当面存続）。旧立憲系は新党「民主改革の会」、旧公明系は公明党に復党し、2026-09-24に衆院会派「中道改革連合・無所属」を「中道」に改称した（47人、2026-09-28現在）。2026-09-24以降の行動は会派「中道」としての記録。",
+   "side_note_src": [
+    {
+     "title": "【代表選】小川淳也衆院議員を新代表に選出",
+     "site": "中道改革連合",
+     "url": "https://craj.jp/news/20260213_0172"
+    },
+    {
+     "title": "「新たな形態」について（2026年9月9日 常任幹事会）",
+     "site": "中道改革連合",
+     "url": "https://craj.jp/files/download/2026/vXlZ/px7Y/lQBc/2026vXlZpx7YlQBcjVAFsKXx.pdf"
+    },
+    {
+     "title": "【代表会見】議員総会で渡辺創・新代表を選出",
+     "site": "中道改革連合",
+     "url": "https://craj.jp/news/20260916_566"
+    },
+    {
+     "title": "衆院、統一会派「中道」結成",
+     "site": "公明党",
+     "url": "https://www.komei.or.jp/komeinews/p514118/"
+    },
+    {
+     "title": "会派名及び会派別所属議員数（令和8年9月28日現在）",
+     "site": "衆議院",
+     "url": "https://www.shugiin.go.jp/internet/itdb_annai.nsf/html/statics/shiryo/kaiha_m.htm"
+    }
+   ],
+   "seats_shugiin": 49,
+   "manifesto": {
+    "title": "2026衆院選主要政策（中道改革連合）",
+    "url": "https://craj.jp/election2026/policies/"
+   },
+   "pledges": [
+    {
+     "id": "chudo-bukka-1",
+     "theme": "bukka",
+     "text": "新しい財源（政府系ファンドなど）をつくり、2026年秋から食料品の消費税を恒久的にゼロにする。",
+     "quote": "新しい財源をつくり、今年の秋から、恒久的な「食料品消費税ゼロ」を実現する",
+     "src": {
+      "title": "2026衆院選主要政策 第2の柱（社会保障モデル）",
+      "url": "https://craj.jp/election2026/policies/welfare/"
+     },
+     "stage": 1,
+     "status": "中道は国会質問で実施時期や財源をただした。政府は飲食料品の税率を2年間1％に下げる法案を出し、2026-11-06に衆議院で可決（会派「中道」は反対）、参議院で審議中。",
+     "actions": [
+      {
+       "date": "2026-02-24",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "小川代表が衆議院本会議の代表質問で、食料品の消費減税を実施すると決めているのか、財源をどうするのかを総理にただした。",
+       "src": {
+        "title": "第221回国会 衆議院 本会議 第3号（2026-02-24）小川淳也議員",
+        "site": "国会会議録検索システム",
+        "url": "https://kokkai.ndl.go.jp/txt/122105254X00320260224/3"
+       }
+      },
+      {
+       "date": "2026-02-27",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "後藤祐一議員が衆議院予算委員会で、食料品消費税ゼロの実施時期について総理にただした。",
+       "src": {
+        "title": "第221回国会 衆議院 予算委員会 第2号（2026-02-27）後藤祐一議員",
+        "site": "国会会議録検索システム",
+        "url": "https://kokkai.ndl.go.jp/txt/122105261X00220260227/310"
+       }
+      },
+      {
+       "date": "2026-06-04",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "小川代表が衆議院予算委員会で、食料品の消費税をゼロにするのか1％にするのか、法案をいつ出すのかを総理にただした。",
+       "src": {
+        "title": "第221回国会 衆議院 予算委員会 第14号（2026-06-04）小川淳也議員",
+        "site": "国会会議録検索システム",
+        "url": "https://kokkai.ndl.go.jp/txt/122105261X01420260604/70"
+       }
+      },
+      {
+       "date": "2026-07-27",
+       "stage": 0,
+       "type": "その他",
+       "text": "（参考）社会保障国民会議の実務者会議で、中道改革連合は「消費税率の時限的な引下げではなく給付で対応すべき」という意見の側に整理された（議事要旨）。",
+       "src": {
+        "title": "社会保障国民会議 給付付き税額控除等に関する実務者会議（第21回）議事要旨",
+        "site": "内閣官房",
+        "url": "https://www.cas.go.jp/jp/seisaku/kokuminkaigi/contents/20260727/minutes.pdf"
+       }
+      },
+      {
+       "date": "2026-10-09",
+       "stage": 0,
+       "type": "閣議決定",
+       "text": "（参考）政府が、飲食料品の消費税率を令和9年4月から2年間1％に下げ、就業者負担軽減支援金を支給する法案を閣議決定し、国会に提出した。公約の「恒久的なゼロ」とは内容が異なる。",
+       "src": {
+        "title": "社会保障国民会議（法律案の閣議決定・国会提出）",
+        "site": "内閣官房",
+        "url": "https://www.cas.go.jp/jp/seisaku/kokuminkaigi/index.html"
+       }
+      },
+      {
+       "date": "2026-11-06",
+       "stage": 0,
+       "type": "その他",
+       "text": "（参考）政府の同法案が衆議院で可決された。会派「中道」は反対した。",
+       "src": {
+        "title": "衆議院 議案経過（閣法 第222回国会 第1号）",
+        "site": "衆議院",
+        "url": "https://www.shugiin.go.jp/internet/itdb_gian.nsf/html/gian/keika/1DE342E.htm"
+       }
+      }
+     ]
+    },
+    {
+     "id": "chudo-bukka-2",
+     "theme": "bukka",
+     "text": "減税と給付を組み合わせた「給付付き税額控除」をつくり、中所得・低所得の人を支援する。",
+     "quote": "減税と生活支援の二刀流「給付付き税額控除」を創設し、中所得の方や減税だけでは支援しきれない低所得の方も、まるごと応援します。",
+     "src": {
+      "title": "2026衆院選主要政策 第2の柱（社会保障モデル）",
+      "url": "https://craj.jp/election2026/policies/welfare/"
+     },
+     "stage": 3,
+     "status": "政府は基本方針を閣議決定し、給付の先行導入と令和11年度の本格導入を含む法案が2026-11-06に衆議院で可決、参議院で審議中。中道は国民会議に参加したが、消費税率引下げと一体の同法案には反対した。",
+     "actions": [
+      {
+       "date": "2026-02-27",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "小川代表が衆議院予算委員会で、給付付き税額控除の議論を時限的な消費減税と切り分けるよう総理に求めた。",
+       "src": {
+        "title": "第221回国会 衆議院 予算委員会 第2号（2026-02-27）小川淳也議員",
+        "site": "国会会議録検索システム",
+        "url": "https://kokkai.ndl.go.jp/txt/122105261X00220260227/92"
+       }
+      },
+      {
+       "date": "2026-03-25",
+       "stage": 1,
+       "type": "その他",
+       "text": "給付付き税額控除を具体化する政府の社会保障国民会議・実務者会議に、中道（落合政調会長代行・赤羽副代表）が初めて参加した。",
+       "src": {
+        "title": "中道・立憲・公明の3党が「社会保障国民会議」に初参加",
+        "site": "中道改革連合",
+        "url": "https://craj.jp/news/20260325_0268"
+       }
+      },
+      {
+       "date": "2026-07-29",
+       "stage": 2,
+       "type": "提言",
+       "text": "社会保障国民会議で小川代表が意見を表明し、「所得に連動したきめ細かな給付」に賛同したうえで、対象を雇用保険適用の年収約53万円超まで広げることなどを求めた。",
+       "src": {
+        "title": "小川代表が社会保障国民会議に出席",
+        "site": "中道改革連合",
+        "url": "https://craj.jp/news/20260730_0503"
+       }
+      },
+      {
+       "date": "2026-08-05",
+       "stage": 2,
+       "type": "閣議決定",
+       "text": "政府が「給付付き税額控除」の制度導入の基本方針を閣議決定し、「所得に連動したきめ細かな給付」を令和11年度に本格導入する方針を示した。",
+       "src": {
+        "title": "「給付付き税額控除」の制度導入の基本方針（令和8年8月5日閣議決定）",
+        "site": "内閣官房",
+        "url": "https://www.cas.go.jp/jp/seisaku/kokuminkaigi/contents/20260805/01_siryou1.pdf"
+       }
+      },
+      {
+       "date": "2026-11-06",
+       "stage": 3,
+       "type": "審議入り",
+       "text": "給付（就業者負担軽減支援金）の先行導入を含む政府法案が衆議院で可決された。飲食料品の税率引下げと一体の法案で、会派「中道」は反対した。",
+       "src": {
+        "title": "衆議院 議案経過（閣法 第222回国会 第1号）",
+        "site": "衆議院",
+        "url": "https://www.shugiin.go.jp/internet/itdb_gian.nsf/html/gian/keika/1DE342E.htm"
+       }
+      }
+     ]
+    },
+    {
+     "id": "chudo-chingin-1",
+     "theme": "chingin",
+     "text": "中小企業を支援しながら、最低賃金を全国で早く1,500円以上にする。",
+     "quote": "中小企業支援を前提に、最低賃金を全国で早期に1,500円以上にすることを目指します。",
+     "src": {
+      "title": "2026衆院選主要政策 第1の柱（経済成長）",
+      "url": "https://craj.jp/election2026/policies/economy/"
+     },
+     "stage": 2,
+     "status": "中道は国会質問と厚労省への要望で1,500円の実現を求めた。令和8年度の答申は全国加重平均1,177円。",
+     "actions": [
+      {
+       "date": "2026-07-27",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "階幹事長が衆議院予算委員会で、骨太方針の最低賃金目標が後退していると指摘し、中小企業支援を厚くして最低賃金を引き上げるよう総理に求めた。",
+       "src": {
+        "title": "第221回国会 衆議院 予算委員会 第17号（2026-07-27）階猛議員",
+        "site": "国会会議録検索システム",
+        "url": "https://kokkai.ndl.go.jp/txt/122105261X01720260727/31"
+       }
+      },
+      {
+       "date": "2026-08-26",
+       "stage": 2,
+       "type": "提言",
+       "text": "党厚生労働部会が厚労副大臣に重点要望を手交し、「2030年までに最低賃金の全国加重平均1,500円を実現」することを求めた。",
+       "src": {
+        "title": "令和9年度予算概算要求等に向けた重点要望（中道改革連合 厚生労働部会）",
+        "site": "中道改革連合",
+        "url": "https://craj.jp/files/download/2026/wHlm/AAcR/yk9u/2026wHlmAAcRyk9u5cxn7CPp.pdf"
+       }
+      },
+      {
+       "date": "2026-09-03",
+       "stage": 0,
+       "type": "その他",
+       "text": "（参考）厚労省のまとめで、令和8年度の地域別最低賃金の答申は全国加重平均1,177円（前年度比56円増）。",
+       "src": {
+        "title": "令和8年度最低賃金額答申（厚生労働省）",
+        "site": "厚生労働省",
+        "url": "https://www.mhlw.go.jp/stf/newpage_75950.html"
+       }
+      }
+     ]
+    },
+    {
+     "id": "chudo-chingin-2",
+     "theme": "chingin",
+     "text": "医療・介護・保育・障がい福祉で働く人の給与を全産業の平均まで引き上げる。",
+     "quote": "医療・介護・保育・障がい福祉従事者などの給与を全産業平均へ引き上げます。",
+     "src": {
+      "title": "2026衆院選主要政策 第2の柱（社会保障モデル）",
+      "url": "https://craj.jp/election2026/policies/welfare/"
+     },
+     "stage": 2,
+     "status": "中道は国会質問、補正予算の修正提案、厚労省への要望で処遇改善を求めた。政府は2026年6月から介護従事者の月1.0万円の賃上げ措置を始めた。全産業平均までの引き上げを政府が決めたという一次情報は確認できていない。",
+     "actions": [
+      {
+       "date": "2026-03-10",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "早稲田ゆき議員が衆議院予算委員会公聴会で、保育・介護・障害福祉の人材の処遇改善を取り上げた。",
+       "src": {
+        "title": "第221回国会 衆議院 予算委員会公聴会 第1号（2026-03-10）早稲田ゆき議員",
+        "site": "国会会議録検索システム",
+        "url": "https://kokkai.ndl.go.jp/txt/122105262X00120260310/121"
+       }
+      },
+      {
+       "date": "2026-05-15",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "早稲田議員が衆議院厚生労働委員会で、介護職員の給与は全産業平均と月8万円ほど差があるとして、それを踏まえた制度設計を求めた。",
+       "src": {
+        "title": "第221回国会 衆議院 厚生労働委員会 第9号（2026-05-15）早稲田ゆき議員",
+        "site": "国会会議録検索システム",
+        "url": "https://kokkai.ndl.go.jp/txt/122104260X00920260515/117"
+       }
+      },
+      {
+       "date": "2026-06-01",
+       "stage": 0,
+       "type": "制度開始",
+       "text": "（参考）政府の令和8年度介護報酬の期中改定で、介護従事者に月1.0万円の賃上げとなる措置などが2026年6月から始まった。",
+       "src": {
+        "title": "令和8年度介護報酬改定について（厚生労働省）",
+        "site": "厚生労働省",
+        "url": "https://www.mhlw.go.jp/content/12300000/001647819.pdf"
+       }
+      },
+      {
+       "date": "2026-06-03",
+       "stage": 2,
+       "type": "提言",
+       "text": "立憲・公明と共同で補正予算の組み替え・修正提案を発表し、医療・介護・障害福祉分野の経営支援に3,900億円を計上するよう求めた。",
+       "src": {
+        "title": "中道・立憲・公明3党で補正予算修正案を提示",
+        "site": "中道改革連合",
+        "url": "https://craj.jp/news/20260603_0396"
+       }
+      },
+      {
+       "date": "2026-08-26",
+       "stage": 2,
+       "type": "提言",
+       "text": "党厚生労働部会の重点要望で、介護職員等の更なる処遇改善と、次期介護・障害福祉サービス等報酬改定の財源確保を求めた。",
+       "src": {
+        "title": "令和9年度予算概算要求等に向けた重点要望（中道改革連合 厚生労働部会）",
+        "site": "中道改革連合",
+        "url": "https://craj.jp/files/download/2026/wHlm/AAcR/yk9u/2026wHlmAAcRyk9u5cxn7CPp.pdf"
+       }
+      }
+     ]
+    },
+    {
+     "id": "chudo-kosodate-1",
+     "theme": "kosodate",
+     "text": "奨学金を返している人の税を軽くする「奨学金返済減税」と利子免除制度をつくる。",
+     "quote": "奨学金返済減税と利子免除制度を創設することで、若者の生活を圧迫する奨学金返済の負担を軽減します。",
+     "src": {
+      "title": "2026衆院選主要政策 第3の柱（包摂社会）",
+      "url": "https://craj.jp/election2026/policies/inclusion/"
+     },
+     "stage": 1,
+     "status": "中道は国会質問で奨学金返済減税を求めた。政府が導入を決めたという一次情報は確認できていない。",
+     "actions": [
+      {
+       "date": "2026-03-04",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "泉健太議員（当時中道）が衆議院文部科学委員会で、奨学金返済の負担軽減を取り上げた。",
+       "src": {
+        "title": "第221回国会 衆議院 文部科学委員会 第2号（2026-03-04）泉健太議員",
+        "site": "国会会議録検索システム",
+        "url": "https://kokkai.ndl.go.jp/txt/122105124X00220260304/61"
+       }
+      },
+      {
+       "date": "2026-03-11",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "沼崎満子議員が衆議院予算委員会で、奨学金返済減税に前向きに取り組むよう政府に求めた。",
+       "src": {
+        "title": "第221回国会 衆議院 予算委員会 第9号（2026-03-11）沼崎満子議員",
+        "site": "国会会議録検索システム",
+        "url": "https://kokkai.ndl.go.jp/txt/122105261X00920260311/57"
+       }
+      }
+     ]
+    },
+    {
+     "id": "chudo-kosodate-2",
+     "theme": "kosodate",
+     "text": "小中学校の給食費の負担を軽くする取り組みを進める。",
+     "quote": "小中学校の給食費の負担軽減を着実に推進します。",
+     "src": {
+      "title": "2026衆院選主要政策 第3の柱（包摂社会）",
+      "url": "https://craj.jp/election2026/policies/inclusion/"
+     },
+     "stage": 4,
+     "status": "2026年4月から公立小学校の給食費の負担軽減（国の交付金）が始まった。中学校は対象になっていない。中道は令和8年度予算案には反対した。",
+     "actions": [
+      {
+       "date": "2026-02-24",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "小川代表が代表質問で、学校給食費の負担軽減や高校無償化の経費を暫定予算に組み込むよう提案した。",
+       "src": {
+        "title": "第221回国会 衆議院 本会議 第3号（2026-02-24）小川淳也議員",
+        "site": "国会会議録検索システム",
+        "url": "https://kokkai.ndl.go.jp/txt/122105254X00320260224/3"
+       }
+      },
+      {
+       "date": "2026-03-05",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "泉健太議員（当時中道）が衆議院予算委員会で、暫定予算を組んで高校無償化と給食費に対応するよう求めた。",
+       "src": {
+        "title": "第221回国会 衆議院 予算委員会 第6号（2026-03-05）泉健太議員",
+        "site": "国会会議録検索システム",
+        "url": "https://kokkai.ndl.go.jp/txt/122105261X00620260305/33"
+       }
+      },
+      {
+       "date": "2026-04-07",
+       "stage": 4,
+       "type": "成立",
+       "text": "公立小学校の給食費を国が支援する「給食費負担軽減交付金」（児童1人あたり月5,200円が基準）を含む令和8年度予算が成立し、4月から始まった。中道は予算案には反対した。",
+       "src": {
+        "title": "学校給食費の抜本的な負担軽減（文部科学省）",
+        "site": "文部科学省",
+        "url": "https://www.mext.go.jp/a_menu/sports/syokuiku/kyu-lighten.html"
+       }
+      }
+     ]
+    },
+    {
+     "id": "chudo-shakaihosho-1",
+     "theme": "shakaihosho",
+     "text": "高額療養費制度を守りながら、自己負担の上限額の引き上げを見直して十分に抑える。",
+     "quote": "制度を維持しつつ、高額療養費の自己負担限度額の引き上げを見直して、十分に抑制します。",
+     "src": {
+      "title": "2026衆院選主要政策 第2の柱（社会保障モデル）",
+      "url": "https://craj.jp/election2026/policies/welfare/"
+     },
+     "stage": 3,
+     "status": "中道などの法案は委員会で審議入りしたが採決されず、第222回国会に継続している。政府の見直しは2026年8月から始まり、月額上限は見直され、多数回該当は据え置き、年間上限が新設された。",
+     "actions": [
+      {
+       "date": "2026-04-20",
+       "stage": 2,
+       "type": "法案提出",
+       "text": "チームみらい・共産党と共同で「高額療養費制度の見直し法案」を衆議院に提出した（政府に家計や受診への影響の考慮、当事者の意見聴取などを義務づける内容）。",
+       "src": {
+        "title": "衆議院 議案経過（衆法 第221回国会 第7号）",
+        "site": "衆議院",
+        "url": "https://www.shugiin.go.jp/internet/itdb_gian.nsf/html/gian/keika/1DE280A.htm"
+       }
+      },
+      {
+       "date": "2026-04-21",
+       "stage": 3,
+       "type": "審議入り",
+       "text": "同法案が衆議院厚生労働委員会で議題となり、早稲田ゆき議員が趣旨説明を行った。",
+       "src": {
+        "title": "第221回国会 衆議院 厚生労働委員会 第5号（2026-04-21）",
+        "site": "国会会議録検索システム",
+        "url": "https://kokkai.ndl.go.jp/txt/122104260X00520260421/2"
+       }
+      },
+      {
+       "date": "2026-04-28",
+       "stage": 1,
+       "type": "その他",
+       "text": "政府の健康保険法等改正案に浜地雅一議員が本会議で賛成討論し、多数回該当の据え置きと年間上限の設定を評価しつつ、高額療養費についての懸念を述べた。会派は賛成した。",
+       "src": {
+        "title": "第221回国会 衆議院 本会議 第16号（2026-04-28）浜地雅一議員",
+        "site": "国会会議録検索システム",
+        "url": "https://kokkai.ndl.go.jp/txt/122105254X01620260428/13"
+       }
+      },
+      {
+       "date": "2026-08-01",
+       "stage": 0,
+       "type": "制度開始",
+       "text": "（参考）政府の見直しで、2026年8月診療分から月額の上限額が見直され、多数回該当の金額は据え置き、年間上限が新設された。",
+       "src": {
+        "title": "高額療養費制度を利用される皆さまへ（厚生労働省）",
+        "site": "厚生労働省",
+        "url": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/kenkou_iryou/iryouhoken/juuyou/kougakuiryou/index.html"
+       }
+      }
+     ]
+    },
+    {
+     "id": "chudo-shakaihosho-2",
+     "theme": "shakaihosho",
+     "text": "医療・介護などのサービスを保ちながら、現役世代の社会保険料を引き下げる。",
+     "quote": "現役世代の「社会保険料引き下げ」にも取り組みます。",
+     "src": {
+      "title": "2026衆院選主要政策 第2の柱（社会保障モデル）",
+      "url": "https://craj.jp/election2026/policies/welfare/"
+     },
+     "stage": 2,
+     "status": "中道は国会討論と厚労省への要望で保険料負担の抑制を求めた。社会保険料の引き下げを政府が決めたという一次情報は確認できていない。",
+     "actions": [
+      {
+       "date": "2026-04-28",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "浜地議員が本会議討論で、周産期医療体制の支援事業を社会保険料抑制の観点から公費で行うよう求めた。",
+       "src": {
+        "title": "第221回国会 衆議院 本会議 第16号（2026-04-28）浜地雅一議員",
+        "site": "国会会議録検索システム",
+        "url": "https://kokkai.ndl.go.jp/txt/122105254X01620260428/13"
+       }
+      },
+      {
+       "date": "2026-08-26",
+       "stage": 2,
+       "type": "提言",
+       "text": "党厚生労働部会の重点要望で、現役世代の過度な保険料負担の上昇を抑える検討では、公費負担の在り方も含めるよう求めた。",
+       "src": {
+        "title": "令和9年度予算概算要求等に向けた重点要望（中道改革連合 厚生労働部会）",
+        "site": "中道改革連合",
+        "url": "https://craj.jp/files/download/2026/wHlm/AAcR/yk9u/2026wHlmAAcRyk9u5cxn7CPp.pdf"
+       }
+      }
+     ]
+    },
+    {
+     "id": "chudo-anzenhosho-1",
+     "theme": "anzenhosho",
+     "text": "「核なき世界」をめざし、非核三原則を守り続ける。",
+     "quote": "「核なき世界」を目指し、非核三原則を堅持します。",
+     "src": {
+      "title": "2026衆院選主要政策 第4の柱（外交・防衛）",
+      "url": "https://craj.jp/election2026/policies/diplomacy/"
+     },
+     "stage": 1,
+     "status": "中道は国会で非核三原則の堅持を求めた。政府は国会答弁で「政策上の方針として堅持」としており、安保3文書の改定は検討中（2026-11-09時点で改定の閣議決定は確認できていない）。",
+     "actions": [
+      {
+       "date": "2026-02-24",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "小川代表が代表質問で、安保3文書の改定で非核三原則を見直す可能性があるかを総理にただした。",
+       "src": {
+        "title": "第221回国会 衆議院 本会議 第3号（2026-02-24）小川淳也議員",
+        "site": "国会会議録検索システム",
+        "url": "https://kokkai.ndl.go.jp/txt/122105254X00320260224/3"
+       }
+      },
+      {
+       "date": "2026-04-09",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "吉田宣弘議員が衆議院安全保障委員会で、国会の議決なしに非核三原則を変えることはないかをただした。外務大臣は「非核三原則を政策上の方針として堅持」と答えた。",
+       "src": {
+        "title": "第221回国会 衆議院 安全保障委員会 第2号（2026-04-09）吉田宣弘議員",
+        "site": "国会会議録検索システム",
+        "url": "https://kokkai.ndl.go.jp/txt/122103815X00220260409/41"
+       }
+      },
+      {
+       "date": "2026-06-18",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "衆議院憲法審査会で國重徹議員・有田芳生議員が、専守防衛と非核三原則の堅持を主張した。",
+       "src": {
+        "title": "第221回国会 衆議院 憲法審査会 第10号（2026-06-18）有田芳生議員",
+        "site": "国会会議録検索システム",
+        "url": "https://kokkai.ndl.go.jp/txt/122104183X01020260618/30"
+       }
+      }
+     ]
+    },
+    {
+     "id": "chudo-anzenhosho-2",
+     "theme": "anzenhosho",
+     "text": "省庁の垣根を越えたインテリジェンス（情報の収集・分析）の体制を強める。",
+     "quote": "省庁横断的なインテリジェンス体制を強化します。",
+     "src": {
+      "title": "2026衆院選主要政策 第4の柱（外交・防衛）",
+      "url": "https://craj.jp/election2026/policies/diplomacy/"
+     },
+     "stage": 4,
+     "status": "政府提出の国家情報会議設置法が2026-05-27に成立し、6月3日に公布された。中道は衆議院で賛成した。",
+     "actions": [
+      {
+       "date": "2026-04-02",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "後藤祐一議員が本会議で国家情報会議設置法案について、人権保護や国会による監視の仕組みを含めて政府にただした。",
+       "src": {
+        "title": "【衆院本会議】国家情報会議設置法案 後藤祐一議員",
+        "site": "中道改革連合",
+        "url": "https://craj.jp/news/20260402_0285"
+       }
+      },
+      {
+       "date": "2026-04-23",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "大島敦議員が本会議で国家情報会議設置法案に賛成討論を行い、会派も賛成した。",
+       "src": {
+        "title": "【衆院本会議】「新たな脅威に備え情報力強化を」大島敦議員",
+        "site": "中道改革連合",
+        "url": "https://craj.jp/news/20260423_0321"
+       }
+      },
+      {
+       "date": "2026-05-27",
+       "stage": 4,
+       "type": "成立",
+       "text": "省庁の情報を集約・分析する国家情報会議・国家情報局を設ける国家情報会議設置法が成立した（6月3日公布、令和8年法律第28号）。",
+       "src": {
+        "title": "衆議院 議案経過（閣法 第221回国会 第24号 国家情報会議設置法案）",
+        "site": "衆議院",
+        "url": "https://www.shugiin.go.jp/internet/itdb_gian.nsf/html/gian/keika/1DE1FCA.htm"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "dpp",
+   "name": "国民民主党",
+   "short": "国民",
+   "side": "野党",
+   "side_note": "連立政権には参加していない（2026-11時点）。2025-12-18に自民党と「年収の壁」引き上げ等で合意書を交わし、2026-10-29に自民党・日本維新の会と衆院選挙制度の見直しで合意した。",
+   "seats_shugiin": 28,
+   "manifesto": {
+    "title": "国民民主党の政策2026（第51回衆議院議員総選挙 特設サイト）",
+    "url": "https://election2026.new-kokumin.jp/policies/specifics/"
+   },
+   "pledges": [
+    {
+     "id": "dpp-bukka-1",
+     "theme": "bukka",
+     "text": "住民税の控除額（いわゆる「110万円の壁」）を178万円まで引き上げて住民税を減税する。",
+     "quote": "住民税の控除額「110万円の壁」を178万円まで引き上げ、もっと手取りを増やし、「インフレ増税」の悪影響を緩和",
+     "src": {
+      "title": "政策1「もっと」手取りを増やす（国民民主党 第51回衆院選特設サイト）",
+      "url": "https://election2026.new-kokumin.jp/policies/top-policies/policy1/"
+     },
+     "stage": 3,
+     "status": "党の住民税178万円法案（衆法222回1号）は衆院で審査されたが2026-11-06に否決された。所得税側の控除合計178万円（2026・27年分の特例）は2026-03-31成立の所得税法等改正法に盛り込まれた。",
+     "actions": [
+      {
+       "date": "2026-02-25",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "玉木代表が衆院本会議の代表質問で、住民税の控除額を178万円を目指して引き上げるべきだと首相に求めた。",
+       "src": {
+        "title": "第221回国会 衆議院本会議 第4号（2026-02-25）玉木雄一郎 代表質問",
+        "site": "国会会議録検索システム",
+        "url": "https://kokkai.ndl.go.jp/txt/122105254X00420260225/3"
+       }
+      },
+      {
+       "date": "2026-03-02",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "浅野哲議員が衆院予算委員会で、住民税の控除額を178万円まで引き上げる「社会保険料還付つき住民税控除」を対案として示し、政府に見解を求めた。",
+       "src": {
+        "title": "第221回国会 衆議院予算委員会（2026-03-02）浅野哲 質疑",
+        "site": "国会会議録検索システム",
+        "url": "https://kokkai.ndl.go.jp/txt/122105261X00320260302/93"
+       }
+      },
+      {
+       "date": "2026-07-15",
+       "stage": 2,
+       "type": "法案提出",
+       "text": "個人住民税の基礎控除等の合計を178万円とする措置を定めた「現役世代減税法案」（衆法221回31号ほか）を衆院に提出した（閉会中審査を経て第222回国会で撤回）。",
+       "src": {
+        "title": "衆法 第221回国会31号 賃金上昇を上回る個人住民税の負担増加等に対処するために個人住民税に関し講ずべき措置に関する法律案（経過）",
+        "site": "衆議院",
+        "url": "https://www.shugiin.go.jp/internet/itdb_gian.nsf/html/gian/keika/1DE2BEE.htm"
+       }
+      },
+      {
+       "date": "2026-10-20",
+       "stage": 2,
+       "type": "法案提出",
+       "text": "令和10年度分以後の個人住民税で基礎控除等の合計を178万円とする措置を含む法案（衆法222回1号）を政府の消費税減税法案の対案として衆院に提出した。",
+       "src": {
+        "title": "衆法 第222回国会1号 要綱",
+        "site": "衆議院",
+        "url": "https://www.shugiin.go.jp/internet/itdb_gian.nsf/html/gian/honbun/youkou/g22205001.htm"
+       }
+      },
+      {
+       "date": "2026-11-06",
+       "stage": 3,
+       "type": "審議入り",
+       "text": "同法案は11月2日に衆院財務金融委員会に付託されて審査され、11月6日に委員会・本会議で否決された（賛成は国民民主党のみ）。",
+       "src": {
+        "title": "衆法 第222回国会1号 就業者の租税及び社会保険料による負担の軽減のために講ずべき措置に関する法律案（経過）",
+        "site": "衆議院",
+        "url": "https://www.shugiin.go.jp/internet/itdb_gian.nsf/html/gian/keika/1DE36B6.htm"
+       }
+      }
+     ]
+    },
+    {
+     "id": "dpp-bukka-2",
+     "theme": "bukka",
+     "text": "消費税を一律5％に下げ（賃金上昇が物価＋2％に安定するまで）、インボイス制度を廃止する。",
+     "quote": "消費税を一律5％に減税(賃金上昇率が物価＋2％に安定して達するまでの間)。インボイスは廃止",
+     "src": {
+      "title": "政策1「もっと」手取りを増やす（国民民主党 第51回衆院選特設サイト）",
+      "url": "https://election2026.new-kokumin.jp/policies/top-policies/policy1/"
+     },
+     "stage": 1,
+     "status": "党の国会での主張は全品目一律の税率引き下げ（一律8％も一案）で、一律5％の法案は提出していない。政府の飲食料品消費税率を2年間1％とする法案（閣法222回1号）は2026-11-06に衆院で可決され（党は反対）、参院で審議中。",
+     "actions": [
+      {
+       "date": "2026-02-25",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "玉木代表が代表質問で、消費税を減税するなら食料品だけでなく全品目を単一税率で引き下げるべきで、例えば一律8％も一案と述べ、単一税率ならインボイスがなくても対応可能だとして首相の考えを問うた。",
+       "src": {
+        "title": "第221回国会 衆議院本会議 第4号（2026-02-25）玉木雄一郎 代表質問",
+        "site": "国会会議録検索システム",
+        "url": "https://kokkai.ndl.go.jp/txt/122105254X00420260225/3"
+       }
+      }
+     ]
+    },
+    {
+     "id": "dpp-chingin-1",
+     "theme": "chingin",
+     "text": "成長分野などへの大胆な設備投資減税「ハイパー償却税制」を導入する。",
+     "quote": "戦略、成長分野等への「ハイパー償却税制」導入、適正取引の拡大等で中小企業の黒字転換を後押し",
+     "src": {
+      "title": "政策2 成長戦略「新・三本の矢」GDP1000兆円（同特設サイト）",
+      "url": "https://election2026.new-kokumin.jp/policies/top-policies/policy2/"
+     },
+     "stage": 4,
+     "status": "即時償却または7％・4％の税額控除ができる設備投資税制を含む所得税法等改正法が2026-03-31に成立した（党は賛成）。取得額を超える償却を認める形ではない。",
+     "actions": [
+      {
+       "date": "2026-03-10",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "高沢一基議員が衆院総務委員会で、2025年12月の自民党・国民民主党の合意文書（「いわゆる『ハイパー償却税制』を求める国民民主党の主張を容れ」大胆な設備投資減税を導入）が政府案のどこに反映されたか質問した。",
+       "src": {
+        "title": "第221回国会 衆議院総務委員会（2026-03-10）高沢一基 質疑",
+        "site": "国会会議録検索システム",
+        "url": "https://kokkai.ndl.go.jp/txt/122104601X00320260310/232"
+       }
+      },
+      {
+       "date": "2026-03-13",
+       "stage": 3,
+       "type": "審議入り",
+       "text": "高い生産性に資する設備に即時償却または7％・4％の税額控除を認める措置を含む所得税法等改正案が、国民民主党も賛成して衆院で可決された。",
+       "src": {
+        "title": "閣法 第221回国会3号 所得税法等の一部を改正する法律案（経過）",
+        "site": "衆議院",
+        "url": "https://www.shugiin.go.jp/internet/itdb_gian.nsf/html/gian/keika/1DE14D6.htm"
+       }
+      },
+      {
+       "date": "2026-03-31",
+       "stage": 4,
+       "type": "成立",
+       "text": "同改正法が成立・公布された（法律第12号）。即時償却または税額控除ができる設備投資税制が創設された。",
+       "src": {
+        "title": "所得税法等の一部を改正する法律案（議案要旨）",
+        "site": "参議院",
+        "url": "https://www.sangiin.go.jp/japanese/joho1/kousei/gian/221/meisai/m221080221003.htm"
+       }
+      },
+      {
+       "date": "2026-05-20",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "竹詰仁議員が参院本会議で、党は取得額を超える減価償却を認めるハイパー償却税制を提案してきたとして、政府の即時償却・税額控除7％で国内投資促進に十分とした理由を質問した。",
+       "src": {
+        "title": "第221回国会 参議院本会議（2026-05-20）竹詰仁 質疑",
+        "site": "国会会議録検索システム",
+        "url": "https://kokkai.ndl.go.jp/txt/122115254X01420260520/11"
+       }
+      }
+     ]
+    },
+    {
+     "id": "dpp-chingin-2",
+     "theme": "chingin",
+     "text": "最低賃金を引き上げ、全国どこでも時給1150円以上を早く実現する。",
+     "quote": "最低賃金を引き上げ、「全国どこでも時給1150円以上」を早期に実現します。",
+     "src": {
+      "title": "政策各論1．手取りを増やす（同特設サイト）",
+      "url": "https://election2026.new-kokumin.jp/policies/specifics/specifics1/"
+     },
+     "stage": 1,
+     "status": "2026年度の地域別最低賃金は2026-10-01以降順次発効し、最も低い県は1,085円（宮崎県）で、全国1150円以上には届いていない（厚生労働省「令和8年度地域別最低賃金 全国一覧」）。",
+     "actions": [
+      {
+       "date": "2026-03-18",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "田村まみ議員が参院予算委員会で、地域別最低賃金の発効日の遅れの是正や最低賃金の数値目標について政府に質問した。",
+       "src": {
+        "title": "第221回国会 参議院予算委員会（2026-03-18）田村まみ 質疑",
+        "site": "国会会議録検索システム",
+        "url": "https://kokkai.ndl.go.jp/txt/122115261X00420260318/349"
+       }
+      }
+     ]
+    },
+    {
+     "id": "dpp-kosodate-1",
+     "theme": "kosodate",
+     "text": "年5兆円の「教育国債」を発行し、教育・科学技術予算を倍増する。",
+     "quote": "「教育国債（5兆円/年）」で、教育・科学技術予算倍増",
+     "src": {
+      "title": "政策2 成長戦略「新・三本の矢」GDP1000兆円（同特設サイト）",
+      "url": "https://election2026.new-kokumin.jp/policies/top-policies/policy2/"
+     },
+     "stage": 1,
+     "status": "党は国会質問で教育国債の発行を求めている。2026-02〜11に教育国債（財政法改正）の法案提出や政府の制度化は確認できなかった。",
+     "actions": [
+      {
+       "date": "2026-02-25",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "玉木代表が代表質問で、使い道を教育・子育て・科学技術に限った教育国債を発行し教育・科学技術予算を倍増すべきだとして首相の見解を問うた。",
+       "src": {
+        "title": "第221回国会 衆議院本会議 第4号（2026-02-25）玉木雄一郎 代表質問",
+        "site": "国会会議録検索システム",
+        "url": "https://kokkai.ndl.go.jp/txt/122105254X00420260225/3"
+       }
+      },
+      {
+       "date": "2026-03-03",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "小竹凱議員が衆院予算委員会で、子ども・子育て支援金の代わりに教育国債を案の一つとして国会で議論するよう求めた。",
+       "src": {
+        "title": "第221回国会 衆議院予算委員会（2026-03-03）小竹凱 質疑",
+        "site": "国会会議録検索システム",
+        "url": "https://kokkai.ndl.go.jp/txt/122105261X00420260303/200"
+       }
+      },
+      {
+       "date": "2026-03-04",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "森ようすけ議員が衆院予算委員会で、教育・子育て・科学技術に使途を絞った教育国債の発行について大臣の見解を求めた。",
+       "src": {
+        "title": "第221回国会 衆議院予算委員会（2026-03-04）森ようすけ 質疑",
+        "site": "国会会議録検索システム",
+        "url": "https://kokkai.ndl.go.jp/txt/122105261X00520260304/117"
+       }
+      }
+     ]
+    },
+    {
+     "id": "dpp-kosodate-2",
+     "theme": "kosodate",
+     "text": "16歳未満の子どもがいる親の年少扶養控除を復活し、高校生の扶養控除を維持する。",
+     "quote": "16歳未満の子どもがいる親の年少扶養控除の復活、高校生の扶養控除維持",
+     "src": {
+      "title": "政策1「もっと」手取りを増やす（国民民主党 第51回衆院選特設サイト）",
+      "url": "https://election2026.new-kokumin.jp/policies/top-policies/policy1/"
+     },
+     "stage": 3,
+     "status": "年少扶養控除の復活を含む党の法案は参院（未了）と衆院（2026-11-06否決）に提出された。年少扶養控除の復活は実現していない。",
+     "actions": [
+      {
+       "date": "2026-02-25",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "玉木代表が代表質問で、年少扶養控除を復活させ子育て世帯の手取りを増やすべきだとして政府の考えを問うた。",
+       "src": {
+        "title": "第221回国会 衆議院本会議 第4号（2026-02-25）玉木雄一郎 代表質問",
+        "site": "国会会議録検索システム",
+        "url": "https://kokkai.ndl.go.jp/txt/122105254X00420260225/3"
+       }
+      },
+      {
+       "date": "2026-03-27",
+       "stage": 2,
+       "type": "法案提出",
+       "text": "年少扶養控除復活法案（所得税法改正案・地方税法改正案、参法221回3号・4号）を参院に提出した（いずれも未了）。",
+       "src": {
+        "title": "参法 第221回国会3号 所得税法の一部を改正する法律案",
+        "site": "参議院",
+        "url": "https://www.sangiin.go.jp/japanese/joho1/kousei/gian/221/meisai/m221100221003.htm"
+       }
+      },
+      {
+       "date": "2026-10-20",
+       "stage": 2,
+       "type": "法案提出",
+       "text": "所得税・個人住民税の扶養控除の対象に16歳未満を加える措置を含む法案（衆法222回1号）を衆院に提出した。",
+       "src": {
+        "title": "衆法 第222回国会1号 要綱",
+        "site": "衆議院",
+        "url": "https://www.shugiin.go.jp/internet/itdb_gian.nsf/html/gian/honbun/youkou/g22205001.htm"
+       }
+      },
+      {
+       "date": "2026-11-06",
+       "stage": 3,
+       "type": "審議入り",
+       "text": "同法案は衆院財務金融委員会で審査され、11月6日に委員会・本会議で否決された。",
+       "src": {
+        "title": "衆法 第222回国会1号 就業者の租税及び社会保険料による負担の軽減のために講ずべき措置に関する法律案（経過）",
+        "site": "衆議院",
+        "url": "https://www.shugiin.go.jp/internet/itdb_gian.nsf/html/gian/keika/1DE36B6.htm"
+       }
+      }
+     ]
+    },
+    {
+     "id": "dpp-shakaihosho-1",
+     "theme": "shakaihosho",
+     "text": "「社会保険料還付制度」をつくり、働く現役世代の社会保険料負担を軽くする。",
+     "quote": "「社会保険料還付制度」を創設し、現役世代の社会保険料負担を軽減",
+     "src": {
+      "title": "政策1「もっと」手取りを増やす（国民民主党 第51回衆院選特設サイト）",
+      "url": "https://election2026.new-kokumin.jp/policies/top-policies/policy1/"
+     },
+     "stage": 3,
+     "status": "党の社会保険料還付型の給付を含む法案は2026-11-06に衆院で否決された。政府の「就業者負担軽減支援金」を含む法案（閣法222回1号）は同日衆院で可決され（党は反対）、参院で審議中。",
+     "actions": [
+      {
+       "date": "2026-02-25",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "玉木代表が代表質問で、住民税減税で引ききれない人に社会保険料負担相当分を上限に還付する「社会保険料還付つき住民税控除」を提案した。",
+       "src": {
+        "title": "第221回国会 衆議院本会議 第4号（2026-02-25）玉木雄一郎 代表質問",
+        "site": "国会会議録検索システム",
+        "url": "https://kokkai.ndl.go.jp/txt/122105254X00420260225/3"
+       }
+      },
+      {
+       "date": "2026-06-10",
+       "stage": 2,
+       "type": "提言",
+       "text": "社会保障国民会議の実務者会議に、社会保険料還付付き税額控除（所得税・住民税）と社会保険料還付の年内先行実施を求める党の案を提出した。",
+       "src": {
+        "title": "社会保障国民会議 給付付き税額控除等に関する実務者会議（第14回）資料2 国民民主党提出資料",
+        "site": "内閣官房",
+        "url": "https://www.cas.go.jp/jp/seisaku/kokuminkaigi/contents/20260610/02_siryou2.pdf"
+       }
+      },
+      {
+       "date": "2026-10-16",
+       "stage": 2,
+       "type": "提言",
+       "text": "「早期に講じるべき物価上昇対策」をまとめ、「社会保険料還付」の前倒し給付を求めた。",
+       "src": {
+        "title": "早期に講じるべき物価上昇対策（2026-10-16）",
+        "site": "国民民主党",
+        "url": "https://new-kokumin.jp/wp-content/uploads/2026/10/f04c02328f455019d31b05623dc8a571.pdf"
+       }
+      },
+      {
+       "date": "2026-10-20",
+       "stage": 2,
+       "type": "法案提出",
+       "text": "社会保険料を納める就業者への「租税・社会保険料負担軽減給付」と令和9年度の給付金を定める法案（衆法222回1号）を衆院に提出した。",
+       "src": {
+        "title": "衆法 第222回国会1号 要綱",
+        "site": "衆議院",
+        "url": "https://www.shugiin.go.jp/internet/itdb_gian.nsf/html/gian/honbun/youkou/g22205001.htm"
+       }
+      },
+      {
+       "date": "2026-11-06",
+       "stage": 3,
+       "type": "審議入り",
+       "text": "同法案は衆院財務金融委員会で審査され、11月6日に委員会・本会議で否決された。",
+       "src": {
+        "title": "衆法 第222回国会1号 就業者の租税及び社会保険料による負担の軽減のために講ずべき措置に関する法律案（経過）",
+        "site": "衆議院",
+        "url": "https://www.shugiin.go.jp/internet/itdb_gian.nsf/html/gian/keika/1DE36B6.htm"
+       }
+      }
+     ]
+    },
+    {
+     "id": "dpp-shakaihosho-2",
+     "theme": "shakaihosho",
+     "text": "医療保険料に上乗せして集める「子ども・子育て支援金」を廃止する（財源は教育国債）。",
+     "quote": "「教育国債」発行で、社会保険料に上乗せされる「こども子育て支援金」（いわゆる「独身税」）廃止",
+     "src": {
+      "title": "政策1「もっと」手取りを増やす（国民民主党 第51回衆院選特設サイト）",
+      "url": "https://election2026.new-kokumin.jp/policies/top-policies/policy1/"
+     },
+     "stage": 1,
+     "status": "子ども・子育て支援金は2026年4月分の保険料から徴収が始まっており、廃止の法案提出や制度変更は確認できなかった。",
+     "actions": [
+      {
+       "date": "2026-03-03",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "小竹凱議員が衆院予算委員会で、党の公約である子ども・子育て支援金の廃止を挙げ、医療保険に上乗せして徴収することと受益と負担の原則との整合を問い、廃止を引き続き訴えると述べた。",
+       "src": {
+        "title": "第221回国会 衆議院予算委員会（2026-03-03）小竹凱 質疑",
+        "site": "国会会議録検索システム",
+        "url": "https://kokkai.ndl.go.jp/txt/122105261X00420260303/194"
+       }
+      },
+      {
+       "date": "2026-07-06",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "奥村祥大議員が参院決算委員会で、子ども・子育て支援金制度は現役世代の手取りを削るものだと指摘し、教育国債による人への投資を求めた。",
+       "src": {
+        "title": "第221回国会 参議院決算委員会（2026-07-06）奥村祥大 討論",
+        "site": "国会会議録検索システム",
+        "url": "https://kokkai.ndl.go.jp/txt/122114103X00920260706/187"
+       }
+      }
+     ]
+    },
+    {
+     "id": "dpp-anzenhosho-1",
+     "theme": "anzenhosho",
+     "text": "スパイ防止を含む「インテリジェンス態勢整備推進法」を制定し、情報機関の統合で情報収集・評価体制を強める。",
+     "quote": "スパイ防止を含むインテリジェンス態勢整備推進法の制定と情報機関の統合による情報収集・評価体制の強化",
+     "src": {
+      "title": "政策4 自分の国は、自分で守る（同特設サイト）",
+      "url": "https://election2026.new-kokumin.jp/policies/top-policies/policy4/"
+     },
+     "stage": 4,
+     "status": "党のインテリジェンス態勢整備推進法案は2026-04-23に衆院で否決された。政府の国家情報会議設置法は2026-05-27に成立した（党も賛成）が、スパイ防止を含む党案の法律は制定されていない。",
+     "actions": [
+      {
+       "date": "2026-02-25",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "玉木代表が代表質問で、スパイ防止法制の検討を急ぐことと国家情報戦略の速やかな策定・公表を求めた。",
+       "src": {
+        "title": "第221回国会 衆議院本会議 第4号（2026-02-25）玉木雄一郎 代表質問",
+        "site": "国会会議録検索システム",
+        "url": "https://kokkai.ndl.go.jp/txt/122105254X00420260225/3"
+       }
+      },
+      {
+       "date": "2026-03-10",
+       "stage": 2,
+       "type": "法案提出",
+       "text": "インテリジェンス態勢整備推進本部の設置や外国の利益を図る活動の届出制度などを定める「インテリジェンス態勢整備推進法案」（衆法221回3号）を衆院に再提出した。",
+       "src": {
+        "title": "【法案提出】「インテリジェンス態勢整備推進法案」を再提出（2026-03-10）",
+        "site": "国民民主党",
+        "url": "https://new-kokumin.jp/news/diet/20260310_2"
+       }
+      },
+      {
+       "date": "2026-04-22",
+       "stage": 3,
+       "type": "審議入り",
+       "text": "同法案は4月21日に衆院内閣委員会に付託されて提出者答弁を含む審査が行われ、4月22日に委員会、4月23日に本会議で否決された。",
+       "src": {
+        "title": "衆法 第221回国会3号 インテリジェンスに係る態勢の整備の推進に関する法律案（経過）",
+        "site": "衆議院",
+        "url": "https://www.shugiin.go.jp/internet/itdb_gian.nsf/html/gian/keika/1DE1E7E.htm"
+       }
+      },
+      {
+       "date": "2026-05-27",
+       "stage": 4,
+       "type": "成立",
+       "text": "内閣に国家情報会議、内閣官房に国家情報局を置き、情報の総合的な分析・評価を行う国家情報会議設置法が成立した（党は賛成、6月3日公布・法律第28号）。",
+       "src": {
+        "title": "国家情報会議設置法案（議案要旨・経過）",
+        "site": "参議院",
+        "url": "https://www.sangiin.go.jp/japanese/joho1/kousei/gian/221/meisai/m221080221024.htm"
+       }
+      }
+     ]
+    },
+    {
+     "id": "dpp-anzenhosho-2",
+     "theme": "anzenhosho",
+     "text": "中国に頼らない供給網をつくるため、経済安全保障推進法を見直し・強化する。",
+     "quote": "中国に頼らない強靭なサプライチェーン（供給網）構築のため、経済安保推進法の見直し、強化",
+     "src": {
+      "title": "政策4 自分の国は、自分で守る（同特設サイト）",
+      "url": "https://election2026.new-kokumin.jp/policies/top-policies/policy4/"
+     },
+     "stage": 4,
+     "status": "供給網の強靱化などを盛り込んだ経済安保推進法の改正法が2026-06-10に成立した（党は共同修正に参加し賛成）。",
+     "actions": [
+      {
+       "date": "2026-05-15",
+       "stage": 2,
+       "type": "その他",
+       "text": "政府の経済安保推進法等改正案に対し、自民・中道・維新・国民民主・参政・みらいの6会派共同で、速やかな追加検討を政府に求める条項を加える修正案を衆院内閣委員会に提出し、可決された。",
+       "src": {
+        "title": "第221回国会 衆議院内閣委員会（2026-05-15）修正案提出",
+        "site": "国会会議録検索システム",
+        "url": "https://kokkai.ndl.go.jp/txt/122104889X01220260515/150"
+       }
+      },
+      {
+       "date": "2026-05-19",
+       "stage": 3,
+       "type": "審議入り",
+       "text": "同改正案が修正のうえ衆院本会議で可決された（党は賛成）。",
+       "src": {
+        "title": "閣法 第221回国会30号 経済安全保障推進法及び国際協力銀行法改正案（経過）",
+        "site": "衆議院",
+        "url": "https://www.shugiin.go.jp/internet/itdb_gian.nsf/html/gian/keika/1DE20F6.htm"
+       }
+      },
+      {
+       "date": "2026-05-27",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "牛田茉友議員が参院本会議で同改正案について会派を代表して質問した。",
+       "src": {
+        "title": "第221回国会 参議院本会議（2026-05-27）牛田茉友 質疑",
+        "site": "国会会議録検索システム",
+        "url": "https://kokkai.ndl.go.jp/txt/122115254X01620260527/10"
+       }
+      },
+      {
+       "date": "2026-06-10",
+       "stage": 4,
+       "type": "成立",
+       "text": "特定重要物資の指定対象の拡大や海外の輸送網強靱化事業への国際協力銀行の支援制度などを定める改正経済安保推進法が成立した（6月17日公布・法律第38号）。",
+       "src": {
+        "title": "経済安全保障推進法及び国際協力銀行法改正案（議案要旨）",
+        "site": "参議院",
+        "url": "https://www.sangiin.go.jp/japanese/joho1/kousei/gian/221/meisai/m221080221030.htm"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "sansei",
+   "name": "参政党",
+   "short": "参政",
+   "side": "野党",
+   "side_note": "2026年11月時点で政権（自民・維新の連立）に加わっていない。参議院にも議員がいる。",
+   "seats_shugiin": 15,
+   "manifesto": {
+    "title": "第51回衆院選 マニフェスト「3つの柱と9の政策」（参政党 臨時記者会見報告 令和8年1月23日）",
+    "url": "https://sanseito.jp/news/n8031/"
+   },
+   "pledges": [
+    {
+     "id": "sansei-bukka-1",
+     "theme": "bukka",
+     "text": "消費税とインボイス制度を廃止する。",
+     "quote": "消費税やインボイス制度の廃止",
+     "src": {
+      "title": "参政党 臨時記者会見報告 令和8年1月23日（金）「マニフェスト：3つの柱と9の政策」",
+      "url": "https://sanseito.jp/news/n8031/"
+     },
+     "stage": 2,
+     "status": "2026年10月30日に消費税率を当分の間一律5%に下げインボイス制度を廃止する法案を参議院に提出し、11月9日時点で委員会に付託されていない。政府の飲食料品の消費税率引下げ法案は11月6日に衆議院で可決され、参政党は反対した。",
+     "actions": [
+      {
+       "date": "2026-02-25",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "衆議院本会議で和田政宗議員が消費税の一律減税と段階的廃止を求め、総理の考えを質した。",
+       "src": {
+        "title": "第221回国会 衆議院 本会議 第4号（2026-02-25）和田政宗議員の発言",
+        "site": "国会会議録検索システム",
+        "url": "https://kokkai.ndl.go.jp/txt/122105254X00420260225/8"
+       }
+      },
+      {
+       "date": "2026-03-31",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "参議院財政金融委員会の討論で松田学議員が消費税の大幅減税とインボイス制度の廃止が必要と述べた。",
+       "src": {
+        "title": "第221回国会 参議院 財政金融委員会 第4号（2026-03-31）松田学議員の発言",
+        "site": "国会会議録検索システム",
+        "url": "https://kokkai.ndl.go.jp/txt/122114370X00420260331/9"
+       }
+      },
+      {
+       "date": "2026-10-19",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "参議院予算委員会で安藤裕議員が飲食料品だけの減税と消費税の仕組みについて総理らに質問した。",
+       "src": {
+        "title": "【国会質疑・予算委員会】消費税減税と政府方針の矛盾を暴く！｜安藤裕（R8.10.19）",
+        "site": "参政党",
+        "url": "https://sanseito.jp/news/n11486/"
+       }
+      },
+      {
+       "date": "2026-10-30",
+       "stage": 2,
+       "type": "法案提出",
+       "text": "神谷宗幣議員らが、2027年4月から消費税率を当分の間一律5%とし、インボイス制度を廃止する措置を定める法案を参議院に提出した。",
+       "src": {
+        "title": "消費税の税率を当分の間の措置として引き下げる等のために講ずべき措置に関する法律案（参議院 議案情報）",
+        "site": "参議院",
+        "url": "https://www.sangiin.go.jp/japanese/joho1/kousei/gian/222/meisai/m222100222002.htm"
+       }
+      }
+     ]
+    },
+    {
+     "id": "sansei-bukka-2",
+     "theme": "bukka",
+     "text": "減税と社会保険料の削減で、国民負担率を約45.8%から35%に下げる。",
+     "quote": "国民負担率を現行の約45.8%から35%に抑えるべく、減税と社会保険料の削減を実施し",
+     "src": {
+      "title": "参政党 臨時記者会見報告 令和8年1月23日（金）「マニフェスト：3つの柱と9の政策」",
+      "url": "https://sanseito.jp/news/n8031/"
+     },
+     "stage": 1,
+     "status": "国会質問で国民負担率35%への引下げと社会保険料の軽減を求めた。国民負担率の目標を定める法案や制度の決定は確認できなかった。",
+     "actions": [
+      {
+       "date": "2026-03-04",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "衆議院財務金融委員会で牧野俊一議員が国民負担率を約46%から35%程度に下げるべきとの党の考えを示して質問した。",
+       "src": {
+        "title": "第221回国会 衆議院 財務金融委員会 第2号（2026-03-04）牧野俊一議員の発言",
+        "site": "国会会議録検索システム",
+        "url": "https://kokkai.ndl.go.jp/txt/122104376X00220260304/167"
+       }
+      },
+      {
+       "date": "2026-04-09",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "衆議院本会議で豊田真由子議員が、法改正で社会保険料の負担がどの程度軽くなるのかと今後の負担軽減策を厚生労働大臣に質した。",
+       "src": {
+        "title": "第221回国会 衆議院 本会議 第11号（2026-04-09）豊田真由子議員の発言",
+        "site": "国会会議録検索システム",
+        "url": "https://kokkai.ndl.go.jp/txt/122105254X01120260409/23"
+       }
+      }
+     ]
+    },
+    {
+     "id": "sansei-chingin-1",
+     "theme": "chingin",
+     "text": "積極財政に転換し、早期にGDP1,000兆円を達成する。",
+     "quote": "積極財政への転換により早期のGDP1,000兆円達成を目指します。",
+     "src": {
+      "title": "参政党 臨時記者会見報告 令和8年1月23日（金）「マニフェスト：3つの柱と9の政策」",
+      "url": "https://sanseito.jp/news/n8031/"
+     },
+     "stage": 2,
+     "status": "国会で積極財政を求め、参議院で特例公債法改正案の財政抑制条項を削る修正案を他党と共同提出した。令和8年度予算には反対した。",
+     "actions": [
+      {
+       "date": "2026-03-17",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "参議院予算委員会で神谷宗幣議員が、次の骨太の方針で積極財政により供給力を上げる展望を示すよう総理に求めた。",
+       "src": {
+        "title": "第221回国会 参議院 予算委員会 第3号（2026-03-17）神谷宗幣議員の発言",
+        "site": "国会会議録検索システム",
+        "url": "https://kokkai.ndl.go.jp/txt/122115261X00320260317/286"
+       }
+      },
+      {
+       "date": "2026-03-31",
+       "stage": 2,
+       "type": "その他",
+       "text": "立憲民主党・公明党とともに、特例公債法改正案から財政運営を抑える第4条と新設の第5条を削る修正案を提出したと、参議院本会議で塩入清香議員が述べた。",
+       "src": {
+        "title": "第221回国会 参議院 本会議 第7号（2026-03-31）塩入清香議員の発言",
+        "site": "国会会議録検索システム",
+        "url": "https://kokkai.ndl.go.jp/txt/122115254X00720260331/39"
+       }
+      },
+      {
+       "date": "2026-04-07",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "参議院予算委員会の討論で中田優子議員が、積極財政になっていないことを理由に令和8年度予算に反対した。",
+       "src": {
+        "title": "第221回国会 参議院 予算委員会 第11号（2026-04-07）中田優子議員の発言",
+        "site": "国会会議録検索システム",
+        "url": "https://kokkai.ndl.go.jp/txt/122115261X01120260407/392"
+       }
+      }
+     ]
+    },
+    {
+     "id": "sansei-chingin-2",
+     "theme": "chingin",
+     "text": "製造・建設・運送・医療介護福祉・警察・消防・自衛官など現場で働く人の待遇を改善する。",
+     "quote": "製造・建設・運送・医療介護福祉・警察・消防・自衛官など、社会の基盤を支える現場の方々の待遇を抜本的に改善します。",
+     "src": {
+      "title": "参政党 臨時記者会見報告 令和8年1月23日（金）「マニフェスト：3つの柱と9の政策」",
+      "url": "https://sanseito.jp/news/n8031/"
+     },
+     "stage": 1,
+     "status": "国会質問で公定価格で働く人などの処遇改善を求めた。医療・介護分野の報酬引上げは sansei-shakaihosho-1 に記載。",
+     "actions": [
+      {
+       "date": "2026-02-25",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "衆議院本会議で和田政宗議員が、介護・障害福祉の現場の給与が全職種平均より低いことを示し、報酬の扱いを質した。",
+       "src": {
+        "title": "第221回国会 衆議院 本会議 第4号（2026-02-25）和田政宗議員の発言",
+        "site": "国会会議録検索システム",
+        "url": "https://kokkai.ndl.go.jp/txt/122105254X00420260225/8"
+       }
+      },
+      {
+       "date": "2026-03-02",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "衆議院予算委員会で豊田真由子議員が、診療報酬・介護報酬・保育など国が決める価格で働く人の処遇改善について質問した。",
+       "src": {
+        "title": "第221回国会 衆議院 予算委員会 第3号（2026-03-02）豊田真由子議員の発言",
+        "site": "国会会議録検索システム",
+        "url": "https://kokkai.ndl.go.jp/txt/122105261X00320260302/188"
+       }
+      }
+     ]
+    },
+    {
+     "id": "sansei-kosodate-1",
+     "theme": "kosodate",
+     "text": "0〜15歳の子ども一人につき月10万円の教育給付金を支給する。",
+     "quote": "0歳から15歳の子ども一人につき月10万円の教育給付金を支給し、教育・子育てへの経済的不安を根本から軽減します。",
+     "src": {
+      "title": "参政党 臨時記者会見報告 令和8年1月23日（金）「マニフェスト：3つの柱と9の政策」",
+      "url": "https://sanseito.jp/news/n8031/"
+     },
+     "stage": 1,
+     "status": "衆参の本会議・委員会で月10万円の給付を繰り返し提案した。法案の提出や政府の検討表明は確認できなかった。",
+     "actions": [
+      {
+       "date": "2026-02-25",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "衆議院本会議で和田政宗議員が一子当たり月10万円の給付を党の政策として示し、出産・育児支援の転換を求めた。",
+       "src": {
+        "title": "第221回国会 衆議院 本会議 第4号（2026-02-25）和田政宗議員の発言",
+        "site": "国会会議録検索システム",
+        "url": "https://kokkai.ndl.go.jp/txt/122105254X00420260225/8"
+       }
+      },
+      {
+       "date": "2026-03-02",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "衆議院予算委員会で吉川里奈議員が子ども一人月10万円の教育給付を提案した。",
+       "src": {
+        "title": "第221回国会 衆議院 予算委員会 第3号（2026-03-02）吉川里奈議員の発言",
+        "site": "国会会議録検索システム",
+        "url": "https://kokkai.ndl.go.jp/txt/122105261X00320260302/204"
+       }
+      },
+      {
+       "date": "2026-05-11",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "参議院決算委員会で神谷宗幣議員が、子ども一人月10万円分を全ての子どもがいる世帯に給付する案を示した。",
+       "src": {
+        "title": "第221回国会 参議院 決算委員会 第1号（2026-05-11）神谷宗幣議員の発言",
+        "site": "国会会議録検索システム",
+        "url": "https://kokkai.ndl.go.jp/txt/122114103X00120260511/249"
+       }
+      }
+     ]
+    },
+    {
+     "id": "sansei-kosodate-2",
+     "theme": "kosodate",
+     "text": "0歳児保育などの行き過ぎた母子分離政策を見直す。",
+     "quote": "０歳児保育などの行き過ぎた母子分離政策を見直す",
+     "src": {
+      "title": "参政党 臨時記者会見報告 令和8年1月23日（金）「マニフェスト：3つの柱と9の政策」",
+      "url": "https://sanseito.jp/news/n8031/"
+     },
+     "stage": 1,
+     "status": "国会質問で0歳児保育など母子分離政策の見直しを求めた。政府の制度変更は確認できなかった。",
+     "actions": [
+      {
+       "date": "2026-04-02",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "参議院厚生労働委員会で宮出千慧議員がゼロ歳児保育が愛着形成に与える影響について質問した。",
+       "src": {
+        "title": "第221回国会 参議院 厚生労働委員会 第3号（2026-04-02）宮出千慧議員の発言",
+        "site": "国会会議録検索システム",
+        "url": "https://kokkai.ndl.go.jp/txt/122114260X00320260402/94"
+       }
+      },
+      {
+       "date": "2026-04-07",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "参議院本会議で宮出千慧議員が行き過ぎた母子分離政策の見直しを求めた。",
+       "src": {
+        "title": "第221回国会 参議院 本会議 第8号（2026-04-07）宮出千慧議員の発言",
+        "site": "国会会議録検索システム",
+        "url": "https://kokkai.ndl.go.jp/txt/122115254X00820260407/15"
+       }
+      },
+      {
+       "date": "2026-05-08",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "衆議院の地域活性化・こども政策・デジタル社会形成に関する特別委員会で谷浩一郎議員が、ゼロ歳児保育などの母子分離政策に反対する党の立場を述べた。",
+       "src": {
+        "title": "第221回国会 衆議院 地域活性化・こども政策・デジタル社会形成に関する特別委員会 第5号（2026-05-08）谷浩一郎議員の発言",
+        "site": "国会会議録検索システム",
+        "url": "https://kokkai.ndl.go.jp/txt/122105367X00520260508/120"
+       }
+      }
+     ]
+    },
+    {
+     "id": "sansei-shakaihosho-1",
+     "theme": "shakaihosho",
+     "text": "医療・介護従事者の報酬を大きく引き上げ、過重労働を改善する。",
+     "quote": "医療・介護従事者の報酬を抜本的に引き上げと過重労働を改善します。",
+     "src": {
+      "title": "参政党 臨時記者会見報告 令和8年1月23日（金）「マニフェスト：3つの柱と9の政策」",
+      "url": "https://sanseito.jp/news/n8031/"
+     },
+     "stage": 4,
+     "status": "2026年6月に診療報酬改定（賃上げ分を含む）と介護報酬の期中改定（介護従事者の月1万円の賃上げ措置など）が始まった。いずれも選挙前の2025年12月までに政府方針が決まっていたもの。",
+     "actions": [
+      {
+       "date": "2026-03-10",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "衆議院予算委員会公聴会で豊田真由子議員が、診療報酬・介護報酬を抜本的に引き上げるべきとの考えを述べた。",
+       "src": {
+        "title": "第221回国会 衆議院 予算委員会公聴会 第1号（2026-03-10）豊田真由子議員の発言",
+        "site": "国会会議録検索システム",
+        "url": "https://kokkai.ndl.go.jp/txt/122105262X00120260310/66"
+       }
+      },
+      {
+       "date": "2026-04-02",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "参議院厚生労働委員会で宮出千慧議員が介護職員や保育士の処遇が低い水準にとどまっている理由を政府に質した。",
+       "src": {
+        "title": "第221回国会 参議院 厚生労働委員会 第3号（2026-04-02）宮出千慧議員の発言",
+        "site": "国会会議録検索システム",
+        "url": "https://kokkai.ndl.go.jp/txt/122114260X00320260402/100"
+       }
+      },
+      {
+       "date": "2026-06-01",
+       "stage": 4,
+       "type": "制度開始",
+       "text": "令和8年度診療報酬改定（改定率+3.09%、うち賃上げ分+1.70%）が施行された。",
+       "src": {
+        "title": "令和8年度診療報酬改定について【医科全体版】",
+        "site": "厚生労働省",
+        "url": "https://www.mhlw.go.jp/content/12400000/001745823.pdf"
+       }
+      },
+      {
+       "date": "2026-06-01",
+       "stage": 4,
+       "type": "制度開始",
+       "text": "介護報酬の期中改定（改定率+2.03%、2025年12月24日の大臣折衝で決定）により、介護従事者に月1.0万円の賃上げを行う処遇改善加算の拡充が6月から始まった。",
+       "src": {
+        "title": "介護職員の処遇改善：TOP・制度概要（令和８年６月から処遇改善加算が更に拡充）",
+        "site": "厚生労働省",
+        "url": "https://www.mhlw.go.jp/shogu-kaizen/"
+       }
+      }
+     ]
+    },
+    {
+     "id": "sansei-shakaihosho-2",
+     "theme": "shakaihosho",
+     "text": "新型コロナ対応を再検証し、感染症対策をつくり直す。",
+     "quote": "新型コロナ対応の再検証を通じた実効的な感染症対策の再構築を行います。",
+     "src": {
+      "title": "参政党 臨時記者会見報告 令和8年1月23日（金）「マニフェスト：3つの柱と9の政策」",
+      "url": "https://sanseito.jp/news/n8031/"
+     },
+     "stage": 1,
+     "status": "国会質問で新型コロナワクチンの健康被害や安全性評価の検証を求めた。党としての法案提出は確認できなかった（7月16日に国民民主党議員が新型コロナ対策検証委員会設置法案を衆議院に提出し、閉会中審査になった）。",
+     "actions": [
+      {
+       "date": "2026-06-01",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "参議院決算委員会で安達悠司議員が新型コロナワクチン関連の支出と予防接種健康被害救済制度について検証を求めた。",
+       "src": {
+        "title": "第221回国会 参議院 決算委員会 第6号（2026-06-01）安達悠司議員の発言",
+        "site": "国会会議録検索システム",
+        "url": "https://kokkai.ndl.go.jp/txt/122114103X00620260601/185"
+       }
+      },
+      {
+       "date": "2026-06-02",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "参議院厚生労働委員会で岩本麻奈議員が新型コロナワクチンの検証の仕組みと安全性評価の在り方を質問した。",
+       "src": {
+        "title": "第221回国会 参議院 厚生労働委員会 第10号（2026-06-02）岩本麻奈議員の発言",
+        "site": "国会会議録検索システム",
+        "url": "https://kokkai.ndl.go.jp/txt/122114260X01020260602/136"
+       }
+      }
+     ]
+    },
+    {
+     "id": "sansei-anzenhosho-1",
+     "theme": "anzenhosho",
+     "text": "スパイ防止法を整備する。",
+     "quote": "スパイ防止法の整備",
+     "src": {
+      "title": "参政党 臨時記者会見報告 令和8年1月23日（金）「マニフェスト：3つの柱と9の政策」",
+      "url": "https://sanseito.jp/news/n8031/"
+     },
+     "stage": 3,
+     "status": "4月2日に防諜施策推進法案などスパイ防止関連の法案を参議院に提出したが、審議されないまま第221回国会が終わった。総理は2月25日の本会議で、外国勢力の干渉を阻止する仕組みについて与党と論点を整理し検討を進めていると答弁した。国家情報会議設置法は6月3日に公布された。",
+     "actions": [
+      {
+       "date": "2026-02-25",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "衆議院本会議で和田政宗議員がスパイ防止法の創設について総理の考えを質した。",
+       "src": {
+        "title": "第221回国会 衆議院 本会議 第4号（2026-02-25）和田政宗議員の発言",
+        "site": "国会会議録検索システム",
+        "url": "https://kokkai.ndl.go.jp/txt/122105254X00420260225/8"
+       }
+      },
+      {
+       "date": "2026-02-25",
+       "stage": 3,
+       "type": "その他",
+       "text": "高市総理が和田議員への答弁で、外国によるスパイ行為を防ぐ方策について与党と論点を整理し検討を進めていると述べた。",
+       "src": {
+        "title": "第221回国会 衆議院 本会議 第4号（2026-02-25）高市早苗内閣総理大臣の発言",
+        "site": "国会会議録検索システム",
+        "url": "https://kokkai.ndl.go.jp/txt/122105254X00420260225/9"
+       }
+      },
+      {
+       "date": "2026-04-02",
+       "stage": 2,
+       "type": "法案提出",
+       "text": "神谷宗幣議員らが「防諜に関する施策の推進に関する法律案」と、特定秘密保護法等の改正案、刑法改正案を参議院に提出した。",
+       "src": {
+        "title": "防諜に関する施策の推進に関する法律案（参議院 議案情報）",
+        "site": "参議院",
+        "url": "https://www.sangiin.go.jp/japanese/joho1/kousei/gian/221/meisai/m221100221005.htm"
+       }
+      },
+      {
+       "date": "2026-04-10",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "衆議院内閣委員会の国家情報会議設置法案の審議で川裕一郎議員が、党のスパイ防止法案と政府のスパイ防止関連法制の関係を質問した。",
+       "src": {
+        "title": "第221回国会 衆議院 内閣委員会 第3号（2026-04-10）川裕一郎議員の発言",
+        "site": "国会会議録検索システム",
+        "url": "https://kokkai.ndl.go.jp/txt/122104889X00320260410/283"
+       }
+      }
+     ]
+    },
+    {
+     "id": "sansei-anzenhosho-2",
+     "theme": "anzenhosho",
+     "text": "外国人総合政策庁を設け、外国人の受け入れ枠を厳しくし、外国資本の土地取得を制限する。",
+     "quote": "外国人総合政策庁を設置して長期的な受け入れ枠を厳格化し、不法滞在の取り締まりや外国資本による土地取得の制限を強化します。",
+     "src": {
+      "title": "参政党 臨時記者会見報告 令和8年1月23日（金）「マニフェスト：3つの柱と9の政策」",
+      "url": "https://sanseito.jp/news/n8031/"
+     },
+     "stage": 3,
+     "status": "6月17日に外国人総合政策庁設置法案を参議院に提出したが、審議されないまま第221回国会が終わった。政府は10月23日、防衛関係施設周辺などの土地取引を事前許可制にする重要土地等調査法改正案を閣議決定し、衆議院で審議待ちとなっている。",
+     "actions": [
+      {
+       "date": "2026-04-24",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "衆議院法務委員会で和田政宗議員が外国人総合政策庁の創設と外国人受入れの中長期計画の必要性を述べた。",
+       "src": {
+        "title": "第221回国会 衆議院 法務委員会 第7号（2026-04-24）和田政宗議員の発言",
+        "site": "国会会議録検索システム",
+        "url": "https://kokkai.ndl.go.jp/txt/122105206X00720260424/156"
+       }
+      },
+      {
+       "date": "2026-06-17",
+       "stage": 2,
+       "type": "法案提出",
+       "text": "神谷宗幣議員らが「外国人総合政策庁の設置等による外国人政策の総合的な推進に関する法律案」を参議院に提出した。",
+       "src": {
+        "title": "外国人総合政策庁の設置等による外国人政策の総合的な推進に関する法律案（参議院 議案情報）",
+        "site": "参議院",
+        "url": "https://www.sangiin.go.jp/japanese/joho1/kousei/gian/221/meisai/m221100221009.htm"
+       }
+      },
+      {
+       "date": "2026-06-22",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "衆議院予算委員会で吉川里奈議員が党の外国人総合政策庁法案を示し、政府に司令塔機能の強化を求めた。",
+       "src": {
+        "title": "第221回国会 衆議院 予算委員会 第15号（2026-06-22）吉川里奈議員の発言",
+        "site": "国会会議録検索システム",
+        "url": "https://kokkai.ndl.go.jp/txt/122105261X01520260622/139"
+       }
+      },
+      {
+       "date": "2026-10-23",
+       "stage": 3,
+       "type": "閣議決定",
+       "text": "政府が、防衛関係施設周辺や国境離島の土地の所有権移転を事前許可制にする重要土地等調査法改正案を閣議決定した。",
+       "src": {
+        "title": "小野田内閣府特命担当大臣記者会見要旨 令和8年10月23日",
+        "site": "内閣府",
+        "url": "https://www.cao.go.jp/minister/2609_k_onoda/kaiken/20261023.html"
+       }
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

@@ -9,7 +9,7 @@
 4. 公開したものだけ `data/news.json` に入り、サイトに出る（gitにコミット。GitHubとつなげば自動で公開）
 
 ## フォルダ
-- `index.html` トップ（夜の海と天の川のスクロールページ。府省ごとの章 → 物体をひらくと記事ビュー） / `ministries.html` 省庁別 / `local.html` 地方（東京都・準備中） / `pledges.html` 公約トラッカー（準備中） / `opinion.html` オピニオン（準備中） / `about.html` このサイトについて
+- `index.html` トップ（夜の海と天の川のスクロールページ。府省ごとの章 → 物体をひらくと記事ビュー） / `ministries.html` 省庁別 / `local.html` 地方（東京都・準備中） / `pledges.html` 公約チェッカー（直近の衆院選で各党が約束したことと、その後の行動・達成率。`data/pledges.json` から `assets/pledges.js` + `pledges.css` で組み立てる。`#p=公約id` で詳細を直接開ける。3D の配色は `?v=a/b/c` の試作） / `opinion.html` オピニオン（準備中） / `about.html` このサイトについて
   - `assets/home.js` + `home.css` トップの組み立て・スクロール演出 / `assets/hall.js` + `hall.css` 記事ビュー（`index.html#m=府省id`、`#a=記事id` で直接開ける）
   - 3D（Three.js r170 を CDN から。WebGL2 が使えない・読み込みに失敗・「動きを減らす」設定のときは CSS の明朝1文字のエンブレムに切り替わる）
     - `assets/scene3d.js` 全体のまとめ（カメラ・スクロールとの対応・クリック判定）

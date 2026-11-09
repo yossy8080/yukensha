@@ -1,5 +1,6 @@
 /* 有権者 — 夜の海と空（波打つ平面＋偽の反射、月、遠くの星）
-   API: createSea(scene, isMobile) -> { update({ time, cam, dim, glow, glowPos, glowColor }), dispose() } */
+   API: createSea(scene, isMobile, palette?) -> { update({ time, cam, dim, glow, glowPos, glowColor }), dispose() }
+     palette（任意）= SEA_PALETTE の一部を差し替える（省略するとトップと同じ夜の海） */
 
 import * as THREE from "three";
 
@@ -48,12 +49,13 @@ const SKY_VS = /* glsl */`
 varying vec2 vUv;
 void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`;
 const SKY_FS = /* glsl */`
-uniform vec3 uHorizon, uTop, uMoon;
+uniform vec3 uHorizon, uTop, uMoon, uDawn;
 uniform vec2 uMoonUv;
-uniform float uAspect, uDim;
+uniform float uAspect, uDim, uDawnH;
 varying vec2 vUv;
 void main() {
   vec3 col = mix(uHorizon, uTop, smoothstep(0.0, 0.55, vUv.y));
+  col += uDawn * exp(-vUv.y / uDawnH); // 地平線のうっすらした朝焼け（既定は黒＝なし）
   vec2 d = (vUv - uMoonUv) * vec2(uAspect, 1.0);
   float r = length(d);
   col += uMoon * (smoothstep(0.016, 0.012, r) * 1.4 + exp(-r * 22.0) * 0.22 + exp(-r * 5.0) * 0.04);
@@ -65,15 +67,30 @@ function rng(seed) {
   return () => ((s = (s * 1664525 + 1013904223) >>> 0) / 4294967296);
 }
 
-export function createSea(scene, isMobile) {
+// 既定の配色（トップの夜の海）
+export const SEA_PALETTE = {
+  fog: 0x0b1a2e,      // 霧・地平線の空・水面に映る低い空
+  top: 0x04080f,      // 空の上の方
+  deep: 0x02060c,     // 水の色
+  skyHigh: 0x050b16,  // 水面に映る高い空
+  moon: 0xd6ecff,
+  glow: 0x9fcfff,     // 物体の光が水面に映る色
+  stars: 0xb8cbe6,    // 帯の外の遠い星
+  dawn: 0x000000,     // 地平線の朝焼け（黒＝なし）
+  dawnH: 0.12,        // 朝焼けの高さ
+};
+
+export function createSea(scene, isMobile, palette = {}) {
+  const P = { ...SEA_PALETTE, ...palette };
   const col = (hex) => new THREE.Color(hex);
-  const FOG = col(0x0b1a2e);
+  const FOG = col(P.fog);
 
   const skyMat = new THREE.ShaderMaterial({
     vertexShader: SKY_VS, fragmentShader: SKY_FS, depthWrite: false,
     uniforms: {
-      uHorizon: { value: FOG.clone() }, uTop: { value: col(0x04080f) }, uMoon: { value: col(0xd6ecff) },
+      uHorizon: { value: FOG.clone() }, uTop: { value: col(P.top) }, uMoon: { value: col(P.moon) },
       uMoonUv: { value: new THREE.Vector2(0.2, 0.36) }, uAspect: { value: 400 / 160 }, uDim: { value: 1 },
+      uDawn: { value: col(P.dawn) }, uDawnH: { value: P.dawnH },
     },
   });
   const sky = new THREE.Mesh(new THREE.PlaneGeometry(400, 160), skyMat);
@@ -89,7 +106,7 @@ export function createSea(scene, isMobile) {
     for (let i = 0; i < (isMobile ? 260 : 520); i++) pts.push((r() - 0.5) * 380, 6 + Math.pow(r(), 0.7) * 90, -158);
     starGeo.setAttribute("position", new THREE.Float32BufferAttribute(pts, 3));
   }
-  const starMat = new THREE.PointsMaterial({ color: 0xb8cbe6, size: isMobile ? 1.2 : 1.5, sizeAttenuation: false, transparent: true, opacity: 0.5, depthWrite: false });
+  const starMat = new THREE.PointsMaterial({ color: P.stars, size: isMobile ? 1.2 : 1.5, sizeAttenuation: false, transparent: true, opacity: 0.5, depthWrite: false });
   const stars = new THREE.Points(starGeo, starMat);
   stars.renderOrder = -1;
   scene.add(stars);
@@ -102,9 +119,9 @@ export function createSea(scene, isMobile) {
     vertexShader: OCEAN_VS, fragmentShader: OCEAN_FS,
     uniforms: {
       uTime: { value: 0 }, uGlow: { value: 0 }, uFog: { value: 0.022 }, uDim: { value: 1 },
-      uCam: { value: new THREE.Vector3() }, uDeep: { value: col(0x02060c) }, uSkyLow: { value: FOG.clone() },
-      uSkyHigh: { value: col(0x050b16) }, uMoonDir: { value: moonWorld.clone().normalize() }, uMoon: { value: col(0xd6ecff) },
-      uGlowPos: { value: new THREE.Vector3(0, 1.4, 0) }, uGlowColor: { value: col(0x9fcfff) }, uFogColor: { value: FOG.clone() },
+      uCam: { value: new THREE.Vector3() }, uDeep: { value: col(P.deep) }, uSkyLow: { value: FOG.clone() },
+      uSkyHigh: { value: col(P.skyHigh) }, uMoonDir: { value: moonWorld.clone().normalize() }, uMoon: { value: col(P.moon) },
+      uGlowPos: { value: new THREE.Vector3(0, 1.4, 0) }, uGlowColor: { value: col(P.glow) }, uFogColor: { value: FOG.clone() },
     },
   });
   const ocean = new THREE.Mesh(oceanGeo, oceanMat);
