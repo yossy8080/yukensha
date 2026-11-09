@@ -14,8 +14,8 @@ export const PARTY_MODEL = {
   ldp: "diet",
   chudo: "compass",
   ishin: "globe",
-  dpfp: "book",
-  sanseito: "bridge",
+  dpp: "book",
+  sansei: "bridge",
 };
 const DEFAULT_MODEL = "diet"; // 表にない党（あとで増えた党）
 
