@@ -1,0 +1,1477 @@
+{
+ "_dummy": true,
+ "updated": "2026-11-09",
+ "election": {
+  "name": "第51回衆議院議員総選挙",
+  "date": "2026-02-08",
+  "url": "https://example.com/"
+ },
+ "themes": [
+  {
+   "id": "bukka",
+   "name": "物価・税"
+  },
+  {
+   "id": "chingin",
+   "name": "賃金・経済成長"
+  },
+  {
+   "id": "kosodate",
+   "name": "子育て・教育"
+  },
+  {
+   "id": "shakaihosho",
+   "name": "社会保障"
+  },
+  {
+   "id": "anzenhosho",
+   "name": "外交・安全保障"
+  }
+ ],
+ "parties": [
+  {
+   "id": "ldp",
+   "name": "自由民主党",
+   "short": "自民",
+   "side": "与党",
+   "seats_shugiin": 316,
+   "manifesto": {
+    "title": "（ダミー）自民の選挙公約",
+    "url": "https://example.com/"
+   },
+   "pledges": [
+    {
+     "id": "ldp-bukka-1",
+     "theme": "bukka",
+     "text": "（ダミー）自民の物価・税の公約A",
+     "src": {
+      "title": "（ダミー）自民の選挙公約",
+      "url": "https://example.com/",
+      "page": "p.4"
+     },
+     "stage": 4,
+     "status": "（ダミー）今の状況の説明（段階4）。",
+     "actions": [
+      {
+       "date": "2026-03-10",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "（ダミー）段階1にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）国会質問の出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      },
+      {
+       "date": "2026-04-22",
+       "stage": 2,
+       "type": "閣議決定",
+       "text": "（ダミー）段階2にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）閣議決定の出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      },
+      {
+       "date": "2026-06-05",
+       "stage": 3,
+       "type": "審議入り",
+       "text": "（ダミー）段階3にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）審議入りの出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      },
+      {
+       "date": "2026-07-17",
+       "stage": 4,
+       "type": "成立",
+       "text": "（ダミー）段階4にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）成立の出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      }
+     ],
+     "quote": "（ダミー）公約文書からの引用文。物価・税について。"
+    },
+    {
+     "id": "ldp-bukka-2",
+     "theme": "bukka",
+     "text": "（ダミー）自民の物価・税の公約B",
+     "src": {
+      "title": "（ダミー）自民の選挙公約",
+      "url": "https://example.com/",
+      "page": "p.5"
+     },
+     "stage": 2,
+     "status": "（ダミー）今の状況の説明（段階2）。",
+     "actions": [
+      {
+       "date": "2026-04-22",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "（ダミー）段階1にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）国会質問の出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      },
+      {
+       "date": "2026-06-05",
+       "stage": 2,
+       "type": "閣議決定",
+       "text": "（ダミー）段階2にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）閣議決定の出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      }
+     ]
+    },
+    {
+     "id": "ldp-chingin-1",
+     "theme": "chingin",
+     "text": "（ダミー）自民の賃金・経済成長の公約A",
+     "src": {
+      "title": "（ダミー）自民の選挙公約",
+      "url": "https://example.com/",
+      "page": "p.4"
+     },
+     "stage": 3,
+     "status": "（ダミー）今の状況の説明（段階3）。",
+     "actions": [
+      {
+       "date": "2026-03-10",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "（ダミー）段階1にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）国会質問の出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      },
+      {
+       "date": "2026-04-22",
+       "stage": 2,
+       "type": "閣議決定",
+       "text": "（ダミー）段階2にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）閣議決定の出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      },
+      {
+       "date": "2026-06-05",
+       "stage": 3,
+       "type": "審議入り",
+       "text": "（ダミー）段階3にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）審議入りの出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      }
+     ],
+     "quote": "（ダミー）公約文書からの引用文。賃金・経済成長について。"
+    },
+    {
+     "id": "ldp-kosodate-1",
+     "theme": "kosodate",
+     "text": "（ダミー）自民の子育て・教育の公約A",
+     "src": {
+      "title": "（ダミー）自民の選挙公約",
+      "url": "https://example.com/",
+      "page": "p.4"
+     },
+     "stage": 4,
+     "status": "（ダミー）今の状況の説明（段階4）。",
+     "actions": [
+      {
+       "date": "2026-03-10",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "（ダミー）段階1にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）国会質問の出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      },
+      {
+       "date": "2026-04-22",
+       "stage": 2,
+       "type": "閣議決定",
+       "text": "（ダミー）段階2にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）閣議決定の出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      },
+      {
+       "date": "2026-06-05",
+       "stage": 3,
+       "type": "審議入り",
+       "text": "（ダミー）段階3にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）審議入りの出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      },
+      {
+       "date": "2026-07-17",
+       "stage": 4,
+       "type": "成立",
+       "text": "（ダミー）段階4にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）成立の出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      }
+     ],
+     "quote": "（ダミー）公約文書からの引用文。子育て・教育について。"
+    },
+    {
+     "id": "ldp-kosodate-2",
+     "theme": "kosodate",
+     "text": "（ダミー）自民の子育て・教育の公約B",
+     "src": {
+      "title": "（ダミー）自民の選挙公約",
+      "url": "https://example.com/",
+      "page": "p.5"
+     },
+     "stage": 4,
+     "status": "（ダミー）今の状況の説明（段階4）。",
+     "actions": [
+      {
+       "date": "2026-04-22",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "（ダミー）段階1にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）国会質問の出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      },
+      {
+       "date": "2026-06-05",
+       "stage": 2,
+       "type": "閣議決定",
+       "text": "（ダミー）段階2にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）閣議決定の出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      },
+      {
+       "date": "2026-07-17",
+       "stage": 3,
+       "type": "審議入り",
+       "text": "（ダミー）段階3にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）審議入りの出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      },
+      {
+       "date": "2026-09-30",
+       "stage": 4,
+       "type": "成立",
+       "text": "（ダミー）段階4にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）成立の出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      }
+     ]
+    },
+    {
+     "id": "ldp-shakaihosho-1",
+     "theme": "shakaihosho",
+     "text": "（ダミー）自民の社会保障の公約A",
+     "src": {
+      "title": "（ダミー）自民の選挙公約",
+      "url": "https://example.com/",
+      "page": "p.4"
+     },
+     "stage": 2,
+     "status": "（ダミー）今の状況の説明（段階2）。",
+     "actions": [
+      {
+       "date": "2026-03-10",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "（ダミー）段階1にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）国会質問の出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      },
+      {
+       "date": "2026-04-22",
+       "stage": 2,
+       "type": "閣議決定",
+       "text": "（ダミー）段階2にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）閣議決定の出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      }
+     ],
+     "quote": "（ダミー）公約文書からの引用文。社会保障について。"
+    },
+    {
+     "id": "ldp-shakaihosho-2",
+     "theme": "shakaihosho",
+     "text": "（ダミー）自民の社会保障の公約B",
+     "src": {
+      "title": "（ダミー）自民の選挙公約",
+      "url": "https://example.com/",
+      "page": "p.5"
+     },
+     "stage": 1,
+     "status": "（ダミー）今の状況の説明（段階1）。",
+     "actions": [
+      {
+       "date": "2026-04-22",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "（ダミー）段階1にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）国会質問の出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      }
+     ]
+    },
+    {
+     "id": "ldp-anzenhosho-1",
+     "theme": "anzenhosho",
+     "text": "（ダミー）自民の外交・安全保障の公約A",
+     "src": {
+      "title": "（ダミー）自民の選挙公約",
+      "url": "https://example.com/",
+      "page": "p.4"
+     },
+     "stage": 3,
+     "status": "（ダミー）今の状況の説明（段階3）。",
+     "actions": [
+      {
+       "date": "2026-03-10",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "（ダミー）段階1にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）国会質問の出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      },
+      {
+       "date": "2026-04-22",
+       "stage": 2,
+       "type": "閣議決定",
+       "text": "（ダミー）段階2にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）閣議決定の出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      },
+      {
+       "date": "2026-06-05",
+       "stage": 3,
+       "type": "審議入り",
+       "text": "（ダミー）段階3にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）審議入りの出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      }
+     ],
+     "quote": "（ダミー）公約文書からの引用文。外交・安全保障について。"
+    }
+   ]
+  },
+  {
+   "id": "chudo",
+   "name": "中道改革連合",
+   "short": "中道",
+   "side": "野党",
+   "seats_shugiin": 49,
+   "manifesto": {
+    "title": "（ダミー）中道の選挙公約",
+    "url": "https://example.com/"
+   },
+   "pledges": [
+    {
+     "id": "chudo-bukka-1",
+     "theme": "bukka",
+     "text": "（ダミー）中道の物価・税の公約A",
+     "src": {
+      "title": "（ダミー）中道の選挙公約",
+      "url": "https://example.com/",
+      "page": "p.4"
+     },
+     "stage": 2,
+     "status": "（ダミー）今の状況の説明（段階2）。",
+     "actions": [
+      {
+       "date": "2026-03-10",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "（ダミー）段階1にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）国会質問の出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      },
+      {
+       "date": "2026-04-22",
+       "stage": 2,
+       "type": "法案提出",
+       "text": "（ダミー）段階2にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）法案提出の出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      }
+     ],
+     "quote": "（ダミー）公約文書からの引用文。物価・税について。"
+    },
+    {
+     "id": "chudo-bukka-2",
+     "theme": "bukka",
+     "text": "（ダミー）中道の物価・税の公約B",
+     "src": {
+      "title": "（ダミー）中道の選挙公約",
+      "url": "https://example.com/",
+      "page": "p.5"
+     },
+     "stage": 1,
+     "status": "（ダミー）今の状況の説明（段階1）。",
+     "actions": [
+      {
+       "date": "2026-04-22",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "（ダミー）段階1にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）国会質問の出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      }
+     ]
+    },
+    {
+     "id": "chudo-chingin-1",
+     "theme": "chingin",
+     "text": "（ダミー）中道の賃金・経済成長の公約A",
+     "src": {
+      "title": "（ダミー）中道の選挙公約",
+      "url": "https://example.com/",
+      "page": "p.4"
+     },
+     "stage": 1,
+     "status": "（ダミー）今の状況の説明（段階1）。",
+     "actions": [
+      {
+       "date": "2026-03-10",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "（ダミー）段階1にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）国会質問の出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      }
+     ],
+     "quote": "（ダミー）公約文書からの引用文。賃金・経済成長について。"
+    },
+    {
+     "id": "chudo-kosodate-1",
+     "theme": "kosodate",
+     "text": "（ダミー）中道の子育て・教育の公約A",
+     "src": {
+      "title": "（ダミー）中道の選挙公約",
+      "url": "https://example.com/",
+      "page": "p.4"
+     },
+     "stage": 4,
+     "status": "（ダミー）今の状況の説明（段階4）。",
+     "actions": [
+      {
+       "date": "2026-03-10",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "（ダミー）段階1にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）国会質問の出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      },
+      {
+       "date": "2026-04-22",
+       "stage": 2,
+       "type": "法案提出",
+       "text": "（ダミー）段階2にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）法案提出の出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      },
+      {
+       "date": "2026-06-05",
+       "stage": 3,
+       "type": "合意",
+       "text": "（ダミー）段階3にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）合意の出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      },
+      {
+       "date": "2026-07-17",
+       "stage": 4,
+       "type": "制度開始",
+       "text": "（ダミー）段階4にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）制度開始の出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      }
+     ],
+     "quote": "（ダミー）公約文書からの引用文。子育て・教育について。"
+    },
+    {
+     "id": "chudo-shakaihosho-1",
+     "theme": "shakaihosho",
+     "text": "（ダミー）中道の社会保障の公約A",
+     "src": {
+      "title": "（ダミー）中道の選挙公約",
+      "url": "https://example.com/",
+      "page": "p.4"
+     },
+     "stage": 2,
+     "status": "（ダミー）今の状況の説明（段階2）。",
+     "actions": [
+      {
+       "date": "2026-03-10",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "（ダミー）段階1にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）国会質問の出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      },
+      {
+       "date": "2026-04-22",
+       "stage": 2,
+       "type": "法案提出",
+       "text": "（ダミー）段階2にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）法案提出の出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      }
+     ],
+     "quote": "（ダミー）公約文書からの引用文。社会保障について。"
+    },
+    {
+     "id": "chudo-shakaihosho-2",
+     "theme": "shakaihosho",
+     "text": "（ダミー）中道の社会保障の公約B",
+     "src": {
+      "title": "（ダミー）中道の選挙公約",
+      "url": "https://example.com/",
+      "page": "p.5"
+     },
+     "stage": 0,
+     "status": "（ダミー）今の状況の説明（段階0）。",
+     "actions": []
+    },
+    {
+     "id": "chudo-anzenhosho-1",
+     "theme": "anzenhosho",
+     "text": "（ダミー）中道の外交・安全保障の公約A",
+     "src": {
+      "title": "（ダミー）中道の選挙公約",
+      "url": "https://example.com/",
+      "page": "p.4"
+     },
+     "stage": 1,
+     "status": "（ダミー）今の状況の説明（段階1）。",
+     "actions": [
+      {
+       "date": "2026-03-10",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "（ダミー）段階1にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）国会質問の出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      }
+     ],
+     "quote": "（ダミー）公約文書からの引用文。外交・安全保障について。"
+    },
+    {
+     "id": "chudo-anzenhosho-2",
+     "theme": "anzenhosho",
+     "text": "（ダミー）中道の外交・安全保障の公約B",
+     "src": {
+      "title": "（ダミー）中道の選挙公約",
+      "url": "https://example.com/",
+      "page": "p.5"
+     },
+     "stage": 1,
+     "status": "（ダミー）今の状況の説明（段階1）。",
+     "actions": [
+      {
+       "date": "2026-04-22",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "（ダミー）段階1にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）国会質問の出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "ishin",
+   "name": "日本維新の会",
+   "short": "維新",
+   "side": "与党",
+   "seats_shugiin": 36,
+   "manifesto": {
+    "title": "（ダミー）維新の選挙公約",
+    "url": "https://example.com/"
+   },
+   "pledges": [
+    {
+     "id": "ishin-bukka-1",
+     "theme": "bukka",
+     "text": "（ダミー）維新の物価・税の公約A",
+     "src": {
+      "title": "（ダミー）維新の選挙公約",
+      "url": "https://example.com/",
+      "page": "p.4"
+     },
+     "stage": 3,
+     "status": "（ダミー）今の状況の説明（段階3）。",
+     "actions": [
+      {
+       "date": "2026-03-10",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "（ダミー）段階1にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）国会質問の出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      },
+      {
+       "date": "2026-04-22",
+       "stage": 2,
+       "type": "閣議決定",
+       "text": "（ダミー）段階2にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）閣議決定の出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      },
+      {
+       "date": "2026-06-05",
+       "stage": 3,
+       "type": "審議入り",
+       "text": "（ダミー）段階3にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）審議入りの出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      }
+     ],
+     "quote": "（ダミー）公約文書からの引用文。物価・税について。"
+    },
+    {
+     "id": "ishin-chingin-1",
+     "theme": "chingin",
+     "text": "（ダミー）維新の賃金・経済成長の公約A",
+     "src": {
+      "title": "（ダミー）維新の選挙公約",
+      "url": "https://example.com/",
+      "page": "p.4"
+     },
+     "stage": 2,
+     "status": "（ダミー）今の状況の説明（段階2）。",
+     "actions": [
+      {
+       "date": "2026-03-10",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "（ダミー）段階1にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）国会質問の出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      },
+      {
+       "date": "2026-04-22",
+       "stage": 2,
+       "type": "閣議決定",
+       "text": "（ダミー）段階2にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）閣議決定の出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      }
+     ],
+     "quote": "（ダミー）公約文書からの引用文。賃金・経済成長について。"
+    },
+    {
+     "id": "ishin-chingin-2",
+     "theme": "chingin",
+     "text": "（ダミー）維新の賃金・経済成長の公約B",
+     "src": {
+      "title": "（ダミー）維新の選挙公約",
+      "url": "https://example.com/",
+      "page": "p.5"
+     },
+     "stage": 4,
+     "status": "（ダミー）今の状況の説明（段階4）。",
+     "actions": [
+      {
+       "date": "2026-04-22",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "（ダミー）段階1にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）国会質問の出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      },
+      {
+       "date": "2026-06-05",
+       "stage": 2,
+       "type": "閣議決定",
+       "text": "（ダミー）段階2にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）閣議決定の出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      },
+      {
+       "date": "2026-07-17",
+       "stage": 3,
+       "type": "審議入り",
+       "text": "（ダミー）段階3にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）審議入りの出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      },
+      {
+       "date": "2026-09-30",
+       "stage": 4,
+       "type": "成立",
+       "text": "（ダミー）段階4にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）成立の出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      }
+     ]
+    },
+    {
+     "id": "ishin-kosodate-1",
+     "theme": "kosodate",
+     "text": "（ダミー）維新の子育て・教育の公約A",
+     "src": {
+      "title": "（ダミー）維新の選挙公約",
+      "url": "https://example.com/",
+      "page": "p.4"
+     },
+     "stage": 3,
+     "status": "（ダミー）今の状況の説明（段階3）。",
+     "actions": [
+      {
+       "date": "2026-03-10",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "（ダミー）段階1にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）国会質問の出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      },
+      {
+       "date": "2026-04-22",
+       "stage": 2,
+       "type": "閣議決定",
+       "text": "（ダミー）段階2にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）閣議決定の出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      },
+      {
+       "date": "2026-06-05",
+       "stage": 3,
+       "type": "審議入り",
+       "text": "（ダミー）段階3にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）審議入りの出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      }
+     ],
+     "quote": "（ダミー）公約文書からの引用文。子育て・教育について。"
+    },
+    {
+     "id": "ishin-kosodate-2",
+     "theme": "kosodate",
+     "text": "（ダミー）維新の子育て・教育の公約B",
+     "src": {
+      "title": "（ダミー）維新の選挙公約",
+      "url": "https://example.com/",
+      "page": "p.5"
+     },
+     "stage": 1,
+     "status": "（ダミー）今の状況の説明（段階1）。",
+     "actions": [
+      {
+       "date": "2026-04-22",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "（ダミー）段階1にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）国会質問の出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      }
+     ]
+    },
+    {
+     "id": "ishin-shakaihosho-1",
+     "theme": "shakaihosho",
+     "text": "（ダミー）維新の社会保障の公約A",
+     "src": {
+      "title": "（ダミー）維新の選挙公約",
+      "url": "https://example.com/",
+      "page": "p.4"
+     },
+     "stage": 4,
+     "status": "（ダミー）今の状況の説明（段階4）。",
+     "actions": [
+      {
+       "date": "2026-03-10",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "（ダミー）段階1にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）国会質問の出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      },
+      {
+       "date": "2026-04-22",
+       "stage": 2,
+       "type": "閣議決定",
+       "text": "（ダミー）段階2にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）閣議決定の出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      },
+      {
+       "date": "2026-06-05",
+       "stage": 3,
+       "type": "審議入り",
+       "text": "（ダミー）段階3にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）審議入りの出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      },
+      {
+       "date": "2026-07-17",
+       "stage": 4,
+       "type": "成立",
+       "text": "（ダミー）段階4にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）成立の出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      }
+     ],
+     "quote": "（ダミー）公約文書からの引用文。社会保障について。"
+    },
+    {
+     "id": "ishin-anzenhosho-1",
+     "theme": "anzenhosho",
+     "text": "（ダミー）維新の外交・安全保障の公約A",
+     "src": {
+      "title": "（ダミー）維新の選挙公約",
+      "url": "https://example.com/",
+      "page": "p.4"
+     },
+     "stage": 0,
+     "status": "（ダミー）今の状況の説明（段階0）。",
+     "actions": [],
+     "quote": "（ダミー）公約文書からの引用文。外交・安全保障について。"
+    }
+   ],
+   "side_note": "（ダミー）連立の形の注記をここに書く"
+  },
+  {
+   "id": "dpfp",
+   "name": "国民民主党",
+   "short": "国民",
+   "side": "野党",
+   "seats_shugiin": 28,
+   "manifesto": {
+    "title": "（ダミー）国民の選挙公約",
+    "url": "https://example.com/"
+   },
+   "pledges": [
+    {
+     "id": "dpfp-bukka-1",
+     "theme": "bukka",
+     "text": "（ダミー）国民の物価・税の公約A",
+     "src": {
+      "title": "（ダミー）国民の選挙公約",
+      "url": "https://example.com/",
+      "page": "p.4"
+     },
+     "stage": 4,
+     "status": "（ダミー）今の状況の説明（段階4）。",
+     "actions": [
+      {
+       "date": "2026-03-10",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "（ダミー）段階1にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）国会質問の出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      },
+      {
+       "date": "2026-04-22",
+       "stage": 2,
+       "type": "法案提出",
+       "text": "（ダミー）段階2にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）法案提出の出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      },
+      {
+       "date": "2026-06-05",
+       "stage": 3,
+       "type": "合意",
+       "text": "（ダミー）段階3にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）合意の出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      },
+      {
+       "date": "2026-07-17",
+       "stage": 4,
+       "type": "制度開始",
+       "text": "（ダミー）段階4にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）制度開始の出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      }
+     ],
+     "quote": "（ダミー）公約文書からの引用文。物価・税について。"
+    },
+    {
+     "id": "dpfp-bukka-2",
+     "theme": "bukka",
+     "text": "（ダミー）国民の物価・税の公約B",
+     "src": {
+      "title": "（ダミー）国民の選挙公約",
+      "url": "https://example.com/",
+      "page": "p.5"
+     },
+     "stage": 2,
+     "status": "（ダミー）今の状況の説明（段階2）。",
+     "actions": [
+      {
+       "date": "2026-04-22",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "（ダミー）段階1にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）国会質問の出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      },
+      {
+       "date": "2026-06-05",
+       "stage": 2,
+       "type": "法案提出",
+       "text": "（ダミー）段階2にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）法案提出の出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      }
+     ]
+    },
+    {
+     "id": "dpfp-chingin-1",
+     "theme": "chingin",
+     "text": "（ダミー）国民の賃金・経済成長の公約A",
+     "src": {
+      "title": "（ダミー）国民の選挙公約",
+      "url": "https://example.com/",
+      "page": "p.4"
+     },
+     "stage": 2,
+     "status": "（ダミー）今の状況の説明（段階2）。",
+     "actions": [
+      {
+       "date": "2026-03-10",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "（ダミー）段階1にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）国会質問の出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      },
+      {
+       "date": "2026-04-22",
+       "stage": 2,
+       "type": "法案提出",
+       "text": "（ダミー）段階2にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）法案提出の出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      }
+     ],
+     "quote": "（ダミー）公約文書からの引用文。賃金・経済成長について。"
+    },
+    {
+     "id": "dpfp-kosodate-1",
+     "theme": "kosodate",
+     "text": "（ダミー）国民の子育て・教育の公約A",
+     "src": {
+      "title": "（ダミー）国民の選挙公約",
+      "url": "https://example.com/",
+      "page": "p.4"
+     },
+     "stage": 1,
+     "status": "（ダミー）今の状況の説明（段階1）。",
+     "actions": [
+      {
+       "date": "2026-03-10",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "（ダミー）段階1にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）国会質問の出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      }
+     ],
+     "quote": "（ダミー）公約文書からの引用文。子育て・教育について。"
+    },
+    {
+     "id": "dpfp-kosodate-2",
+     "theme": "kosodate",
+     "text": "（ダミー）国民の子育て・教育の公約B",
+     "src": {
+      "title": "（ダミー）国民の選挙公約",
+      "url": "https://example.com/",
+      "page": "p.5"
+     },
+     "stage": 3,
+     "status": "（ダミー）今の状況の説明（段階3）。",
+     "actions": [
+      {
+       "date": "2026-04-22",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "（ダミー）段階1にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）国会質問の出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      },
+      {
+       "date": "2026-06-05",
+       "stage": 2,
+       "type": "法案提出",
+       "text": "（ダミー）段階2にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）法案提出の出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      },
+      {
+       "date": "2026-07-17",
+       "stage": 3,
+       "type": "合意",
+       "text": "（ダミー）段階3にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）合意の出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      }
+     ]
+    },
+    {
+     "id": "dpfp-shakaihosho-1",
+     "theme": "shakaihosho",
+     "text": "（ダミー）国民の社会保障の公約A",
+     "src": {
+      "title": "（ダミー）国民の選挙公約",
+      "url": "https://example.com/",
+      "page": "p.4"
+     },
+     "stage": 1,
+     "status": "（ダミー）今の状況の説明（段階1）。",
+     "actions": [
+      {
+       "date": "2026-03-10",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "（ダミー）段階1にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）国会質問の出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      }
+     ],
+     "quote": "（ダミー）公約文書からの引用文。社会保障について。"
+    },
+    {
+     "id": "dpfp-anzenhosho-1",
+     "theme": "anzenhosho",
+     "text": "（ダミー）国民の外交・安全保障の公約A",
+     "src": {
+      "title": "（ダミー）国民の選挙公約",
+      "url": "https://example.com/",
+      "page": "p.4"
+     },
+     "stage": 2,
+     "status": "（ダミー）今の状況の説明（段階2）。",
+     "actions": [
+      {
+       "date": "2026-03-10",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "（ダミー）段階1にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）国会質問の出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      },
+      {
+       "date": "2026-04-22",
+       "stage": 2,
+       "type": "法案提出",
+       "text": "（ダミー）段階2にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）法案提出の出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      }
+     ],
+     "quote": "（ダミー）公約文書からの引用文。外交・安全保障について。"
+    },
+    {
+     "id": "dpfp-anzenhosho-2",
+     "theme": "anzenhosho",
+     "text": "（ダミー）国民の外交・安全保障の公約B",
+     "src": {
+      "title": "（ダミー）国民の選挙公約",
+      "url": "https://example.com/",
+      "page": "p.5"
+     },
+     "stage": 0,
+     "status": "（ダミー）今の状況の説明（段階0）。",
+     "actions": []
+    }
+   ]
+  },
+  {
+   "id": "sanseito",
+   "name": "参政党",
+   "short": "参政",
+   "side": "野党",
+   "seats_shugiin": 15,
+   "manifesto": {
+    "title": "（ダミー）参政の選挙公約",
+    "url": "https://example.com/"
+   },
+   "pledges": [
+    {
+     "id": "sanseito-bukka-1",
+     "theme": "bukka",
+     "text": "（ダミー）参政の物価・税の公約A",
+     "src": {
+      "title": "（ダミー）参政の選挙公約",
+      "url": "https://example.com/",
+      "page": "p.4"
+     },
+     "stage": 1,
+     "status": "（ダミー）今の状況の説明（段階1）。",
+     "actions": [
+      {
+       "date": "2026-03-10",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "（ダミー）段階1にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）国会質問の出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      }
+     ],
+     "quote": "（ダミー）公約文書からの引用文。物価・税について。"
+    },
+    {
+     "id": "sanseito-chingin-1",
+     "theme": "chingin",
+     "text": "（ダミー）参政の賃金・経済成長の公約A",
+     "src": {
+      "title": "（ダミー）参政の選挙公約",
+      "url": "https://example.com/",
+      "page": "p.4"
+     },
+     "stage": 0,
+     "status": "（ダミー）今の状況の説明（段階0）。",
+     "actions": [],
+     "quote": "（ダミー）公約文書からの引用文。賃金・経済成長について。"
+    },
+    {
+     "id": "sanseito-chingin-2",
+     "theme": "chingin",
+     "text": "（ダミー）参政の賃金・経済成長の公約B",
+     "src": {
+      "title": "（ダミー）参政の選挙公約",
+      "url": "https://example.com/",
+      "page": "p.5"
+     },
+     "stage": 1,
+     "status": "（ダミー）今の状況の説明（段階1）。",
+     "actions": [
+      {
+       "date": "2026-04-22",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "（ダミー）段階1にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）国会質問の出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      }
+     ]
+    },
+    {
+     "id": "sanseito-kosodate-1",
+     "theme": "kosodate",
+     "text": "（ダミー）参政の子育て・教育の公約A",
+     "src": {
+      "title": "（ダミー）参政の選挙公約",
+      "url": "https://example.com/",
+      "page": "p.4"
+     },
+     "stage": 2,
+     "status": "（ダミー）今の状況の説明（段階2）。",
+     "actions": [
+      {
+       "date": "2026-03-10",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "（ダミー）段階1にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）国会質問の出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      },
+      {
+       "date": "2026-04-22",
+       "stage": 2,
+       "type": "法案提出",
+       "text": "（ダミー）段階2にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）法案提出の出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      }
+     ],
+     "quote": "（ダミー）公約文書からの引用文。子育て・教育について。"
+    },
+    {
+     "id": "sanseito-shakaihosho-1",
+     "theme": "shakaihosho",
+     "text": "（ダミー）参政の社会保障の公約A",
+     "src": {
+      "title": "（ダミー）参政の選挙公約",
+      "url": "https://example.com/",
+      "page": "p.4"
+     },
+     "stage": 1,
+     "status": "（ダミー）今の状況の説明（段階1）。",
+     "actions": [
+      {
+       "date": "2026-03-10",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "（ダミー）段階1にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）国会質問の出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      }
+     ],
+     "quote": "（ダミー）公約文書からの引用文。社会保障について。"
+    },
+    {
+     "id": "sanseito-shakaihosho-2",
+     "theme": "shakaihosho",
+     "text": "（ダミー）参政の社会保障の公約B",
+     "src": {
+      "title": "（ダミー）参政の選挙公約",
+      "url": "https://example.com/",
+      "page": "p.5"
+     },
+     "stage": 1,
+     "status": "（ダミー）今の状況の説明（段階1）。",
+     "actions": [
+      {
+       "date": "2026-04-22",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "（ダミー）段階1にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）国会質問の出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      }
+     ]
+    },
+    {
+     "id": "sanseito-anzenhosho-1",
+     "theme": "anzenhosho",
+     "text": "（ダミー）参政の外交・安全保障の公約A",
+     "src": {
+      "title": "（ダミー）参政の選挙公約",
+      "url": "https://example.com/",
+      "page": "p.4"
+     },
+     "stage": 2,
+     "status": "（ダミー）今の状況の説明（段階2）。",
+     "actions": [
+      {
+       "date": "2026-03-10",
+       "stage": 1,
+       "type": "国会質問",
+       "text": "（ダミー）段階1にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）国会質問の出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      },
+      {
+       "date": "2026-04-22",
+       "stage": 2,
+       "type": "法案提出",
+       "text": "（ダミー）段階2にあたる行動の説明。",
+       "src": {
+        "title": "（ダミー）法案提出の出典",
+        "site": "example.com",
+        "url": "https://example.com/"
+       }
+      }
+     ],
+     "quote": "（ダミー）公約文書からの引用文。外交・安全保障について。"
+    }
+   ]
+  }
+ ]
+}
