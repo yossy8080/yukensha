@@ -12,7 +12,7 @@
     {"url": "https://www.pref.miyagi.jp/release/release.xml", "kind": "rss", "label": "プレスリリース"}
   ]},
   {"id": "akita", "name": "秋田県", "site": "秋田県ホームページ", "home": "https://www.pref.akita.lg.jp/", "terms": "私的使用・引用など著作権法で認められた範囲を除き無断転載・転用不可（要約＋リンク、短い引用のみ）。フッターに記事・写真の無断転載禁止", "terms_url": "https://www.pref.akita.lg.jp/pages/about-copyright", "photo_ok": false, "note": "月別ページのIDは毎月変わるので、親ページの『令和N年度』の『M月』リンクから探す", "feeds": [
-    {"url": "{discovered}", "kind": "html", "label": "報道発表資料（月別ページ）", "parser": "dated", "link": "/pages/archive/\\d+", "start": "c-list--archive", "date_after": true,"discover": {"url": "https://www.pref.akita.lg.jp/pages/genre/11699", "start": "令和{fy_reiwa}年度", "text": "^{m}月$"}}
+    {"url": "{discovered}", "kind": "html", "label": "報道発表資料（月別ページ）", "parser": "dated", "link": "/pages/archive/\\d+", "start": "c-list--archive", "date_after": true,"discover": {"url": "https://www.pref.akita.lg.jp/pages/genre/11699", "start": "令和{fy_reiwa}年度", "until": "令和(?!{fy_reiwa}年度)\\d+年度", "text": "^{m}月$"}}
   ]},
   {"id": "yamagata", "name": "山形県", "site": "山形県ホームページ", "home": "https://www.pref.yamagata.jp/", "terms": "私的使用・引用など著作権法で認められた範囲を除き無断転載・転用不可（要約＋リンク、短い引用のみ）", "terms_url": "https://www.pref.yamagata.jp/kensei/shoukai/aboutthissite/mensekijikou.html", "photo_ok": false, "note": "", "feeds": [
     {"url": "https://www.pref.yamagata.jp/houdou/press.xml", "kind": "rss", "label": "報道発表"}
@@ -140,7 +140,7 @@
     {"url": "https://www.pref.kagoshima.jp/kensei/kisya/index.html", "kind": "html", "label": "記者発表資料（日付なし）", "parser": "links", "start": "<h1", "link": "^https://www\\.pref\\.kagoshima\\.jp/", "max_items": 15},
     {"url": "https://www.pref.kagoshima.jp/saishin/saishin.xml", "kind": "rss", "label": "最新情報", "exclude": "@noise"}
   ]},
-  {"id": "okinawa", "name": "沖縄県", "site": "沖縄県ホームページ", "home": "https://www.pref.okinawa.lg.jp/", "terms": "私的使用・引用など著作権法で認められた範囲を除き無断転載・転用不可（要約＋リンク、短い引用のみ）（サイトは無断の転用・引用不可と書くが、著作権法の引用の範囲にとどめる）", "terms_url": "https://www.pref.okinawa.lg.jp/about/1018114.html", "photo_ok": false, "note": "press_news.rss は空。報道発表は少ないので新着を絞り込んで使う。報道発表ページは年度ごとにURLが変わる（2026年度=/press/1039382/）", "feeds": [
+  {"id": "okinawa", "name": "沖縄県", "site": "沖縄県ホームページ", "home": "https://www.pref.okinawa.lg.jp/", "terms": "私的使用・引用など著作権法で認められた範囲を除き無断転載・転用不可（要約＋リンク、短い引用のみ）（サイトは無断の転用・引用不可と書くが、著作権法の引用の範囲にとどめる）", "terms_url": "https://www.pref.okinawa.lg.jp/about/1018114.html", "photo_ok": false, "note": "press_news.rss は空。報道発表は少ないので新着を絞り込んで使う。報道発表ページは年度ごとにURLが変わる（2026年度=/press/1039382/）→ 毎年4月に新しい年度のURLへ書き換える（古いままでもエラーにならないので注意）", "feeds": [
     {"url": "https://www.pref.okinawa.lg.jp/news.rss", "kind": "rss", "label": "新着更新情報", "exclude": "@noise"},
     {"url": "https://www.pref.okinawa.lg.jp/press/1039382/index.html", "kind": "html", "label": "2026年度報道発表（日付なし）", "parser": "links", "link": "/press/1039382/\\d+\\.html", "max_items": 5}
   ]}

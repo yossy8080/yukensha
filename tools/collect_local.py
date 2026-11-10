@@ -19,6 +19,7 @@ import datetime as dt
 import html
 import http.cookiejar
 import json
+import os
 import re
 import sys
 import time
@@ -39,10 +40,11 @@ TIMEOUT = 20
 INTERVAL = 1.0
 
 # 新着（全体）しかない県で落とすもの。feeds の "exclude": "@noise" で使う（"@noise|ほかの語" のように足せる）
-NOISE = ("入札|落札|開札|発注|見積|プロポーザル|指名停止|公募|募集|採用|任用|試験|求人|"
+# パブコメの「意見募集」は有権者に関係があるので残す（結果の公表は落とす）
+NOISE = ("入札|落札|開札|発注|見積|プロポーザル|指名停止|随意契約|業務委託|委託業務|施工監理|RFI|公募|(?<!意見)募集|採用|任用|試験|求人|"
          "イベント|講座|講演会|講習|セミナー|研修|教室|説明会|相談会|フェア|フェスタ|フェス|まつり|祭り|"
          "コンテスト|コンクール|展示|パネル展|企画展|ツアー|体験|ワークショップ|"
-         "パブリックコメント.*結果|意見募集.*結果|縦覧|県公報|譲渡動物|様式|申請書|よくある質問")
+         "パブリックコメント.*結果|意見募集.*結果|縦覧|県公報|譲渡|休診|様式|申請書|よくある質問|トップページ")
 
 
 class TimeUp(Exception):
@@ -290,7 +292,10 @@ def feed_urls(feed, months, fetcher, cache):
                 s = disc["start"].format(**v)
                 if s not in page:
                     continue
-                part = page[page.index(s):]
+                part = page[page.index(s) + len(s):]
+                if disc.get("until"):  # 次の年度の見出しの手前まで（今月がまだないとき去年の同じ月を拾わない）
+                    u = re.search(disc["until"].format(**v), part)
+                    part = part[:u.start()] if u else part
             text_re = re.compile(disc["text"].format(**v))
             for m in re.finditer(A_RE, part, re.S | re.I):
                 if text_re.search(clean(m.group(2))):
@@ -309,10 +314,10 @@ def match(pattern, s):
 
 
 def collect_pref(src, fetcher, cutoff, today, cache):
-    """1つの県の feeds を読む。戻り値: (候補, 失敗の一覧, 一覧の件数, 除外した件数)"""
+    """1つの県の feeds を読む。戻り値: (候補, 失敗の一覧, 注意の一覧, 一覧の件数, 除外した件数)"""
     months = months_in(cutoff, today)
     lo, hi = cutoff.isoformat(), (today + dt.timedelta(days=1)).isoformat()
-    out, errors, total, dropped = [], [], 0, 0
+    out, errors, notes, total, dropped = [], [], [], 0, 0
     for feed in src["feeds"]:
         parser = PARSERS[feed.get("parser") or feed["kind"]]
         try:
@@ -332,6 +337,8 @@ def collect_pref(src, fetcher, cutoff, today, cache):
                 continue
             if not items:
                 errors.append(f'{feed["label"]}: 0件（読み取れない・形が変わった？ {url}）')
+            elif len(items) >= 10 and all(lo <= it["date"] <= hi for it in items):
+                notes.append(f'{feed["label"]}: 一覧の{len(items)}件が全部期間内（もっと前の分は載っていない。取りこぼしがあるかも）')
             total += len(items)
             for it in items:
                 if it["date"] and not (lo <= it["date"] <= hi):
@@ -342,7 +349,23 @@ def collect_pref(src, fetcher, cutoff, today, cache):
                     continue
                 it["url"] = norm_url(it["url"])
                 out.append(dict(it, source_label=feed["label"]))
-    return out, errors, total, dropped
+    return out, errors, notes, total, dropped
+
+
+def write_json(path, data):
+    """途中で切れても壊れないように、一時ファイルに書いてから置き換える。"""
+    tmp = path.with_suffix(path.suffix + ".tmp")
+    tmp.write_text(json.dumps(data, ensure_ascii=False, indent=1) + "\n", encoding="utf-8", newline="\n")
+    os.replace(tmp, path)
+
+
+def read_json(path, default):
+    if not path.exists():
+        return default
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except ValueError as e:
+        sys.exit(f"{path.relative_to(ROOT).as_posix()} が壊れている（{e}）。直すか消してからもう一度")
 
 
 def short(e):
@@ -372,7 +395,8 @@ def main():
         if unknown:
             sys.exit(f"知らない id: {', '.join(sorted(unknown))}")
         sources = [s for s in sources if s["id"] in want]
-    seen = set(json.loads(SEEN.read_text(encoding="utf-8"))) if SEEN.exists() else set()
+    seen = set(read_json(SEEN, []))
+    old = read_json(CANDIDATES, [])
     today = dt.datetime.now(JST).date()
     cutoff = today - dt.timedelta(days=args.days)
     fetcher, cache = Fetcher(args.max_seconds), {}
@@ -382,14 +406,14 @@ def main():
     new, ok, failed = [], 0, []
     for src in sources:
         try:
-            items, errors, total, dropped = collect_pref(src, fetcher, cutoff, today, cache)
-        except TimeUp as e:
+            items, errors, notes, total, dropped = collect_pref(src, fetcher, cutoff, today, cache)
+        except Exception as e:  # 時間切れ・設定の書き間違いなど。その県だけ失敗にして次へ
             failed.append(src["name"])
-            say(f'{src["name"]}: 失敗（{e}）')
+            say(f'{src["name"]}: 失敗（{short(e) if isinstance(e, TimeUp) else e.__class__.__name__ + ": " + short(e)}）')
             continue
         fresh = []
         for it in items:
-            key = it.pop("key", it["url"])
+            key = it.pop("key", re.sub(r"^http://", "https://", it["url"]))  # http と https の同じ記事を1つに
             if key in seen:
                 continue
             seen.add(key)
@@ -399,6 +423,8 @@ def main():
         msg = f'{src["name"]}: 新着 {len(fresh)}（一覧 {total}件' + (f"・除外 {dropped}件" if dropped else "") + "）"
         if errors:
             msg += " / 失敗: " + " / ".join(errors)
+        if notes:
+            msg += " / 注意: " + " / ".join(notes)
         if errors and not total:
             failed.append(src["name"])
         else:
@@ -412,10 +438,9 @@ def main():
         + f" / リクエスト {fetcher.count}回・{time.monotonic() - started:.0f}秒")
     if not args.dry_run:
         DRAFTS.mkdir(exist_ok=True)
-        old = json.loads(CANDIDATES.read_text(encoding="utf-8")) if CANDIDATES.exists() else []
         merged = sorted(old + new, key=lambda x: x.get("date", ""), reverse=True)
-        CANDIDATES.write_text(json.dumps(merged, ensure_ascii=False, indent=1) + "\n", encoding="utf-8", newline="\n")
-        SEEN.write_text(json.dumps(sorted(seen), ensure_ascii=False) + "\n", encoding="utf-8", newline="\n")
+        write_json(CANDIDATES, merged)
+        write_json(SEEN, sorted(seen))
         say(f"→ {CANDIDATES.relative_to(ROOT).as_posix()}（未処理の候補 計{len(merged)}件）")
     if args.report:
         Path(args.report).write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
