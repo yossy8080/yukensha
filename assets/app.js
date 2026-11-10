@@ -2,7 +2,8 @@
    データ: data/sources.json（府省の一覧）, data/news.json（公開済みの記事）
    記事の形: {id, date, ministry, also[], featured, tags[], title, summary, points[], source_url, source_title, site,
              explain[{q, a}]（任意・はじめての人向けの背景）, refs[{title, site, url}]（任意・背景の説明に使った公式ページ）,
-             photos[{src, alt, credit, page_url, license, people, ok_license, ok_people, width?, height?}]（任意・写真。README の「写真」を参照）} */
+             photos[{src, alt, credit, page_url, license, people, ok_license, ok_people, width?, height?}]（任意・写真。README の「写真」を参照）}
+   地方の記事（data/local_news.json）は ministry / also の代わりに pref（都道府県id）/ pref_also[]。site は「〇〇県ホームページ」 */
 
 const Y = (() => {
   const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -42,11 +43,13 @@ const Y = (() => {
     return `<section class="explain" aria-label="背景の説明"><dl>${qa.map((x) => `<dt>${esc(x.q)}</dt><dd>${esc(x.a)}</dd>`).join("")}</dl></section>`;
   }
 
+  // 地方の記事（pref 欄がある）は都道府県名と local.html?p=… へのリンク。srcMap はそのとき都道府県の表（data/prefectures.json）
   function ministryLabel(it, srcMap) {
-    const ids = [it.ministry, ...(it.also || [])];
+    const local = !!it.pref;
+    const ids = local ? [it.pref, ...(it.pref_also || [])] : [it.ministry, ...(it.also || [])];
     return ids.map((id) => {
       const s = srcMap[id];
-      return s ? `<a class="kicker-ministry" href="ministries.html?m=${esc(id)}">${esc(s.name)}</a>` : "";
+      return s ? `<a class="kicker-ministry" href="${local ? "local.html?p=" : "ministries.html?m="}${esc(id)}">${esc(s.name)}</a>` : "";
     }).join("<span class='sep'>・</span>");
   }
 
