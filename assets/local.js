@@ -80,7 +80,7 @@ async function main() {
       panel.innerHTML = `
         <p class="lm-p-kicker">47都道府県</p>
         <h2 class="lm-p-name" id="lm-p-name" tabindex="-1">都道府県を選んでください</h2>
-        <p class="lm-p-lead">地図の県を押すか、下の一覧から選べます。光っている県に記事があります。</p>
+        <p class="lm-p-lead">地図の県を押すか、下の一覧から選べます。${top.length ? "光っている県に記事があります。" : ""}</p>
         ${top.length ? `<ul class="lm-chips">${top.map((p) => `<li><a href="${Y.esc(pageUrl(p.id))}" data-p="${Y.esc(p.id)}">${Y.esc(p.name)}<span class="lm-n">${count[p.id]}</span></a></li>`).join("")}</ul>`
           : `<p class="lm-empty">まだ記事がありません。これから少しずつ増やします。</p>`}`;
       return;

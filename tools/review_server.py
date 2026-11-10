@@ -7,9 +7,11 @@
 「公開する」を押すと:
   1. 選んだ下書きを data/news.json に追加（公開済みになる）
      すでに公開中の記事と同じ id の下書きは「書き直し」として、その記事を置きかえる
+     地方の下書き（"scope": "local" と "pref": 都道府県id）は data/local_news.json に入れる（news.json には入れない）
   2. 「公開しない」を選んだものは drafts/rejected.json に移す
   3. git にコミットする（記事が使っている写真 assets/photos/ も一緒に。GitHubとつながっていれば push もする）
 自分のPCの中だけで動き、外からはアクセスできません（127.0.0.1 のみ）。
+公開の振り分けの確認: python tools/check_review_local.py（一時フォルダのコピーで試す。本物の data/ には触らない）
 """
 import datetime as dt
 import json
@@ -20,6 +22,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 NEWS = ROOT / "data" / "news.json"
+LOCAL_NEWS = ROOT / "data" / "local_news.json"
+PREFECTURES = ROOT / "data" / "prefectures.json"
 DRAFTS = ROOT / "drafts" / "drafts.json"
 REJECTED = ROOT / "drafts" / "rejected.json"
 UNPUBLISHED = ROOT / "drafts" / "unpublished.json"
@@ -134,6 +138,41 @@ def git(*args):
         return 1, str(e)
 
 
+def is_local(d: dict) -> bool:
+    """地方（都道府県）の下書きか。"scope": "local" のものだけ（無ければ国の記事）。"""
+    return d.get("scope") == "local"
+
+
+def check_pref(d: dict, pref_ids: set):
+    """地方の下書きの都道府県 id（pref・pref_also）が data/prefectures.json にあるか。無ければ何も保存せずにエラー。"""
+    ids = [d.get("pref"), *(d.get("pref_also") or [])]
+    bad = [x for x in ids if x not in pref_ids]
+    if bad:
+        raise ValueError(f"地方の下書き {d['id']} の都道府県 id が正しくありません: {bad}（data/prefectures.json の id を使ってください）")
+
+
+def merge_published(items: list, published: list, now: str):
+    """公開する下書きを公開済みの一覧に入れる。同じ id は「書き直し」：元の記事を置きかえる（最初の公開日時は残す）。
+    items をその場で並べ替えて (new, updated) を返す。"""
+    pos = {n["id"]: i for i, n in enumerate(items)}
+    new, updated = 0, 0
+    for p in published:
+        if p["id"] in pos:
+            old = items[pos[p["id"]]]
+            if "photos" not in p and old.get("photos"):
+                p["photos"] = old["photos"]  # 書き直しに photos 欄が無ければ、公開中の写真（と確認の結果）を引き継ぐ
+            p["published_at"] = old.get("published_at", now)
+            p["updated_at"] = now
+            items[pos[p["id"]]] = p
+            updated += 1
+        else:
+            pos[p["id"]] = len(items)
+            items.append(p)
+            new += 1
+    items.sort(key=lambda n: (n["date"], n.get("published_at", "")), reverse=True)
+    return new, updated
+
+
 def publish(body: dict) -> dict:
     drafts = read(DRAFTS, [])
     news = read(NEWS, [])
@@ -142,9 +181,14 @@ def publish(body: dict) -> dict:
     now = dt.datetime.now(JST).isoformat(timespec="seconds")
 
     published, rejected, remaining = [], [], []
+    pref_ids = None
     for d in drafts:
         apply_edits(d, edits.get(d["id"], {}), need_file=d["id"] in approve)
         if d["id"] in approve:
+            if is_local(d):
+                if pref_ids is None:
+                    pref_ids = {p["id"] for p in read(PREFECTURES, [])}
+                check_pref(d, pref_ids)
             if "photos" in d:  # 公開する記事の写真は、ファイルがそろっているか確かめる（足りなければ何も保存しない）
                 apply_edits(d, {"photos": d["photos"]})
             d["published_at"] = now
@@ -155,25 +199,19 @@ def publish(body: dict) -> dict:
         else:
             remaining.append(d)
 
-    # 公開済みと同じ id の下書きは「書き直し」：元の記事を置きかえる（最初の公開日時は残す）
-    pos = {n["id"]: i for i, n in enumerate(news)}
-    new, updated = 0, 0
-    for p in published:
-        if p["id"] in pos:
-            old = news[pos[p["id"]]]
-            if "photos" not in p and old.get("photos"):
-                p["photos"] = old["photos"]  # 書き直しに photos 欄が無ければ、公開中の写真（と確認の結果）を引き継ぐ
-            p["published_at"] = old.get("published_at", now)
-            p["updated_at"] = now
-            news[pos[p["id"]]] = p
-            updated += 1
-        else:
-            pos[p["id"]] = len(news)
-            news.append(p)
-            new += 1
-    news.sort(key=lambda n: (n["date"], n.get("published_at", "")), reverse=True)
-    if published:  # 下書きの写真の確認だけを保存したときは、公開済みの記事には触らない
+    # 国の記事は data/news.json、地方の記事は data/local_news.json へ（下書きの写真の確認だけを保存したときは、公開済みの記事には触らない）
+    national = [p for p in published if not is_local(p)]
+    local = [p for p in published if is_local(p)]
+    new, updated = merge_published(news, national, now)
+    if national:
         write(NEWS, news)
+    lnew, lupdated = 0, 0
+    if local:
+        for p in local:
+            p.pop("scope", None)  # local_news.json に入っていること自体が「地方」の印
+        local_news = read(LOCAL_NEWS, [])
+        lnew, lupdated = merge_published(local_news, local, now)
+        write(LOCAL_NEWS, local_news)
     write(DRAFTS, remaining)
     if rejected:
         write(REJECTED, read(REJECTED, []) + rejected)
@@ -183,17 +221,24 @@ def publish(body: dict) -> dict:
         parts.append(f"{new}件公開")
     if updated:
         parts.append(f"{updated}件書き直し")
+    if lnew:
+        parts.append(f"地方{lnew}件公開")
+    if lupdated:
+        parts.append(f"地方{lupdated}件書き直し")
     msg = save_git("記事を" + "・".join(parts) + f"（{now[:10]}）") if parts else ""
-    return {"published": new, "updated": updated, "rejected": len(rejected), "remaining": len(remaining), "git": msg}
+    return {"published": new + lnew, "updated": updated + lupdated, "local_published": lnew, "local_updated": lupdated,
+            "rejected": len(rejected), "remaining": len(remaining), "git": msg}
 
 
 def save_git(message: str) -> str:
-    """data/news.json と、記事が使っている写真をコミットしてGitHubに送る。結果をやさしい日本語で返す。
-    写真は news.json のどれかの記事が使っているものだけ入れる（使っていない写真は git に入れない）。"""
+    """data/news.json・data/local_news.json と、記事が使っている写真をコミットしてGitHubに送る。結果をやさしい日本語で返す。
+    写真は news.json / local_news.json のどれかの記事が使っているものだけ入れる（使っていない写真は git に入れない）。"""
     if not (ROOT / ".git").exists():
         return ""
     git("add", "data/news.json")
-    photos = photo_files(read(NEWS, []))
+    if LOCAL_NEWS.exists():
+        git("add", "data/local_news.json")
+    photos = photo_files(read(NEWS, []) + read(LOCAL_NEWS, []))
     if photos:
         git("add", "--", *photos)
     code, out = git("commit", "-m", message)
@@ -236,14 +281,10 @@ def publish_opinion(body: dict) -> dict:
     return {"published": len(published), "rejected": rejected, "remaining": len(remaining), "git": msg}
 
 
-def manage(body: dict) -> dict:
-    """公開済みの記事を直す／非公開に戻す。"""
-    news = read(NEWS, [])
-    edits = body.get("edits", {})
-    unpublish = set(body.get("unpublish", []))
-    now = dt.datetime.now(JST).isoformat(timespec="seconds")
+def edit_list(items: list, edits: dict, unpublish: set, now: str):
+    """公開済みの一覧の記事を直す／非公開に戻す。(残す記事, 非公開にした記事, 直した数) を返す。"""
     edited, removed, keep = 0, [], []
-    for n in news:
+    for n in items:
         e = edits.get(n["id"])
         if e:
             apply_edits(n, e)
@@ -254,16 +295,38 @@ def manage(body: dict) -> dict:
             removed.append(n)
         else:
             keep.append(n)
-    write(NEWS, keep)
-    if removed:
-        write(UNPUBLISHED, read(UNPUBLISHED, []) + removed)
+    return keep, removed, edited
+
+
+def manage(body: dict) -> dict:
+    """公開済みの記事を直す／非公開に戻す。国の記事は edits / unpublish、地方の記事は local_edits / local_unpublish。"""
+    news = read(NEWS, [])
+    edits = body.get("edits", {})
+    unpublish = set(body.get("unpublish", []))
+    now = dt.datetime.now(JST).isoformat(timespec="seconds")
+    ledits = body.get("local_edits", {})
+    lunpublish = set(body.get("local_unpublish", []))
+    keep, removed, edited = edit_list(news, edits, unpublish, now)
+    if edits or unpublish or not (ledits or lunpublish):  # 地方の記事だけを直すときは news.json に触らない
+        write(NEWS, keep)
+    lkeep, lremoved, ledited = [], [], 0
+    if ledits or lunpublish:
+        lkeep, lremoved, ledited = edit_list(read(LOCAL_NEWS, []), ledits, lunpublish, now)
+        write(LOCAL_NEWS, lkeep)
+    if removed or lremoved:
+        write(UNPUBLISHED, read(UNPUBLISHED, []) + removed + lremoved)
     parts = []
     if edited:
         parts.append(f"{edited}件を修正")
     if removed:
         parts.append(f"{len(removed)}件を非公開")
+    if ledited:
+        parts.append(f"地方{ledited}件を修正")
+    if lremoved:
+        parts.append(f"地方{len(lremoved)}件を非公開")
     msg = save_git("公開済みの記事：" + "・".join(parts) + f"（{now[:10]}）") if parts else ""
-    return {"edited": edited, "unpublished": len(removed), "total": len(keep), "git": msg}
+    return {"edited": edited + ledited, "unpublished": len(removed) + len(lremoved), "total": len(keep),
+            "local_edited": ledited, "local_unpublished": len(lremoved), "git": msg}
 
 
 class Handler(SimpleHTTPRequestHandler):
@@ -296,6 +359,8 @@ class Handler(SimpleHTTPRequestHandler):
             self._json(read(OPINION_DRAFTS, []))
         elif self.path == "/api/news":
             self._json(read(NEWS, []))
+        elif self.path == "/api/local_news":
+            self._json(read(LOCAL_NEWS, []))
         elif self.path == "/api/config":
             self._json(read(ROOT / "data" / "config.json", {}))
         elif self.path.startswith("/drafts/") or self.path.startswith("/tools/") or self.path.startswith("/.git"):

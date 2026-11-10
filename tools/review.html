@@ -65,6 +65,7 @@
   .ph-state { font-weight: 700; }
   .ph[data-ok="1"] .ph-state { color: #7fd69a; }
   .ph[data-ok="0"] .ph-state { color: #f0b84a; }
+  .lc-badge { display: inline-block; margin: 0 6px 8px 0; padding: 0 8px; font-size: 12px; font-weight: 700; color: #04131a; background: #5eead4; }
   .ph-del { font: inherit; font-size: 13px; background: none; color: var(--text); border: 1px solid var(--rule); padding: 4px 12px; min-height: 36px; cursor: pointer; margin-top: 4px; }
 </style>
 </head>
@@ -98,10 +99,11 @@
   </section>
 
   <section class="panel" id="panel-news" hidden>
-    <p class="lead" style="margin-top:16px">いまサイトに出ている記事です。文章の修正、「国全体」に載せるかの切り替え、非公開に戻すことができます。非公開にした記事は消えずに、PCの中（drafts/unpublished.json）に残ります。</p>
+    <p class="lead" style="margin-top:16px">いまサイトに出ている記事です（国・地方）。文章の修正、「国全体」に載せるかの切り替え、非公開に戻すことができます。非公開にした記事は消えずに、PCの中（drafts/unpublished.json）に残ります。</p>
     <div class="filter">
       <input id="q" type="search" placeholder="見出し・要約で探す">
-      <select id="fm"><option value="">すべての省庁</option></select>
+      <select id="fs" aria-label="国・地方"><option value="">国・地方の両方</option><option value="nat">国</option><option value="local">地方</option></select>
+      <select id="fm"><option value="">すべての省庁・都道府県</option></select>
     </div>
     <div id="news"></div>
   </section>
@@ -117,12 +119,19 @@
 </main>
 <script src="/assets/app.js"></script>
 <script>
-let sources = {}, drafts = [], news = [], opDrafts = [], tab = "drafts";
+let sources = {}, prefs = {}, drafts = [], news = [], localNews = [], opDrafts = [], tab = "drafts";
 const ostate = {};  // オピニオン: id -> approve | reject | later
 const state = {};   // 下書き: id -> approve | reject | later
 const edits = {};   // 下書き: id -> {title, summary, explain, points, featured}
 const nstate = {};  // 公開済み: id -> keep | unpublish
 const nedits = {};  // 公開済み: id -> {...}
+const lstate = {};  // 公開済みの地方の記事（data/local_news.json）: id -> keep | unpublish
+const ledits = {};  // 公開済みの地方の記事: id -> {...}
+
+// 地方の記事（下書きは "scope": "local"、公開済みは local_news.json）：記事の上の名前は都道府県の表から
+const isLocal = (d) => d.scope === "local" || !!d.pref;
+const srcFor = (d) => (isLocal(d) ? prefs : sources);
+const localBadge = (d) => isLocal(d) ? `<p class="lc-badge">地方・${Y.esc(prefs[d.pref]?.name || d.pref || "都道府県が未設定")}</p>` : "";
 
 function editorHtml(d) {
   return `<div class="editor">
@@ -141,12 +150,15 @@ function parseExplain(text) {
   });
 }
 
-// 公開済みと同じ id の下書き＝「書き直し」（公開すると元の記事を置きかえる）
-function rewriteOf(id) { return news.find((n) => n.id === id); }
+// 公開済みと同じ id の下書き＝「書き直し」（公開すると元の記事を置きかえる）。地方の下書きは地方の公開済みの中で探す
+function rewriteOf(id) {
+  const d = drafts.find((x) => x.id === id);
+  return (d && isLocal(d) ? localNews : news).find((n) => n.id === id);
+}
 
 function rewriteHtml(pub) {
   // 下書きと同じ id が2つ並ばないよう、公開版の article からは id を外す
-  return `<details class="rw-now"><summary>いまの公開版を見る</summary>${Y.article(pub, sources).replace(/ id="[^"]*"/, "")}</details>`;
+  return `<details class="rw-now"><summary>いまの公開版を見る</summary>${Y.article(pub, srcFor(pub)).replace(/ id="[^"]*"/, "")}</details>`;
 }
 
 // 写真の確認欄（サイトに出るのは「ライセンスOK」かつ「人物なし／人物OK」の写真だけ）
@@ -174,34 +186,37 @@ function draftCard(d0) {
   const noPhoto = !(d.photos || []).some(Y.photoOk);
   return `<section class="draft" data-kind="draft" data-id="${Y.esc(d.id)}" data-state="${s}">
       <div class="controls">
-        ${noPhoto ? `<p class="ph-badge">写真なし</p>` : ""}
+        ${localBadge(d)}${noPhoto ? `<p class="ph-badge">写真なし</p>` : ""}
         <fieldset>
           <label><input type="radio" name="s-${d.id}" value="approve" ${s === "approve" ? "checked" : ""}> 公開する</label>
           <label><input type="radio" name="s-${d.id}" value="reject" ${s === "reject" ? "checked" : ""}> 公開しない</label>
           <label><input type="radio" name="s-${d.id}" value="later" ${s === "later" ? "checked" : ""}> あとで</label>
         </fieldset>
-        <label><input type="checkbox" class="feat" ${d.featured ? "checked" : ""}> 国全体のページにも載せる</label>
+        ${isLocal(d) ? "" : `<label><input type="checkbox" class="feat" ${d.featured ? "checked" : ""}> 国全体のページにも載せる</label>`}
         <p><button class="edit-btn" type="button">文章を直す</button></p>
       </div>
-      <div>${pub ? `<p class="rw-badge">書き直し（公開中の記事を置きかえ）</p>` : ""}${Y.article(d, sources)}${photosHtml(d)}${pub ? rewriteHtml(pub) : ""}${editorHtml(d)}</div>
+      <div>${pub ? `<p class="rw-badge">書き直し（公開中の記事を置きかえ）</p>` : ""}${Y.article(d, srcFor(d))}${photosHtml(d)}${pub ? rewriteHtml(pub) : ""}${editorHtml(d)}</div>
     </section>`;
 }
 
 function newsCard(n0) {
-  const n = { ...n0, ...(nedits[n0.id] || {}) }, s = nstate[n.id] || "keep";
-  const dirty = nedits[n.id] || s === "unpublish" ? 1 : 0;
+  const local = isLocal(n0), [nst, ned] = local ? [lstate, ledits] : [nstate, nedits];
+  const n = { ...n0, ...(ned[n0.id] || {}) }, s = nst[n.id] || "keep";
+  const dirty = ned[n.id] || s === "unpublish" ? 1 : 0;
   const pub = n0.published_at ? `公開：${n0.published_at.slice(5, 16).replace("T", " ")}` : "";
-  return `<section class="draft" data-kind="news" data-id="${Y.esc(n.id)}" data-state="${s}" data-dirty="${dirty}">
+  const live = local ? `local.html?p=${Y.esc(n.pref)}#a=${Y.esc(n.id)}` : `ministries.html?m=${Y.esc(n.ministry)}#${Y.esc(n.id)}`;
+  return `<section class="draft" data-kind="${local ? "lnews" : "news"}" data-id="${Y.esc(n.id)}" data-state="${s}" data-dirty="${dirty}">
       <div class="controls">
+        ${localBadge(n)}
         <fieldset>
           <label><input type="radio" name="n-${n.id}" value="keep" ${s === "keep" ? "checked" : ""}> 公開したまま</label>
           <label><input type="radio" name="n-${n.id}" value="unpublish" ${s === "unpublish" ? "checked" : ""}> 非公開に戻す</label>
         </fieldset>
-        <label><input type="checkbox" class="feat" ${n.featured ? "checked" : ""}> 国全体のページに載せる</label>
+        ${local ? "" : `<label><input type="checkbox" class="feat" ${n.featured ? "checked" : ""}> 国全体のページに載せる</label>`}
         <p><button class="edit-btn" type="button">文章を直す</button></p>
-        <p style="color:var(--muted);font-size:12px">${Y.esc(pub)}<br><a href="https://yossy8080.github.io/yukensha/ministries.html?m=${Y.esc(n.ministry)}#${Y.esc(n.id)}" target="_blank" rel="noopener">公開サイトで見る</a></p>
+        <p style="color:var(--muted);font-size:12px">${Y.esc(pub)}<br><a href="https://yossy8080.github.io/yukensha/${live}" target="_blank" rel="noopener">公開サイトで見る</a></p>
       </div>
-      <div>${Y.article(n, sources)}${photosHtml(n)}${editorHtml(n)}</div>
+      <div>${Y.article(n, srcFor(n))}${photosHtml(n)}${editorHtml(n)}</div>
     </section>`;
 }
 
@@ -215,8 +230,9 @@ function renderDrafts() {
 }
 
 function renderNews() {
-  const q = document.getElementById("q").value.trim(), fm = document.getElementById("fm").value;
-  const list = news.filter((n) => (!fm || n.ministry === fm || (n.also || []).includes(fm)) &&
+  const q = document.getElementById("q").value.trim(), fm = document.getElementById("fm").value, fs = document.getElementById("fs").value;
+  const all = fs === "nat" ? news : fs === "local" ? localNews : [...news, ...localNews].sort(Y.byDateDesc);
+  const list = all.filter((n) => (!fm || n.ministry === fm || (n.also || []).includes(fm) || n.pref === fm || (n.pref_also || []).includes(fm)) &&
     (!q || (n.title + n.summary + (n.points || []).join("")).includes(q)));
   document.getElementById("news").innerHTML = !list.length ? Y.empty("該当する記事はありません。") : list.map(newsCard).join("");
 }
@@ -230,12 +246,12 @@ function photosOf(item, eds) {
 // 1つの記事の写真を変えて、そのカードだけ描き直す
 function changePhotos(sec, fn) {
   const id = sec.dataset.id, [, eds] = store(sec);
-  const item = (sec.dataset.kind === "news" ? news : drafts).find((x) => x.id === id);
+  const item = ({ news, lnews: localNews }[sec.dataset.kind] || drafts).find((x) => x.id === id);
   if (!item) return;
   const ps = photosOf(item, eds);
   fn(ps);
   eds[id] = { ...(eds[id] || {}), photos: ps };
-  sec.outerHTML = sec.dataset.kind === "news" ? newsCard(item) : draftCard(item);
+  sec.outerHTML = sec.dataset.kind === "draft" ? draftCard(item) : newsCard(item);
   tally();
 }
 
@@ -266,6 +282,7 @@ async function renderStats() {
   document.getElementById("stats").innerHTML = `
     <div class="stats">
       <div><b>${news.length}</b><span>公開中の記事</span></div>
+      <div><b>${localNews.length}</b><span>公開中の地方の記事</span></div>
       <div><b>${featured}</b><span>国全体に載せている記事</span></div>
       <div><b>${drafts.length}</b><span>確認待ちの下書き</span></div>
       <div><b>${days}</b><span>記事がある日数</span></div>
@@ -279,9 +296,10 @@ function tally() {
   let a = 0, r = 0, u = 0;
   Object.values(state).forEach((x) => { if (x === "approve") a++; if (x === "reject") r++; });
   Object.values(nstate).forEach((x) => { if (x === "unpublish") u++; });
+  Object.values(lstate).forEach((x) => { if (x === "unpublish") u++; });
   let oa = 0, orj = 0;
   Object.values(ostate).forEach((x) => { if (x === "approve") oa++; if (x === "reject") orj++; });
-  const e = Object.keys(nedits).length, parts = [];
+  const e = Object.keys(nedits).length + Object.keys(ledits).length, parts = [];
   if (oa) parts.push(`オピニオン公開 ${oa}件`); if (orj) parts.push(`オピニオン公開しない ${orj}件`);
   const rw = Object.keys(state).filter((k) => state[k] === "approve" && rewriteOf(k)).length;
   if (a) parts.push(`公開する ${a}件` + (rw ? `（うち書き直し ${rw}件：公開中の記事を置きかえ）` : "")); if (r) parts.push(`公開しない ${r}件`);
@@ -292,12 +310,12 @@ function tally() {
   document.getElementById("tally").textContent = parts.length ? "変更：" + parts.join("／") : "変更はまだありません";
   document.getElementById("go").disabled = !parts.length;
   document.getElementById("n-drafts").textContent = drafts.length;
-  document.getElementById("n-news").textContent = news.length;
+  document.getElementById("n-news").textContent = news.length + localNews.length;
   document.getElementById("n-op").textContent = opDrafts.length || "";
 }
 
 function render() { renderDrafts(); renderNews(); renderOpinion(); if (tab === "stats") renderStats(); tally(); }
-function store(sec) { return sec.dataset.kind === "news" ? [nstate, nedits] : sec.dataset.kind === "opinion" ? [ostate, {}] : [state, edits]; }
+function store(sec) { return { news: [nstate, nedits], lnews: [lstate, ledits], opinion: [ostate, {}] }[sec.dataset.kind] || [state, edits]; }
 
 document.addEventListener("change", (e) => {
   const sec = e.target.closest(".draft"); if (!sec) return;
@@ -311,7 +329,7 @@ document.addEventListener("change", (e) => {
   const id = sec.dataset.id, [st, ed] = store(sec);
   if (e.target.type === "radio") { st[id] = e.target.value; sec.dataset.state = e.target.value; }
   if (e.target.classList.contains("feat")) ed[id] = { ...(ed[id] || {}), featured: e.target.checked };
-  if (sec.dataset.kind === "news") sec.dataset.dirty = nedits[id] || nstate[id] === "unpublish" ? 1 : 0;
+  if (sec.dataset.kind === "news" || sec.dataset.kind === "lnews") sec.dataset.dirty = ed[id] || st[id] === "unpublish" ? 1 : 0;
   tally();
 });
 document.addEventListener("input", (e) => {
@@ -321,7 +339,7 @@ document.addEventListener("input", (e) => {
   if (e.target.classList.contains("e-summary")) ed.summary = e.target.value;
   if (e.target.classList.contains("e-points")) ed.points = e.target.value.split("\n").map((x) => x.trim()).filter(Boolean);
   if (e.target.classList.contains("e-explain")) ed.explain = parseExplain(e.target.value);
-  if (sec.dataset.kind === "news") sec.dataset.dirty = 1;
+  if (sec.dataset.kind === "news" || sec.dataset.kind === "lnews") sec.dataset.dirty = 1;
   tally();
 });
 document.addEventListener("click", (e) => {
@@ -354,6 +372,7 @@ document.addEventListener("click", (e) => {
 });
 document.getElementById("q").addEventListener("input", renderNews);
 document.getElementById("fm").addEventListener("change", renderNews);
+document.getElementById("fs").addEventListener("change", renderNews);
 
 document.getElementById("go").addEventListener("click", async () => {
   if (!confirm(document.getElementById("tally").textContent + "\nこの内容で保存して、公開サイトに反映します。よろしいですか？")) return;
@@ -364,13 +383,16 @@ document.getElementById("go").addEventListener("click", async () => {
   const reject = Object.keys(state).filter((k) => state[k] === "reject");
   if (approve.length || reject.length || Object.keys(edits).length) {
     const j = await post("/api/publish", { approve, reject, edits });
-    out.push(j.error ? "エラー：" + j.error : !j.published && !j.updated && !j.rejected ? `下書きの変更を保存しました（下書き${j.remaining}件）。` : `下書き：${j.published}件を公開、${j.updated ? `${j.updated}件を書き直し、` : ""}${j.rejected}件を公開しない（残り${j.remaining}件）。${j.git || ""}`);
+    out.push(j.error ? "エラー：" + j.error : !j.published && !j.updated && !j.rejected ? `下書きの変更を保存しました（下書き${j.remaining}件）。` : `下書き：${j.published}件を公開${j.local_published ? `（うち地方${j.local_published}件）` : ""}、${j.updated ? `${j.updated}件を書き直し、` : ""}${j.rejected}件を公開しない（残り${j.remaining}件）。${j.git || ""}`);
   }
   // 書き直しを公開した記事は、公開済みタブでの変更を送らない（置きかえた新しい版に古い変更がかぶさるのを防ぐ）
-  approve.filter(rewriteOf).forEach((k) => { delete nstate[k]; delete nedits[k]; });
+  approve.filter(rewriteOf).forEach((k) => { delete nstate[k]; delete nedits[k]; delete lstate[k]; delete ledits[k]; });
   const unpublish = Object.keys(nstate).filter((k) => nstate[k] === "unpublish");
-  if (unpublish.length || Object.keys(nedits).length) {
-    const j = await post("/api/manage", { unpublish, edits: nedits });
+  const local_unpublish = Object.keys(lstate).filter((k) => lstate[k] === "unpublish");
+  if (unpublish.length || Object.keys(nedits).length || local_unpublish.length || Object.keys(ledits).length) {
+    // 地方の記事の変更があるときだけ local_* を送る（国の記事だけのときは今までと同じ中身）
+    const local = local_unpublish.length || Object.keys(ledits).length ? { local_unpublish, local_edits: ledits } : {};
+    const j = await post("/api/manage", { unpublish, edits: nedits, ...local });
     out.push(j.error ? "エラー：" + j.error : `公開済み：${j.edited}件を修正、${j.unpublished}件を非公開に戻しました。${j.git || ""}`);
   }
   const oapprove = Object.keys(ostate).filter((k) => ostate[k] === "approve");
@@ -380,16 +402,24 @@ document.getElementById("go").addEventListener("click", async () => {
     out.push(j.error ? "エラー：" + j.error : `オピニオン：${j.published}件を公開、${j.rejected}件を公開しない。${j.git || ""}`);
   }
   document.getElementById("msg").innerHTML = `<div class="msg">${out.map(Y.esc).join("<br>")} <a href="https://yossy8080.github.io/yukensha/" target="_blank" rel="noopener">公開サイトを見る</a></div>`;
-  [state, edits, nstate, nedits, ostate].forEach((o) => Object.keys(o).forEach((k) => delete o[k]));
+  [state, edits, nstate, nedits, lstate, ledits, ostate].forEach((o) => Object.keys(o).forEach((k) => delete o[k]));
   btn.textContent = "保存して公開サイトに反映";
   await init();
 });
 
 async function init() {
-  const [s, d, n, o] = await Promise.all([Y.load("/data/sources.json"), Y.load("/api/drafts"), Y.load("/api/news"), Y.load("/api/opinion_drafts")]);
+  const [s, d, n, o, ln, pf] = await Promise.all([Y.load("/data/sources.json"), Y.load("/api/drafts"), Y.load("/api/news"), Y.load("/api/opinion_drafts"),
+    Y.load("/api/local_news").catch(() => []), Y.load("/data/prefectures.json").catch(() => [])]);
   sources = Object.fromEntries(s.map((x) => [x.id, x])); drafts = d; news = n.sort(Y.byDateDesc); opDrafts = o;
+  localNews = ln.sort(Y.byDateDesc); prefs = Object.fromEntries(pf.map((x) => [x.id, x]));
   const fm = document.getElementById("fm");
-  if (fm.options.length === 1) Y.visible(s).forEach((x) => fm.add(new Option(x.name, x.id)));
+  if (fm.options.length === 1) {
+    const g1 = document.createElement("optgroup"), g2 = document.createElement("optgroup");
+    g1.label = "府省"; g2.label = "都道府県";
+    Y.visible(s).forEach((x) => g1.appendChild(new Option(x.name, x.id)));
+    pf.forEach((x) => g2.appendChild(new Option(x.name, x.id)));
+    fm.append(g1, g2);
+  }
   render();
 }
 init();
