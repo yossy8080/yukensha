@@ -189,7 +189,7 @@ def main(src, dst):
     m = 0.25
     box = [round((min(xs) - m) * SCALE), round((min(ys) - m) * SCALE), round((max(xs) + m) * SCALE), round((max(ys) + m) * SCALE)]
     data = {
-        "credit": "国土数値情報（行政区域データ）（国土交通省）をもとに、スマートニュース メディア研究所「japan-topography」が簡素化したものを、有権者がさらに加工",
+        "credit": "「国土数値情報（行政区域データ）」（国土交通省）（https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-N03-2021.html）をもとに有権者が加工して作成（簡素化：スマートニュース メディア研究所「japan-topography」）",
         "scale": SCALE, "lon0": LON0, "lat0": LAT0,
         "inset": {"box": box, "dx": round(INSET_DX * SCALE), "dy": round(INSET_DY * SCALE)},
         "prefs": {p["id"]: out[p["id"]] for p in prefs},

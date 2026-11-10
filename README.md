@@ -7,9 +7,10 @@
 2. Hermes が大切なものを選び、元のページを読んで要約 → `drafts/drafts.json`（下書き）
 3. Roy が「確認ページを開く.cmd」をダブルクリック → http://localhost:5600/review で「公開する／公開しない」を選ぶ
 4. 公開したものだけ `data/news.json` に入り、サイトに出る（gitにコミット。GitHubとつなげば自動で公開）
+   - 地方の下書き（`"scope": "local"`）は `data/local_news.json` に入る（下の「地方（都道府県）」を参照）
 
 ## フォルダ
-- `index.html` トップ（夜の海と天の川のスクロールページ。府省ごとの章 → 物体をひらくと記事ビュー） / `ministries.html` 省庁別 / `local.html` 地方（東京都・準備中） / `pledges.html` 公約チェッカー（直近の衆院選で各党が約束したことと、その後の行動・達成率。`data/pledges.json` から `assets/pledges.js` + `pledges.css` で組み立てる。`#p=公約id` で詳細を直接開ける。3D の配色は `?v=a/b/c` の試作） / `opinion.html` オピニオン（準備中） / `about.html` このサイトについて
+- `index.html` トップ（夜の海と天の川のスクロールページ。府省ごとの章 → 物体をひらくと記事ビュー） / `ministries.html` 省庁別 / `local.html` 地方（3D の日本地図から都道府県を選ぶと、その県の記事が並ぶ。`?p=県id` でその県を直接開ける。下の「地方（都道府県）」を参照） / `pledges.html` 公約チェッカー（直近の衆院選で各党が約束したことと、その後の行動・達成率。`data/pledges.json` から `assets/pledges.js` + `pledges.css` で組み立てる。`#p=公約id` で詳細を直接開ける。3D の配色は `?v=a/b/c` の試作） / `opinion.html` オピニオン（準備中） / `about.html` このサイトについて
   - `assets/home.js` + `home.css` トップの組み立て・スクロール演出 / `assets/hall.js` + `hall.css` 記事ビュー（`index.html#m=府省id`、`#a=記事id` で直接開ける）
   - 3D（Three.js r170 を CDN から。WebGL2 が使えない・読み込みに失敗・「動きを減らす」設定のときは CSS の明朝1文字のエンブレムに切り替わる）
     - `assets/scene3d.js` 全体のまとめ（カメラ・スクロールとの対応・クリック判定）
@@ -23,7 +24,25 @@
 - `data/news.json` 公開済みの記事
 - `drafts/` 下書き・候補（gitに入れない）
 - `assets/photos/` 記事の写真（下の「写真」を参照）
-- `tools/collect.py` 新着集め / `tools/fetch_page.py` 本文の取り出し / `tools/fetch_photo.py` 写真の取り込み / `tools/review_server.py` + `tools/review.html` 確認ページ
+- `tools/collect.py` 新着集め / `tools/fetch_page.py` 本文の取り出し / `tools/fetch_photo.py` 写真の取り込み / `tools/review_server.py` + `tools/review.html` 確認ページ（`python tools/check_review_local.py` で地方の振り分けを一時フォルダのコピーで確認できる）
+
+## 地方（都道府県）
+`local.html` は「日本地図（3D）→ 都道府県を押す → その県の記事の一覧 → 記事」のページ。記事を開くと国の記事と同じリーダー（`assets/hall.js`、`#a=記事id`）で、用語ポップアップ・写真・背景の説明・出典もそのまま出る。
+- `data/prefectures.json` 47都道府県の表：`id`（ローマ字。hokkaido, aomori, … tokyo, … okinawa）・`code`（JIS の 01〜47）・`name`（東京都）・`name_short`（東京）・`region`（北海道・東北／関東／中部／近畿／中国／四国／九州・沖縄）
+- `data/local_news.json` 公開済みの地方の記事（最初は `[]`）。形は `data/news.json` と同じで、`ministry` の代わりに `pref`（都道府県id）、`also` の代わりに `pref_also: []`（任意。ほかの県にも出す）、`site` は「〇〇県ホームページ」
+- `data/pref_sources.json` 47都道府県の公式サイト：`{id, name, site, home, feeds: [], type, note}`（`home` は公式トップの URL を確認済み。`feeds`・`type` はあとで入れる）
+- 下書き：`drafts/drafts.json` に `"scope": "local"` と `"pref": "tokyo"` を付けて入れる。管理ページでは「地方・東京都」の印が付き、公開すると `data/local_news.json` に入る（`news.json` には入らない）。都道府県 id が間違っていると何も保存せずにエラーになる。公開済みタブは「国・地方」で絞り込める
+- 見本：`local.html?sample=1` のときだけ `drafts/local_sample.json` の【サンプル】の記事も出す（drafts/ は git に入らないので公開サイトには出ない）
+- 3D：`assets/map3d.js`（three.js r170 を CDN から。47都道府県を1つの形にまとめて描く）・`assets/prefmap.js`（地図データの読み込みと、押した点がどの県かの判定）・`assets/local.js` + `local.css`（ページの組み立て）。WebGL2 が使えないときは平らな SVG の地図、下に 47都道府県の一覧（キーボード・読み上げ用）
+- `sitemap.xml` には今は `local.html` だけ。記事のある県が増えたら `local.html?p=県id` を足す（ページを開くと canonical も `?p=` 付きに変わる）
+
+### 地図のデータとクレジット
+- `data/prefmap.json`（約65KB）は `python tools/make_prefmap.py 元のTopoJSON data/prefmap.json` で作る。元は [スマートニュース メディア研究所「japan-topography」](https://github.com/smartnews-smri/japan-topography) の都道府県ファイル（`data/municipality/topojson/s0010/prefectures.json`）で、これは国土交通省「国土数値情報（行政区域データ）」（2021年）を簡素化したもの
+- 国土数値情報の行政区域データ（2021年）はオープンデータ（政府標準利用規約2.0版。CC BY 4.0 互換、商用も可）。加工したことと出典を書く決まりなので、`local.html` のフッターに次のとおり書いている：
+  「地図：「国土数値情報（行政区域データ）」（国土交通省）（https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-N03-2021.html）をもとに有権者が加工して作成」
+  （国が作ったように見える書き方はしない。japan-topography 側はクレジット不要だが、念のため名前を出している）
+- 加工の内容：境界線をさらに簡単にした・とても小さい島を省いた・東京都の小笠原諸島など北緯30度より南の島を省いた・沖縄県と奄美（鹿児島県）の島々を左上の枠に移した
+- 県章などの公式マークは使わない
 
 ## トップの 3D の物体（`data/sources.json` の `model`）
 公式ロゴ・紋章（桐紋など）と赤十字のマークは権利の問題があるので使わず、その府省を代表する「物」で表しています。
