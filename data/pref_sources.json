@@ -1,0 +1,147 @@
+[
+  {"id": "hokkaido", "name": "北海道", "site": "北海道ホームページ", "home": "https://www.pref.hokkaido.lg.jp/", "terms": "『CC-BY』表示のあるページはCC BY 4.0で再利用可（出典表示）。表示のないページは引用の範囲のみ", "terms_url": "https://www.pref.hokkaido.lg.jp/kz/dxs/opendata/hokkaido_od_kiyaku.html", "photo_ok": true, "note": "写真はCC-BY表示のあるページで、肖像など第三者の権利を含まないものだけ。報道発表はPDF直リンク（本庁分のみ）", "feeds": [
+    {"url": "https://www.pref.hokkaido.lg.jp/ss/tkk/hodo/pressrelease/top.html", "kind": "html", "label": "報道発表資料（本庁）", "parser": "dated", "link": "/fs/", "start": "報道発表資料【"}
+  ]},
+  {"id": "aomori", "name": "青森県", "site": "青森県ホームページ", "home": "https://www.pref.aomori.lg.jp/", "terms": "私的使用・引用など著作権法で認められた範囲を除き無断転載・転用不可（要約＋リンク、短い引用のみ）。写真の利用は担当課へ許可申請", "terms_url": "https://www.pref.aomori.lg.jp/contents/copyright.html", "photo_ok": false, "note": "日付は各行の直前のHTMLコメント <!-- YYYY-MM-DD -->", "feeds": [
+    {"url": "https://www.pref.aomori.lg.jp/release/", "kind": "html", "label": "プレスリリース", "parser": "dated", "link": "/release/\\d{4}/\\d+\\.html"}
+  ]},
+  {"id": "iwate", "name": "岩手県", "site": "岩手県ホームページ", "home": "https://www.pref.iwate.jp/", "terms": "私的使用・引用など著作権法で認められた範囲を除き無断転載・転用不可（要約＋リンク、短い引用のみ）", "terms_url": "https://www.pref.iwate.jp/about/link.html", "photo_ok": false, "note": "全庁の報道発表一覧がないので新着から入札・募集・イベント等を除外して使う。知事会見は /governor/kaiken/", "feeds": [
+    {"url": "https://www.pref.iwate.jp/news.rss", "kind": "rss", "label": "新着更新情報（全体）", "exclude": "@noise"}
+  ]},
+  {"id": "miyagi", "name": "宮城県", "site": "宮城県ホームページ", "home": "https://www.pref.miyagi.jp/", "terms": "私的使用・引用など著作権法で認められた範囲を除き無断転載・転用不可（要約＋リンク、短い引用のみ）", "terms_url": "https://www.pref.miyagi.jp/soshiki/kohou/site-riyou.html", "photo_ok": false, "note": "RSSは10件（約4日分）なので毎日取る", "feeds": [
+    {"url": "https://www.pref.miyagi.jp/release/release.xml", "kind": "rss", "label": "プレスリリース"}
+  ]},
+  {"id": "akita", "name": "秋田県", "site": "秋田県ホームページ", "home": "https://www.pref.akita.lg.jp/", "terms": "私的使用・引用など著作権法で認められた範囲を除き無断転載・転用不可（要約＋リンク、短い引用のみ）。フッターに記事・写真の無断転載禁止", "terms_url": "https://www.pref.akita.lg.jp/pages/about-copyright", "photo_ok": false, "note": "月別ページのIDは毎月変わるので、親ページの『令和N年度』の『M月』リンクから探す", "feeds": [
+    {"url": "{discovered}", "kind": "html", "label": "報道発表資料（月別ページ）", "parser": "dated", "link": "/pages/archive/\\d+", "start": "c-list--archive", "date_after": true,"discover": {"url": "https://www.pref.akita.lg.jp/pages/genre/11699", "start": "令和{fy_reiwa}年度", "until": "令和(?!{fy_reiwa}年度)\\d+年度", "text": "^{m}月$"}}
+  ]},
+  {"id": "yamagata", "name": "山形県", "site": "山形県ホームページ", "home": "https://www.pref.yamagata.jp/", "terms": "私的使用・引用など著作権法で認められた範囲を除き無断転載・転用不可（要約＋リンク、短い引用のみ）", "terms_url": "https://www.pref.yamagata.jp/kensei/shoukai/aboutthissite/mensekijikou.html", "photo_ok": false, "note": "", "feeds": [
+    {"url": "https://www.pref.yamagata.jp/houdou/press.xml", "kind": "rss", "label": "報道発表"}
+  ]},
+  {"id": "fukushima", "name": "福島県", "site": "福島県ホームページ", "home": "https://www.pref.fukushima.lg.jp/", "terms": "私的使用・引用など著作権法で認められた範囲を除き無断転載・転用不可（要約＋リンク、短い引用のみ）", "terms_url": "https://www.pref.fukushima.lg.jp/sec/01010d/koho-chosakuken.html", "photo_ok": false, "note": "全庁の報道発表一覧がない（sub8.xml は放射線検査の更新が中心）ので新着を絞り込んで使う", "feeds": [
+    {"url": "https://www.pref.fukushima.lg.jp/rss/10/list1.xml", "kind": "rss", "label": "新着情報（全体）", "exclude": "@noise"}
+  ]},
+  {"id": "ibaraki", "name": "茨城県", "site": "茨城県ホームページ", "home": "https://www.pref.ibaraki.jp/", "terms": "私的使用・引用など著作権法で認められた範囲を除き無断転載・転用不可（要約＋リンク、短い引用のみ）", "terms_url": "https://www.pref.ibaraki.jp/bugai/koho/kenmin/misc/shitepolicy.html", "photo_ok": false, "note": "月別ページ …/2203/YYMMtop.html。本文は主にPDF", "feeds": [
+    {"url": "https://www.pref.ibaraki.jp/somu/hodo/hodo/pressrelease/hodohappyoushiryou/2203/{yy}{mm}top.html", "kind": "html", "label": "報道発表資料（月別ページ）", "parser": "dated", "start": "tmp_contents", "link": "/documents/|\\.html", "skip": "^\\S{2,15}(課|室|局|センター|事務所)$"}
+  ]},
+  {"id": "tochigi", "name": "栃木県", "site": "栃木県ホームページ", "home": "https://www.pref.tochigi.lg.jp/", "terms": "私的使用・引用など著作権法で認められた範囲を除き無断転載・転用不可（要約＋リンク、短い引用のみ）", "terms_url": "https://www.pref.tochigi.lg.jp/kensei/kouhou/hp/chosakuken/index.html", "photo_ok": false, "note": "RSSは『再配布・サイト構築などは固くお断り』（/c05/rss_haisin.html）なので使わない。HTML一覧から見出しとリンクだけ拾い、要約は自分の言葉で", "feeds": [
+    {"url": "https://www.pref.tochigi.lg.jp/houdou/index.html", "kind": "html", "label": "報道発表情報一覧（当月）", "parser": "dated", "start": "tmp_contents", "link": "/houdou/"}
+  ]},
+  {"id": "gunma", "name": "群馬県", "site": "群馬県ホームページ", "home": "https://www.pref.gunma.jp/", "terms": "私的使用・引用など著作権法で認められた範囲を除き無断転載・転用不可（要約＋リンク、短い引用のみ）", "terms_url": "https://www.pref.gunma.jp/page/15257.html", "photo_ok": false, "note": "タイトル末尾に（担当課）", "feeds": [
+    {"url": "https://www.pref.gunma.jp/rss/10/list5.xml", "kind": "rss", "label": "報道提供資料"}
+  ]},
+  {"id": "saitama", "name": "埼玉県", "site": "埼玉県ホームページ", "home": "https://www.pref.saitama.lg.jp/", "terms": "私的使用・引用など著作権法で認められた範囲を除き無断転載・転用不可（要約＋リンク、短い引用のみ）", "terms_url": "https://www.pref.saitama.lg.jp/a0301/tyosaku-rinku.html", "photo_ok": false, "note": "RSSは20件（約3日分）なので毎日取る", "feeds": [
+    {"url": "https://www.pref.saitama.lg.jp/news/news.xml", "kind": "rss", "label": "県政ニュース（報道発表）"}
+  ]},
+  {"id": "chiba", "name": "千葉県", "site": "千葉県ホームページ", "home": "https://www.pref.chiba.lg.jp/", "terms": "私的使用・引用など著作権法で認められた範囲を除き無断転載・転用不可（要約＋リンク、短い引用のみ）", "terms_url": "https://www.pref.chiba.lg.jp/homepage/about-site/link.html", "photo_ok": false, "note": "", "feeds": [
+    {"url": "https://www.pref.chiba.lg.jp/cate/kt/kouhou/houdou/ichiran/index.html", "kind": "html", "label": "報道発表一覧", "parser": "dated", "start": "list_table"}
+  ]},
+  {"id": "tokyo", "name": "東京都", "site": "東京都ホームページ", "home": "https://www.metro.tokyo.lg.jp/", "terms": "私的使用・引用など著作権法で認められた範囲を除き無断転載・転用不可（要約＋リンク、短い引用のみ）。リンクは原則自由", "terms_url": "https://www.metro.tokyo.lg.jp/policy/chosakuken", "photo_ok": false, "note": "RSSを使った再配布・サイト構築は事前申請が必要（/policy/rss）なので使わない。HTML一覧（日付はURLの8桁）", "feeds": [
+    {"url": "https://www.metro.tokyo.lg.jp/information/press", "kind": "html", "label": "報道発表一覧", "parser": "dated", "link": "/information/press/\\d{4}/\\d{2}/\\d{8}\\d+$", "date_from_url": "/(\\d{8})\\d+$"}
+  ]},
+  {"id": "kanagawa", "name": "神奈川県", "site": "神奈川県ホームページ", "home": "https://www.pref.kanagawa.jp/", "terms": "引用など著作権法の範囲で利用可（出典記載）。転載など二次利用は所管課へ事前問合せ", "terms_url": "https://www.pref.kanagawa.jp/master/sitepolicy.html", "photo_ok": false, "note": "URLの年は年度（4月で切替）", "feeds": [
+    {"url": "https://www.pref.kanagawa.jp/prs/list-{fy}-1-1.html", "kind": "html", "label": "記者発表（年度一覧）", "parser": "dated", "start": "kisya_timeline", "link": "/docs/.+/prs/"}
+  ]},
+  {"id": "niigata", "name": "新潟県", "site": "新潟県ホームページ", "home": "https://www.pref.niigata.lg.jp/", "terms": "オープンデータ利用規約で個別ページの著作物はCC BY 4.0（最上段の写真・バナー・イラストと第三者の著作物を除く）", "terms_url": "https://www.pref.niigata.lg.jp/site/userguide/chosakuken.html", "photo_ok": true, "note": "CC BY 4.0 の根拠はオープンデータ利用規約（od-kiyaku.html）。写真はページ本文のもので第三者の権利がないものだけ（ヘッダー写真は不可）。著作権ページの記述は厳しいので、迷ったら使わない。RSSは更新日順で古いページの再更新も入る", "feeds": [
+    {"url": "https://www.pref.niigata.lg.jp/rss/10/list2.xml", "kind": "rss", "label": "報道発表資料"}
+  ]},
+  {"id": "toyama", "name": "富山県", "site": "富山県ホームページ", "home": "https://www.pref.toyama.jp/", "terms": "私的使用・引用など著作権法で認められた範囲を除き無断転載・転用不可（要約＋リンク、短い引用のみ）", "terms_url": "https://www.pref.toyama.jp/1021/kensei/kouhou/0.html", "photo_ok": false, "note": "RSSは10件なので毎日取る（HTML一覧 /kensei/kouhou/houdou/index.html もある）", "feeds": [
+    {"url": "https://www.pref.toyama.jp/kensei/kouhou/houdou/press.xml", "kind": "rss", "label": "報道発表"}
+  ]},
+  {"id": "ishikawa", "name": "石川県", "site": "石川県ホームページ", "home": "https://www.pref.ishikawa.lg.jp/", "terms": "私的使用・引用など著作権法で認められた範囲を除き無断転載・転用不可（要約＋リンク、短い引用のみ）", "terms_url": "https://www.pref.ishikawa.lg.jp/about_site/sitepolicy/index.html", "photo_ok": false, "note": "月別URL /kisya/r{令和の年度}/{月}gatu.html。本文はPDF。教育委員会分は /kisya/kyoui/", "feeds": [
+    {"url": "https://www.pref.ishikawa.lg.jp/kisya/r{fy_reiwa}/{m}gatu.html", "kind": "html", "label": "記者発表資料（月別ページ）", "parser": "dated", "link": "/kisya/r\\d+/documents/"}
+  ]},
+  {"id": "fukui", "name": "福井県", "site": "福井県ホームページ", "home": "https://www.pref.fukui.lg.jp/", "terms": "私的使用・引用など著作権法で認められた範囲を除き無断転載・転用不可（要約＋リンク、短い引用のみ）", "terms_url": "https://www.pref.fukui.lg.jp/doc/dx-suishin/intro.html", "photo_ok": false, "note": "報道発表は県サイト外の kViewer で公開。非公式の内部JSON APIなので形が変わったら止まる", "feeds": [
+    {"url": "https://9a35b2b1.viewer.kintoneapp.com/public/internal/api/records/6e133df0cc08a00aef428e6666f487d089e042a376168a0bb18ee201250b5952/1?", "kind": "json", "label": "報道発表資料（kintone kViewer）", "parser": "fukui_kintone"}
+  ]},
+  {"id": "yamanashi", "name": "山梨県", "site": "山梨県ホームページ", "home": "https://www.pref.yamanashi.jp/", "terms": "私的使用・引用など著作権法で認められた範囲を除き無断転載・転用不可（要約＋リンク、短い引用のみ）", "terms_url": "https://www.pref.yamanashi.jp/info/howto_site.html", "photo_ok": false, "note": "RSSは10件・日時順でない", "feeds": [
+    {"url": "https://www.pref.yamanashi.jp/release/release.xml", "kind": "rss", "label": "報道発表資料"}
+  ]},
+  {"id": "nagano", "name": "長野県", "site": "長野県ホームページ", "home": "https://www.pref.nagano.lg.jp/", "terms": "私的使用・引用など著作権法で認められた範囲を除き無断転載・転用不可（要約＋リンク、短い引用のみ）", "terms_url": "https://www.pref.nagano.lg.jp/koho/kensei/koho/homepage/riyo.html", "photo_ok": false, "note": "RSSは10件なので毎日取る", "feeds": [
+    {"url": "https://www.pref.nagano.lg.jp/kensei/koho/pressreleases/pressreleases.xml", "kind": "rss", "label": "発表資料（プレスリリース）"}
+  ]},
+  {"id": "gifu", "name": "岐阜県", "site": "岐阜県ホームページ", "home": "https://www.pref.gifu.lg.jp/", "terms": "私的使用・引用など著作権法で認められた範囲を除き無断転載・転用不可（要約＋リンク、短い引用のみ）", "terms_url": "https://www.pref.gifu.lg.jp/page/79328.html", "photo_ok": false, "note": "更新日時順なので古い記事の再更新も入る", "feeds": [
+    {"url": "https://www.pref.gifu.lg.jp/rss/10/list7.xml", "kind": "rss", "label": "報道発表"}
+  ]},
+  {"id": "shizuoka", "name": "静岡県", "site": "静岡県ホームページ", "home": "https://www.pref.shizuoka.jp/", "terms": "私的使用・引用など著作権法で認められた範囲を除き無断転載・転用不可（要約＋リンク、短い引用のみ）。リンクしたら pr@pref.shizuoka.lg.jp へ連絡を求めている", "terms_url": "https://www.pref.shizuoka.jp/about/link.html", "photo_ok": false, "note": "Lotus Notes。HTTPヘッダは Shift_JIS（HTML内の utf-8 表記は誤り）なので cp932 で読む", "feeds": [
+    {"url": "https://www2.pref.shizuoka.jp/all/kisha.nsf/webDateView?OpenView&Start=1&Count=100", "kind": "html", "label": "記者提供資料（日付ビュー）", "parser": "dated", "encoding": "cp932", "link": "OpenDocument"}
+  ]},
+  {"id": "aichi", "name": "愛知県", "site": "愛知県ホームページ", "home": "https://www.pref.aichi.jp/", "terms": "私的使用・引用など著作権法で認められた範囲を除き無断転載・転用不可（要約＋リンク、短い引用のみ）", "terms_url": "https://www.pref.aichi.jp/site/userguide/menseki.html", "photo_ok": false, "note": "Imperva(Incapsula)の防御あり。cookie jar で1回だけ取り、弾かれたら報告して飛ばす（再試行しない）; トップは確認時に自動の転送がくり返された（ブラウザでは開ける）", "feeds": [
+    {"url": "https://www.pref.aichi.jp/rss/10/list7.xml", "kind": "rss", "label": "記者発表資料", "cookies": true}
+  ]},
+  {"id": "mie", "name": "三重県", "site": "三重県ホームページ", "home": "https://www.pref.mie.lg.jp/", "terms": "私的使用・引用など著作権法で認められた範囲を除き無断転載・転用不可（要約＋リンク、短い引用のみ）。フッターに記事・写真の無断転載禁止", "terms_url": "https://www.pref.mie.lg.jp/info/chosaku.htm", "photo_ok": false, "note": "日付は和暦（令和08年…）。RSS hodo_rss は当日分のみなのでHTML一覧を使う", "feeds": [
+    {"url": "https://www.pref.mie.lg.jp/app/hodo/index/", "kind": "html", "label": "すべての報道発表資料", "parser": "dated", "link": "/TOPICS/"}
+  ]},
+  {"id": "shiga", "name": "滋賀県", "site": "滋賀県ホームページ", "home": "https://www.pref.shiga.lg.jp/", "terms": "私的使用・引用など著作権法で認められた範囲を除き無断転載・転用不可（要約＋リンク、短い引用のみ）", "terms_url": "https://www.pref.shiga.lg.jp/ab00/9916.html", "photo_ok": false, "note": "RSSなし", "feeds": [
+    {"url": "https://www.pref.shiga.lg.jp/cgi-bin/press/index.php", "kind": "html", "label": "報道発表資料", "parser": "dated", "link": "/press-release/"}
+  ]},
+  {"id": "kyoto", "name": "京都府", "site": "京都府ホームページ", "home": "https://www.pref.kyoto.jp/", "terms": "私的使用・引用など著作権法で認められた範囲を除き無断転載・転用不可（要約＋リンク、短い引用のみ）", "terms_url": "https://www.pref.kyoto.jp/copyright.html", "photo_ok": false, "note": "RSSは2023年3月で停止。本文はPDF（日付はファイル名の8桁）", "feeds": [
+    {"url": "https://www.pref.kyoto.jp/press/index.html", "kind": "html", "label": "報道発表資料（当月分）", "parser": "dated", "link": "/press/documents/\\d{8}", "date_from_url": "/press/documents/(\\d{8})"}
+  ]},
+  {"id": "osaka", "name": "大阪府", "site": "大阪府ホームページ", "home": "https://www.pref.osaka.lg.jp/", "terms": "私的使用・引用など著作権法で認められた範囲を除き無断転載・転用不可（要約＋リンク、短い引用のみ）", "terms_url": "https://www.pref.osaka.lg.jp/o070050/koho/information/use.html", "photo_ok": false, "note": "HTML一覧（直近数日）を主に、RSSはURLが /hodo/ のものだけ足す", "feeds": [
+    {"url": "https://www.pref.osaka.lg.jp/cgi-bin/hodo/citizens.php", "kind": "html", "label": "報道発表一覧（直近）", "parser": "dated", "start": "tmp_open_search_result", "link": "/hodo/"},
+    {"url": "https://www.pref.osaka.lg.jp/shinchaku/shinchaku.xml", "kind": "rss", "label": "新着情報（ほぼ全件が報道発表）", "include": "/hodo/", "include_on": "url"}
+  ]},
+  {"id": "hyogo", "name": "兵庫県", "site": "兵庫県ホームページ", "home": "https://web.pref.hyogo.lg.jp/", "terms": "私的使用・引用など著作権法で認められた範囲を除き無断転載・転用不可（要約＋リンク、短い引用のみ）", "terms_url": "https://web.pref.hyogo.lg.jp/about_link.html", "photo_ok": false, "note": "", "feeds": [
+    {"url": "https://web.pref.hyogo.lg.jp/cgi-bin/press/press.php", "kind": "html", "label": "記者発表資料（当月分）", "parser": "dated", "start": "tmp_press_list", "link": "/press/"}
+  ]},
+  {"id": "nara", "name": "奈良県", "site": "奈良県ホームページ", "home": "https://www.pref.nara.lg.jp/", "terms": "私的使用・引用など著作権法で認められた範囲を除き無断転載・転用不可（要約＋リンク、短い引用のみ）", "terms_url": "https://www.pref.nara.lg.jp/link.html", "photo_ok": false, "note": "RSSは日付順でない", "feeds": [
+    {"url": "https://www.pref.nara.lg.jp/press/press.xml", "kind": "rss", "label": "報道発表資料"}
+  ]},
+  {"id": "wakayama", "name": "和歌山県", "site": "和歌山県ホームページ", "home": "https://www.pref.wakayama.lg.jp/", "terms": "ホームページ公開情報利用規約：出典記載で複製・翻案・商用利用可（CC BY 4.0互換）。写真・画像・ロゴは対象外", "terms_url": "https://www.pref.wakayama.lg.jp/prefg/000200/opendata/hpopendatakiyaku.html", "photo_ok": false, "note": "文章はCC BY 4.0互換だが写真・画像は規約の対象外なので photo_ok=false。報道資料は臨時ページ運用中（月ページを索引から探す）", "feeds": [
+    {"url": "{discovered}", "kind": "html", "label": "わかやま県政ニュース（報道資料・月別）", "parser": "dated", "link": "_d/fil/", "discover": {"url": "https://www.pref.wakayama.lg.jp/prefg/000200/d00223183.html", "text": "^{yyyy}年{m}月$"}}
+  ]},
+  {"id": "tottori", "name": "鳥取県", "site": "鳥取県ホームページ", "home": "https://www.pref.tottori.lg.jp/", "terms": "私的使用・引用など著作権法で認められた範囲を除き無断転載・転用不可（要約＋リンク、短い引用のみ）（ページに自由利用表示があればそちらが優先）", "terms_url": "https://www.pref.tottori.lg.jp/9314.htm", "photo_ok": false, "note": "pubDate は '2026/11/09 00:00:00' 形式。リンク先は db.pref.tottori.jp", "feeds": [
+    {"url": "https://www.pref.tottori.lg.jp/xml/pressrelease_RSS/all.xml", "kind": "rss", "label": "報道提供資料"}
+  ]},
+  {"id": "shimane", "name": "島根県", "site": "島根県ホームページ", "home": "https://www.pref.shimane.lg.jp/", "terms": "私的使用・引用など著作権法で認められた範囲を除き無断転載・転用不可（要約＋リンク、短い引用のみ）", "terms_url": "https://www.pref.shimane.lg.jp/cl.html", "photo_ok": false, "note": "月別URL /press_release/{年度}/{YYYYMM}.html。日付は和暦", "feeds": [
+    {"url": "https://www.pref.shimane.lg.jp/press_release/{fy}/{yyyy}{mm}.html", "kind": "html", "label": "報道発表資料（月別一覧）", "parser": "dated", "start": "article-list-table", "link": "/press_release/\\d{4}/[^/]+\\.html"}
+  ]},
+  {"id": "okayama", "name": "岡山県", "site": "岡山県ホームページ", "home": "https://www.pref.okayama.jp/", "terms": "原則 公共データ利用規約（PDL1.0）：出典『岡山県ホームページ(URL)』と加工の旨を書けば利用可。写真・図画・動画・ロゴは対象外", "terms_url": "https://www.pref.okayama.jp/page/detail-4318.html", "photo_ok": false, "note": "文章はPDL1.0だが写真は対象外（掲載部署の承認が必要）なので photo_ok=false", "feeds": [
+    {"url": "https://www.pref.okayama.jp/rss/10/site-3.xml", "kind": "rss", "label": "報道発表資料"}
+  ]},
+  {"id": "hiroshima", "name": "広島県", "site": "広島県ホームページ", "home": "https://www.pref.hiroshima.lg.jp/", "terms": "私的利用・引用を除き許可なく複製・転載・改変・配布等を禁止", "terms_url": "https://www.pref.hiroshima.lg.jp/soshiki/19/1173052529569.html", "photo_ok": false, "note": "月別URL /site/kisyahappyou/YYYYMM-release.html。本文はPDF、〔〕内は担当課", "feeds": [
+    {"url": "https://www.pref.hiroshima.lg.jp/site/kisyahappyou/{yyyy}{mm}-release.html", "kind": "html", "label": "記者発表資料（月別ページ）", "parser": "dated", "link": "/uploaded/|/site/|/soshiki/", "start": "<h3"}
+  ]},
+  {"id": "yamaguchi", "name": "山口県", "site": "山口県ホームページ", "home": "https://www.pref.yamaguchi.lg.jp/", "terms": "著作権法の範囲内で利用（引用のみ）", "terms_url": "https://www.pref.yamaguchi.lg.jp/soshiki/21/26951.html", "photo_ok": false, "note": "RSSは報道発表日の翌日10:30頃に更新（1日遅れ）", "feeds": [
+    {"url": "https://www.pref.yamaguchi.lg.jp/rss/10/list10.xml", "kind": "rss", "label": "報道発表"}
+  ]},
+  {"id": "tokushima", "name": "徳島県", "site": "徳島県ホームページ", "home": "https://www.pref.tokushima.lg.jp/", "terms": "私的使用・引用など著作権法で認められた範囲を除き無断転載・転用不可（要約＋リンク、短い引用のみ）", "terms_url": "https://www.pref.tokushima.lg.jp/sitepolicy/", "photo_ok": false, "note": "更新が数日あくことがある", "feeds": [
+    {"url": "https://www.pref.tokushima.lg.jp/file/rss/kenseijoho_hodoteikyoshiryo_index.rss", "kind": "rss", "label": "報道提供資料"}
+  ]},
+  {"id": "kagawa", "name": "香川県", "site": "香川県ホームページ", "home": "https://www.pref.kagawa.lg.jp/", "terms": "出所を明示すれば引用・転載複製可（『無断転載禁止』の注記があるものと改変は不可）", "terms_url": "https://www.pref.kagawa.lg.jp/kocho/koho/kohosonota/about.html", "photo_ok": false, "note": "CC BYではない。写真は引用の範囲のみ", "feeds": [
+    {"url": "https://www.pref.kagawa.lg.jp/cgi-bin/page/list.php?tpl_type=2&page_type=6", "kind": "html", "label": "報道発表資料", "parser": "dated", "start": "datatable", "end": "</table>"}
+  ]},
+  {"id": "ehime", "name": "愛媛県", "site": "愛媛県ホームページ", "home": "https://www.pref.ehime.jp/", "terms": "私的使用・引用など著作権法で認められた範囲を除き無断転載・転用不可（要約＋リンク、短い引用のみ）", "terms_url": "https://www.pref.ehime.jp/page/14959.html", "photo_ok": false, "note": "", "feeds": [
+    {"url": "https://www.pref.ehime.jp/rss/20/list5.xml", "kind": "rss", "label": "報道発表"}
+  ]},
+  {"id": "kochi", "name": "高知県", "site": "高知県ホームページ", "home": "https://www.pref.kochi.lg.jp/", "terms": "私的使用・引用など著作権法で認められた範囲を除き無断転載・転用不可（要約＋リンク、短い引用のみ）", "terms_url": "https://www.pref.kochi.lg.jp/reference/policy.html", "photo_ok": false, "note": "press1 の RSS/Atom は500/404なのでHTML。event.html は行事日順なので使わない", "feeds": [
+    {"url": "https://www.pref.kochi.lg.jp/press1/public.html", "kind": "html", "label": "記者配布資料（公開日順）", "parser": "dated", "link": "/press1/\\d{13,14}/"}
+  ]},
+  {"id": "fukuoka", "name": "福岡県", "site": "福岡県ホームページ", "home": "https://www.pref.fukuoka.lg.jp/", "terms": "私的使用・引用など著作権法で認められた範囲を除き無断転載・転用不可（要約＋リンク、短い引用のみ）。リンクを張ったら hpkanri@pref.fukuoka.lg.jp へ連絡を求めている", "terms_url": "https://www.pref.fukuoka.lg.jp/contents/this-site-mensekietc.html", "photo_ok": false, "note": "", "feeds": [
+    {"url": "https://www.pref.fukuoka.lg.jp/press/", "kind": "html", "label": "記者発表の一覧", "parser": "dated", "start": "search_result_body", "link": "/press-release/"}
+  ]},
+  {"id": "saga", "name": "佐賀県", "site": "佐賀県ホームページ", "home": "https://www.pref.saga.lg.jp/", "terms": "私的使用・引用など著作権法で認められた範囲を除き無断転載・転用不可（要約＋リンク、短い引用のみ）", "terms_url": "https://www.pref.saga.lg.jp/kiji00348029/index.html", "photo_ok": false, "note": "件数は少なめ。カテゴリ別RSSはない", "feeds": [
+    {"url": "https://www.pref.saga.lg.jp/list00693.html", "kind": "html", "label": "記者発表", "parser": "dated", "start": "kijilist", "link": "/kiji\\d+/index\\.html"}
+  ]},
+  {"id": "nagasaki", "name": "長崎県", "site": "長崎県ホームページ", "home": "https://www.pref.nagasaki.jp/", "terms": "私的使用・引用など著作権法で認められた範囲を除き無断転載・転用不可（要約＋リンク、短い引用のみ）", "terms_url": "https://www.pref.nagasaki.jp/pages/site_info.html", "photo_ok": false, "note": "一覧ページはJSで /data/press.json を描画。JSONは未ソート・日付はUTC", "feeds": [
+    {"url": "https://www.pref.nagasaki.jp/data/press.json", "kind": "json", "label": "報道機関向け発表", "parser": "nagasaki_json"}
+  ]},
+  {"id": "kumamoto", "name": "熊本県", "site": "熊本県ホームページ", "home": "https://www.pref.kumamoto.jp/", "terms": "私的使用・引用など著作権法で認められた範囲を除き無断転載・転用不可（要約＋リンク、短い引用のみ）", "terms_url": "https://www.pref.kumamoto.jp/soshiki/1/56078.html", "photo_ok": false, "note": "報道発表専用の一覧/RSSがないので新着を絞り込んで使う", "feeds": [
+    {"url": "https://www.pref.kumamoto.jp/rss/10/list1.xml", "kind": "rss", "label": "新着情報", "exclude": "@noise"}
+  ]},
+  {"id": "oita", "name": "大分県", "site": "大分県ホームページ", "home": "https://www.pref.oita.jp/", "terms": "私的使用・引用など著作権法で認められた範囲を除き無断転載・転用不可（要約＋リンク、短い引用のみ）", "terms_url": "https://www.pref.oita.jp/site/userguide/menseki.html", "photo_ok": false, "note": "記者発表RSSは知事会見中心で更新が少ないので、新着を絞り込んで足す", "feeds": [
+    {"url": "https://www.pref.oita.jp/rss/10/list6.xml", "kind": "rss", "label": "記者発表"},
+    {"url": "https://www.pref.oita.jp/rss/10/list1.xml", "kind": "rss", "label": "新着更新情報", "exclude": "@noise"}
+  ]},
+  {"id": "miyazaki", "name": "宮崎県", "site": "宮崎県ホームページ", "home": "https://www.pref.miyazaki.lg.jp/", "terms": "私的使用・引用など著作権法で認められた範囲を除き無断転載・転用不可（要約＋リンク、短い引用のみ）", "terms_url": "https://www.pref.miyazaki.lg.jp/kohosenryaku/kense/koho/index-02.html", "photo_ok": false, "note": "RSSは10件なので毎日取る。/kisha/hodo.xml は2023年で停止", "feeds": [
+    {"url": "https://www.pref.miyazaki.lg.jp/press/pressrelease.xml", "kind": "rss", "label": "プレスリリース"}
+  ]},
+  {"id": "kagoshima", "name": "鹿児島県", "site": "鹿児島県ホームページ", "home": "https://www.pref.kagoshima.jp/", "terms": "私的使用・引用など著作権法で認められた範囲を除き無断転載・転用不可（要約＋リンク、短い引用のみ）", "terms_url": "https://www.pref.kagoshima.jp/copyright.html", "photo_ok": false, "note": "記者発表一覧に日付がないので上から15件だけ（既出URLとの差分で新着を判定、日付は空）", "feeds": [
+    {"url": "https://www.pref.kagoshima.jp/kensei/kisya/index.html", "kind": "html", "label": "記者発表資料（日付なし）", "parser": "links", "start": "<h1", "link": "^https://www\\.pref\\.kagoshima\\.jp/", "max_items": 15},
+    {"url": "https://www.pref.kagoshima.jp/saishin/saishin.xml", "kind": "rss", "label": "最新情報", "exclude": "@noise"}
+  ]},
+  {"id": "okinawa", "name": "沖縄県", "site": "沖縄県ホームページ", "home": "https://www.pref.okinawa.lg.jp/", "terms": "私的使用・引用など著作権法で認められた範囲を除き無断転載・転用不可（要約＋リンク、短い引用のみ）（サイトは無断の転用・引用不可と書くが、著作権法の引用の範囲にとどめる）", "terms_url": "https://www.pref.okinawa.lg.jp/about/1018114.html", "photo_ok": false, "note": "press_news.rss は空。報道発表は少ないので新着を絞り込んで使う。報道発表ページは年度ごとにURLが変わる（2026年度=/press/1039382/）→ 毎年4月に新しい年度のURLへ書き換える（古いままでもエラーにならないので注意）", "feeds": [
+    {"url": "https://www.pref.okinawa.lg.jp/news.rss", "kind": "rss", "label": "新着更新情報", "exclude": "@noise"},
+    {"url": "https://www.pref.okinawa.lg.jp/press/1039382/index.html", "kind": "html", "label": "2026年度報道発表（日付なし）", "parser": "links", "link": "/press/1039382/\\d+\\.html", "max_items": 5}
+  ]}
+]

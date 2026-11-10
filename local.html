@@ -2,28 +2,41 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>有権者 — 地方</title>
-<meta name="description" content="都道府県知事の公約と、その後の行動を出典つきで追うページです。まず東京都から始め、順番に増やします（準備中）。">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>有権者 — 地方：都道府県ごとのニュースを日本地図から</title>
+<meta name="description" content="都道府県ごとのニュースを日本地図から選んで読めるページです。都道府県の公式発表を、初めての人にもわかるように解説します。出典は公式ページだけで、良い・悪いの評価は載せていません。">
 <link rel="canonical" href="https://yossy8080.github.io/yukensha/local.html">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="有権者">
-<meta property="og:title" content="有権者 — 地方">
-<meta property="og:description" content="都道府県知事の公約と、その後の行動を出典つきで追うページです。まず東京都から始め、順番に増やします（準備中）。">
+<meta property="og:title" content="有権者 — 地方：都道府県ごとのニュースを日本地図から">
+<meta property="og:description" content="都道府県ごとのニュースを日本地図から選んで読めるページです。出典は公式ページだけで、良い・悪いの評価は載せていません。">
 <meta property="og:url" content="https://yossy8080.github.io/yukensha/local.html">
 <meta property="og:image" content="https://yossy8080.github.io/yukensha/assets/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:locale" content="ja_JP">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#04080f">
+<script>document.documentElement.classList.add("js");</script>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2304080f'/%3E%3Ccircle cx='16' cy='16' r='9' fill='none' stroke='%238fd0ff' stroke-width='2'/%3E%3Ccircle cx='16' cy='16' r='2.6' fill='%23e8452c'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&family=Shippori+Mincho:wght@700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="assets/hall.css">
+<link rel="stylesheet" href="assets/glossary.css">
+<link rel="stylesheet" href="assets/local.css">
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+  }
+}
+</script>
 <script data-goatcounter="https://yossy8080.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </head>
-<body>
+<body class="local">
 <header class="site-header">
   <div class="site-header-inner">
     <a class="site-logo" href="index.html">有権者</a>
@@ -38,23 +51,45 @@
     </nav>
   </div>
 </header>
-<main class="wrap">
-<h1 class="page-title">地方</h1>
-<p class="lead">都道府県知事の公約と、その後の行動を出典つきで追っていきます。まずは東京都から始め、順番に増やします。</p>
-<nav class="chips" aria-label="都道府県"><a href="local.html" aria-current="true">東京都</a></nav>
-<div class="placeholder">
-  <h3>東京都（準備中）</h3>
-  <p>知事の公約を項目ごとに並べ、「約束したこと → 今どうなっているか → 出典」の形で載せる予定です。</p>
-</div>
+
+<main class="lm" id="top">
+  <section class="lm-hero" aria-labelledby="lm-title">
+    <h1 class="lm-title" id="lm-title">地方</h1>
+    <p class="lm-lead">日本地図から都道府県を選ぶと、その都道府県の公式発表をわかりやすく解説した記事が読めます。</p>
+    <p class="lm-note">出典は都道府県の公式ページだけ。良い・悪いの評価は載せない。</p>
+    <p class="lm-sample" id="lm-sample" role="note" hidden>サンプル表示中：【サンプル】の記事は動作確認用の見本で、公開サイトには出ません。</p>
+  </section>
+
+  <div class="lm-main" id="lm-main">
+    <div class="lm-stage is-loading" id="lm-stage">
+      <canvas id="lm-canvas" aria-hidden="true"></canvas>
+      <div class="lm-overlay" id="lm-overlay"></div>
+      <div class="lm-svg" id="lm-svg"></div>
+      <p class="lm-loading" aria-hidden="true">地図を読み込んでいます…</p>
+      <p class="lm-failed">地図を読み込めませんでした。下の一覧から選べます。</p>
+      <p class="lm-hint" aria-hidden="true"><span class="lm-hint-gl">県を押すと記事が出ます · ドラッグで回転 · <span class="lm-hint-mouse">Ctrl＋ホイール</span><span class="lm-hint-touch">ピンチ</span>で拡大</span><span class="lm-hint-svg">県を押すと記事が出ます</span></p>
+    </div>
+    <section class="lm-panel" id="lm-panel" aria-labelledby="lm-p-name"></section>
+  </div>
+  <p class="lm-live vh" id="lm-live" aria-live="polite"></p>
+
+  <section class="lm-list" aria-labelledby="lm-list-title">
+    <h2 class="lm-list-title" id="lm-list-title">一覧から選ぶ <small id="lm-total"></small></h2>
+    <div class="lm-regions" id="lm-regions"></div>
+    <noscript><p class="lm-p-lead">このページを使うには JavaScript を有効にしてください。</p></noscript>
+  </section>
 </main>
+
 <footer>
   <div class="wrap">
     <p>有権者 — 要約はAI（Hermes）が下書きし、運営者が確認してから公開しています。誤りに気づいたら<a href="https://docs.google.com/forms/d/e/1FAIpQLSe30fi9qbWSkPtcU4dDkXgr1NCUvGQTBiDIa5CZJVfiiUH3nQ/viewform" target="_blank" rel="noopener">お問い合わせフォーム</a>からお知らせください。</p>
-    <p>各記事は、政府のウェブサイト（公共データ利用規約 PDL1.0 等）の情報をもとに、有権者が要約・加工して作成したものです。正確な内容は必ず出典をご確認ください。</p>
+    <p>各記事は、都道府県のウェブサイトの情報をもとに、有権者が要約・加工して作成したものです。正確な内容は必ず出典をご確認ください。</p>
+    <p>地図：「国土数値情報（行政区域データ）」（国土交通省）（<a href="https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-N03-2021.html" target="_blank" rel="noopener">https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-N03-2021.html</a>）をもとに有権者が加工して作成（簡素化には<a href="https://github.com/smartnews-smri/japan-topography" target="_blank" rel="noopener">スマートニュース メディア研究所のデータ</a>を使用）。沖縄県と奄美の島々は左上の枠に移して表示し、小笠原諸島や小さな島は省いています。</p>
     <p class="footer-links"><a href="about.html">このサイトについて</a> ・ <a href="privacy.html">プライバシーポリシー</a> ・ <a href="https://docs.google.com/forms/d/e/1FAIpQLSe30fi9qbWSkPtcU4dDkXgr1NCUvGQTBiDIa5CZJVfiiUH3nQ/viewform" target="_blank" rel="noopener">お問い合わせ</a></p>
   </div>
 </footer>
 <script src="assets/app.js"></script>
-
+<script src="assets/glossary.js"></script>
+<script type="module" src="assets/local.js"></script>
 </body>
 </html>

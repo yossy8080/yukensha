@@ -1,6 +1,10 @@
 /* 有権者 — 記事ビュー「Mirror Hall」とリーダー表示（ES module）
    府省の記事を、暗い水面の上の光るカードのリング（CSS 3D）で見せる。正面のカードを開くと読みやすいリーダーになる。
-   API: initHall({ sources, news, srcMap, order, onToggle }) -> { openMinistry(id), openArticle(id), close() }
+   API: initHall({ sources, news, srcMap, order, onToggle, group? }) -> { openMinistry(id), openArticle(id), close() }
+     group（任意）= 府省以外のまとまりで使うとき（地方ページの都道府県）:
+       { key: "pref", also: "pref_also", label: "地方", number(id), listHref(id), current() }
+       key / also = 記事のどの欄でまとめるか、label = 上の小さい見出し、number = Nº の番号、listHref = 下のバーの「〇〇の記事一覧」のリンク先、
+       current = いまページで選んでいるまとまり（記事がそこにも載っていれば、その一覧の中で前・次に動く）
    URL: index.html#m=<府省id> でその府省、#a=<記事id> でその記事を直接開く（戻るボタンで閉じる）。 */
 
 /* global Y */
@@ -9,15 +13,17 @@ const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)");
 const pad2 = (n) => String(n).padStart(2, "0");
 const mod = (a, n) => ((a % n) + n) % n;
 
-export function initHall({ sources, news, srcMap, order = [], onToggle = () => {} }) {
+export function initHall({ sources, news, srcMap, order = [], onToggle = () => {}, group = {} }) {
+  const KEY = group.key || "ministry", ALSO = group.also || "also";
+  const listHref = group.listHref || ((id) => "ministries.html?m=" + encodeURIComponent(id));
   const sorted = [...news].sort(Y.byDateDesc);
   const byId = Object.fromEntries(sorted.map((n) => [n.id, n]));
-  const has = (n, id) => n.ministry === id || (n.also || []).includes(id);
+  const has = (n, id) => n[KEY] === id || (n[ALSO] || []).includes(id);
   const visibleIds = Y.visible(sources).map((s) => s.id);
-  const numberOf = (id) => {
+  const numberOf = group.number || ((id) => {
     const i = order.indexOf(id);
     return i >= 0 ? i + 1 : order.length + Math.max(0, visibleIds.filter((x) => !order.includes(x)).indexOf(id)) + 1;
-  };
+  });
 
   /* ── DOM（初回だけ作る） ── */
   const root = document.createElement("div");
@@ -38,7 +44,7 @@ export function initHall({ sources, news, srcMap, order = [], onToggle = () => {
     </svg>
     <div class="hall-sky" aria-hidden="true"></div>
     <header class="hall-top">
-      <p class="hall-kicker">有権者 · 府省 Nº <span class="hall-no"></span></p>
+      <p class="hall-kicker">有権者 · ${Y.esc(group.label || "府省")} Nº <span class="hall-no"></span></p>
       <h2 class="hall-title" id="hall-title" tabindex="-1"></h2>
       <p class="hall-count"></p>
     </header>
@@ -302,9 +308,10 @@ export function initHall({ sources, news, srcMap, order = [], onToggle = () => {
     $(".hall-rprev").hidden = j <= 0;
     $(".hall-rnext").hidden = j >= list.length - 1;
     // 真ん中：この記事の府省の記事一覧（ministries.html?m=…）へ。ふつうのページ移動
-    const s = srcMap[it.ministry];
+    const gid = group.current ? ministry : it[KEY]; // 地方：いま開いている県の一覧（よその県の記事を読んでいても）
+    const s = srcMap[gid];
     const a = $(".hall-rlist");
-    a.href = "ministries.html?m=" + encodeURIComponent(it.ministry);
+    a.href = listHref(gid);
     // 2行になるときも「の記事一覧」は切らない
     a.innerHTML = `<span>${s ? `${Y.esc(s.name)}<span class="hall-nw">の記事一覧</span>` : "記事一覧"}</span>`;
     $(".hall-copy").textContent = "リンクをコピー";
@@ -464,7 +471,8 @@ export function initHall({ sources, news, srcMap, order = [], onToggle = () => {
     }
     if (r && r.a && byId[r.a]) {
       const it = byId[r.a];
-      const mid = isOpen && ministry && has(it, ministry) ? ministry : it.ministry;
+      const pref = group.current && group.current();
+      const mid = isOpen && ministry && has(it, ministry) ? ministry : pref && has(it, pref) ? pref : it[KEY];
       const idx = sorted.filter((n) => has(n, mid)).indexOf(it);
       showHall(mid, idx);
       showReader(idx, false);
@@ -540,7 +548,8 @@ export function initHall({ sources, news, srcMap, order = [], onToggle = () => {
       history.replaceState(history.state, "", "#a=" + encodeURIComponent(id));
     } else {
       // 一覧を経由した履歴にしておくと「戻る」で一覧へ、もう一度で閉じる
-      if (!isOpen) history.pushState({ yk: 1, depth: 1 }, "", "#m=" + encodeURIComponent(it.ministry));
+      const pref = group.current && group.current();
+      if (!isOpen) history.pushState({ yk: 1, depth: 1 }, "", "#m=" + encodeURIComponent(pref && has(it, pref) ? pref : it[KEY]));
       history.pushState({ yk: 2, depth: depthNow() + 1 }, "", "#a=" + encodeURIComponent(id));
     }
     route();

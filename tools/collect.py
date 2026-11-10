@@ -31,13 +31,15 @@ UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/130 Safari/537.36 yukensha-collector")
 
 
-def fetch(url: str) -> str:
+def fetch(url: str, timeout: int = 30, encoding: str = "", opener=None) -> str:
+    """encoding を渡すとその文字コードで読む（サイトの表記が間違っているとき）。
+    opener は cookie を持ち回るとき（地方の collect_local.py の愛知県）に使う。"""
     req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept-Language": "ja"})
-    with urllib.request.urlopen(req, timeout=30) as r:
+    with (opener.open if opener else urllib.request.urlopen)(req, timeout=timeout) as r:
         raw = r.read()
     head = raw[:200].decode("ascii", "ignore")
     m = re.search(r'encoding=["\']([\w-]+)', head)
-    encs = ([m.group(1)] if m else []) + ["utf-8", "cp932", "euc-jp"]
+    encs = ([encoding] if encoding else []) + ([m.group(1)] if m else []) + ["utf-8", "cp932", "euc-jp"]
     for enc in encs:
         try:
             return raw.decode("cp932" if enc.lower() in ("shift_jis", "sjis", "x-sjis") else enc)
