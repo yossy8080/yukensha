@@ -128,10 +128,11 @@ const nedits = {};  // 公開済み: id -> {...}
 const lstate = {};  // 公開済みの地方の記事（data/local_news.json）: id -> keep | unpublish
 const ledits = {};  // 公開済みの地方の記事: id -> {...}
 
-// 地方の記事（下書きは "scope": "local"、公開済みは local_news.json）：記事の上の名前は都道府県の表から
-const isLocal = (d) => d.scope === "local" || !!d.pref;
+// 地方の記事：下書きは "scope": "local" のものだけ（サーバーと同じ決め方。pref だけでは国の記事として公開される）、
+// 公開済みは local_news.json に入っているもの。記事の上の名前は都道府県の表から
+const isLocal = (d) => d.scope === "local" || localNews.includes(d);
 const srcFor = (d) => (isLocal(d) ? prefs : sources);
-const localBadge = (d) => isLocal(d) ? `<p class="lc-badge">地方・${Y.esc(prefs[d.pref]?.name || d.pref || "都道府県が未設定")}</p>` : "";
+const localBadge = (d, on = isLocal(d)) => on ? `<p class="lc-badge">地方・${Y.esc(prefs[d.pref]?.name || d.pref || "都道府県が未設定")}</p>` : "";
 
 function editorHtml(d) {
   return `<div class="editor">
@@ -207,7 +208,7 @@ function newsCard(n0) {
   const live = local ? `local.html?p=${Y.esc(n.pref)}#a=${Y.esc(n.id)}` : `ministries.html?m=${Y.esc(n.ministry)}#${Y.esc(n.id)}`;
   return `<section class="draft" data-kind="${local ? "lnews" : "news"}" data-id="${Y.esc(n.id)}" data-state="${s}" data-dirty="${dirty}">
       <div class="controls">
-        ${localBadge(n)}
+        ${localBadge(n, local)}
         <fieldset>
           <label><input type="radio" name="n-${n.id}" value="keep" ${s === "keep" ? "checked" : ""}> 公開したまま</label>
           <label><input type="radio" name="n-${n.id}" value="unpublish" ${s === "unpublish" ? "checked" : ""}> 非公開に戻す</label>
@@ -216,7 +217,7 @@ function newsCard(n0) {
         <p><button class="edit-btn" type="button">文章を直す</button></p>
         <p style="color:var(--muted);font-size:12px">${Y.esc(pub)}<br><a href="https://yossy8080.github.io/yukensha/${live}" target="_blank" rel="noopener">公開サイトで見る</a></p>
       </div>
-      <div>${Y.article(n, srcFor(n))}${photosHtml(n)}${editorHtml(n)}</div>
+      <div>${Y.article(n, local ? prefs : sources)}${photosHtml(n)}${editorHtml(n)}</div>
     </section>`;
 }
 

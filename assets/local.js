@@ -28,9 +28,11 @@ function webglAvailable() {
 }
 
 async function main() {
-  const [prefs, rawMap, srcList, published] = await Promise.all([
+  // 地図の形は別に読む（読めなくても一覧と記事は出す）
+  const mapData = Y.load("data/prefmap.json");
+  mapData.catch(() => {});
+  const [prefs, srcList, published] = await Promise.all([
     Y.load("data/prefectures.json"),
-    Y.load("data/prefmap.json"),
     Y.load("data/pref_sources.json").catch(() => []),
     Y.load("data/local_news.json").catch(() => []),
   ]);
@@ -39,9 +41,11 @@ async function main() {
   const ok = (n) => n && n.id && n.date && n.title && prefMap[n.pref];
   let items = (Array.isArray(published) ? published : []).filter(ok);
   if (SAMPLE) {
-    const sample = await Y.load("drafts/local_sample.json").catch(() => []);
-    items = items.concat((Array.isArray(sample) ? sample : []).filter(ok));
-    $("#lm-sample").hidden = false;
+    const sample = await Y.load("drafts/local_sample.json").catch(() => null);
+    if (Array.isArray(sample)) {
+      items = items.concat(sample.filter(ok));
+      $("#lm-sample").hidden = false; // 見本を読めたときだけ（公開サイトには drafts/ が無い）
+    }
   }
   items.sort(Y.byDateDesc);
   const has = (n, id) => n.pref === id || (n.pref_also || []).includes(id);
@@ -155,9 +159,17 @@ async function main() {
   if (first && !prefMap[first]) history.replaceState(history.state, "", pageUrl(null) + location.hash);
 
   /* ── 地図 ── */
-  const dec = decodeMap(rawMap);
-  const mapPrefs = prefs.map((p) => ({ id: p.id, name: p.name, count: count[p.id] }));
   const stage = $("#lm-stage");
+  let dec;
+  try {
+    dec = decodeMap(await mapData);
+  } catch (e) {
+    // 地図のデータが読めないときは地図の場所に一言だけ出す（一覧と記事はそのまま使える）
+    stage.classList.remove("is-loading");
+    stage.classList.add("is-failed");
+    return;
+  }
+  const mapPrefs = prefs.map((p) => ({ id: p.id, name: p.name, count: count[p.id] }));
   let usedGL = false;
   if (webglAvailable()) {
     try {
@@ -192,7 +204,7 @@ function buildSvg(dec, prefs, onPick) {
   const ib = dec.inset.box;
   host.innerHTML = `<svg viewBox="${(b[0] - pad).toFixed(2)} ${(-b[3] - pad).toFixed(2)} ${(b[2] - b[0] + pad * 2).toFixed(2)} ${(b[3] - b[1] + pad * 2).toFixed(2)}" aria-hidden="true" focusable="false">
     <rect class="lm-svg-inset" x="${ib[0]}" y="${-ib[3]}" width="${ib[2] - ib[0]}" height="${ib[3] - ib[1]}"/>
-    ${prefs.map((p) => `<path data-p="${p.id}" class="${p.count ? "has" : ""}" d="${dec.prefs[p.id].polys.map((poly) => poly.map(ring).join("")).join("")}"><title>${Y.esc(p.name)}（${p.count ? `記事${p.count}件` : "まだ記事がありません"}）</title></path>`).join("")}
+    ${prefs.map((p) => `<path data-p="${Y.esc(p.id)}" class="${p.count ? "has" : ""}" d="${dec.prefs[p.id].polys.map((poly) => poly.map(ring).join("")).join("")}"><title>${Y.esc(p.name)}（${p.count ? `記事${p.count}件` : "まだ記事がありません"}）</title></path>`).join("")}
   </svg>`;
   const el = host.firstElementChild;
   el.addEventListener("click", (e) => {

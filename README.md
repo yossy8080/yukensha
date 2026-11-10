@@ -32,7 +32,8 @@
 - `data/local_news.json` 公開済みの地方の記事（最初は `[]`）。形は `data/news.json` と同じで、`ministry` の代わりに `pref`（都道府県id）、`also` の代わりに `pref_also: []`（任意。ほかの県にも出す）、`site` は「〇〇県ホームページ」
 - `data/pref_sources.json` 47都道府県の公式サイト：`{id, name, site, home, feeds: [], type, note}`（`home` は公式トップの URL を確認済み。`feeds`・`type` はあとで入れる）
 - 下書き：`drafts/drafts.json` に `"scope": "local"` と `"pref": "tokyo"` を付けて入れる。管理ページでは「地方・東京都」の印が付き、公開すると `data/local_news.json` に入る（`news.json` には入らない）。都道府県 id が間違っていると何も保存せずにエラーになる。公開済みタブは「国・地方」で絞り込める
-- 見本：`local.html?sample=1` のときだけ `drafts/local_sample.json` の【サンプル】の記事も出す（drafts/ は git に入らないので公開サイトには出ない）
+- 見本：`local.html?sample=1` のときだけ `drafts/local_sample.json` の【サンプル】の記事も出す（drafts/ は git に入らないので公開サイトには出ない。確認サーバー 5600 は drafts/ を見せないので、見本を見るときは `python -m http.server 5655` で開いて http://localhost:5655/local.html?sample=1 。見本のファイルは PC の中だけにある）
+- 下書きは `"scope": "local"` が必須（`pref` だけでは国の記事として news.json に入る。管理ページの「地方・〇〇県」の印も scope で決まる）
 - 3D：`assets/map3d.js`（three.js r170 を CDN から。47都道府県を1つの形にまとめて描く）・`assets/prefmap.js`（地図データの読み込みと、押した点がどの県かの判定）・`assets/local.js` + `local.css`（ページの組み立て）。WebGL2 が使えないときは平らな SVG の地図、下に 47都道府県の一覧（キーボード・読み上げ用）
 - `sitemap.xml` には今は `local.html` だけ。記事のある県が増えたら `local.html?p=県id` を足す（ページを開くと canonical も `?p=` 付きに変わる）
 

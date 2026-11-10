@@ -350,11 +350,19 @@ export function createMap({ canvas, overlay, dec, prefs, isMobile = false, reduc
   let raf = 0, paused = false, hidden = document.hidden, offscreen = false, disposed = false, time = 0, settleUntil = 0;
   const _p = new THREE.Vector3();
 
+  // HTML のラベル・バッジを点の位置へ。前と同じ位置（0.5px 単位）・表示なら DOM に触らない
+  const htmlPos = new Map();
   function placeHtml(el, x, y, z, dy = 0) {
     _p.set(x, y, z).project(camera);
     const vis = _p.z < 1 && Math.abs(_p.x) < 1.1 && Math.abs(_p.y) < 1.1;
-    el.style.visibility = vis ? "" : "hidden";
-    if (vis) el.style.transform = `translate(${((_p.x + 1) / 2 * width).toFixed(1)}px, ${((1 - _p.y) / 2 * height + dy).toFixed(1)}px)`;
+    let s = htmlPos.get(el);
+    if (!s) { s = { vis: true, x: NaN, y: NaN }; htmlPos.set(el, s); }
+    if (vis !== s.vis) { s.vis = vis; el.style.visibility = vis ? "" : "hidden"; }
+    if (!vis) return;
+    const px = Math.round((_p.x + 1) / 2 * width * 2) / 2, py = Math.round(((1 - _p.y) / 2 * height + dy) * 2) / 2;
+    if (px === s.x && py === s.y) return;
+    s.x = px; s.y = py;
+    el.style.transform = `translate(${px}px, ${py}px)`;
   }
 
   function frame() {
@@ -392,7 +400,8 @@ export function createMap({ canvas, overlay, dec, prefs, isMobile = false, reduc
     for (const b of badges) {
       const d = dec.prefs[ids[b.i]];
       placeHtml(b.el, d.c[0] - CX, H + cur[b.i].lift + 0.02, -(d.c[1] - CY));
-      b.el.classList.toggle("is-on", b.i === hover || b.i === selected);
+      const on = b.i === hover || b.i === selected;
+      if (on !== b.on) { b.on = on; b.el.classList.toggle("is-on", on); }
     }
     const li = hover >= 0 ? hover : selected;
     if (li >= 0) {
