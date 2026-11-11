@@ -364,8 +364,11 @@ export function initHall({ sources, news, srcMap, order = [], onToggle = () => {
   $(".hall-rnext").addEventListener("click", () => stepReader(1));
   $(".hall-copy").addEventListener("click", (e) => {
     const b = e.currentTarget;
+    // 記事を開いているときは、その記事の専用ページ（a/<id>.html。tools/build_pages.py が作る）の URL
+    const it = list[readerIdx];
+    const url = it ?"https://yukensha.com/a/" + encodeURIComponent(it.id) + ".html" : location.href;
     try {
-      const p = navigator.clipboard && navigator.clipboard.writeText(location.href);
+      const p = navigator.clipboard && navigator.clipboard.writeText(url);
       if (p) p.then(() => { b.textContent = "コピーしました"; }, () => {});
     } catch (err) { /* コピーできない環境では何もしない */ }
   });
