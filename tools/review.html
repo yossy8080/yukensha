@@ -215,7 +215,7 @@ function newsCard(n0) {
         </fieldset>
         ${local ? "" : `<label><input type="checkbox" class="feat" ${n.featured ? "checked" : ""}> 国全体のページに載せる</label>`}
         <p><button class="edit-btn" type="button">文章を直す</button></p>
-        <p style="color:var(--muted);font-size:12px">${Y.esc(pub)}<br><a href="https://yossy8080.github.io/yukensha/${live}" target="_blank" rel="noopener">公開サイトで見る</a></p>
+        <p style="color:var(--muted);font-size:12px">${Y.esc(pub)}<br><a href="https://yukensha.com/${live}" target="_blank" rel="noopener">公開サイトで見る</a></p>
       </div>
       <div>${Y.article(n, local ? prefs : sources)}${photosHtml(n)}${editorHtml(n)}</div>
     </section>`;
@@ -402,7 +402,7 @@ document.getElementById("go").addEventListener("click", async () => {
     const j = await post("/api/publish_opinion", { approve: oapprove, reject: oreject });
     out.push(j.error ? "エラー：" + j.error : `オピニオン：${j.published}件を公開、${j.rejected}件を公開しない。${j.git || ""}`);
   }
-  document.getElementById("msg").innerHTML = `<div class="msg">${out.map(Y.esc).join("<br>")} <a href="https://yossy8080.github.io/yukensha/" target="_blank" rel="noopener">公開サイトを見る</a></div>`;
+  document.getElementById("msg").innerHTML = `<div class="msg">${out.map(Y.esc).join("<br>")} <a href="https://yukensha.com/" target="_blank" rel="noopener">公開サイトを見る</a></div>`;
   [state, edits, nstate, nedits, lstate, ledits, ostate].forEach((o) => Object.keys(o).forEach((k) => delete o[k]));
   btn.textContent = "保存して公開サイトに反映";
   await init();

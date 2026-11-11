@@ -117,7 +117,7 @@ async function main() {
     const p = id && prefMap[id];
     document.title = p ? `${p.name}のニュース — 有権者 地方` : BASE_TITLE;
     const canon = $('link[rel="canonical"]');
-    if (canon) canon.href = "https://yossy8080.github.io/yukensha/" + (id ? "local.html?p=" + id : "local.html");
+    if (canon) canon.href = "https://yukensha.com/" + (id ? "local.html?p=" + id : "local.html");
     html.classList.toggle("lm-has-sel", !!id);
     if (p) live.textContent = `${p.name}：${count[id] ? `記事${count[id]}件` : "まだ記事がありません"}`;
     if (focus) $("#lm-p-name")?.focus({ preventScroll: true });
