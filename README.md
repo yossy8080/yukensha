@@ -27,6 +27,16 @@
 - `assets/photos/` 記事の写真（下の「写真」を参照）
 - `tools/collect.py` 新着集め / `tools/collect_local.py` 地方（47都道府県）の新着集め（下の「毎日の地方ニュース」） / `tools/fetch_page.py` 本文の取り出し / `tools/fetch_photo.py` 写真の取り込み / `tools/review_server.py` + `tools/review.html` 確認ページ（`python tools/check_review_local.py` で地方の振り分けを一時フォルダのコピーで確認できる）
 
+## 記事ごとのページ（`a/`）
+Google が記事を1件ずつ検索に出せるように、記事ごとに本文の入ったふつうの HTML を置いている（`#a=記事id` のリーダーは JS で組み立てるので、検索には1件ずつ載らない）。
+- `a/<記事id>.html` 1記事1ページ（https://yukensha.com/a/<記事id>.html）。題名・要約・写真（確認済みのものだけ）・背景の説明・ポイント・出典、検索用の canonical・OGP・JSON-LD。「3Dの記事ビューで読む」で今までのリーダーへ
+- `a/index.html` 全記事の一覧（新しい順・月ごと）。全ページのフッターの「記事一覧」からリンク
+- `sitemap.xml` も同時に作り直す（決まった7ページ + `/a/` + 全記事）
+- 作るのは `tools/build_pages.py`（`data/news.json`・`data/local_news.json` を読むだけ）。見た目は `assets/style.css` + `assets/article.css`
+- **確認ページで公開・修正・非公開に戻すと自動で作り直して一緒にコミットする**。非公開にした記事のページは消える
+- 手で作り直すとき：`python tools/build_pages.py`（変わったファイルだけ書く）。確認：`python tools/test_build_pages.py`
+- 記事ビューの「リンクをコピー」はこのページの URL をコピーする
+
 ## 地方（都道府県）
 `local.html` は「日本地図（3D）→ 都道府県を押す → その県の記事の一覧 → 記事」のページ。記事を開くと国の記事と同じリーダー（`assets/hall.js`、`#a=記事id`）で、用語ポップアップ・写真・背景の説明・出典もそのまま出る。
 - `data/prefectures.json` 47都道府県の表：`id`（ローマ字。hokkaido, aomori, … tokyo, … okinawa）・`code`（JIS の 01〜47）・`name`（東京都）・`name_short`（東京）・`region`（北海道・東北／関東／中部／近畿／中国／四国／九州・沖縄）
