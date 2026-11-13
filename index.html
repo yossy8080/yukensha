@@ -55,6 +55,7 @@
     <a class="site-logo" href="index.html">有権者</a>
     <nav class="site-nav" aria-label="メニュー">
       <ul>
+        <li><a href="#new">新着</a></li>
         <li><a href="#stream">府省</a></li>
         <li><a href="#opinion">オピニオン</a></li>
         <li><a href="#local">地方</a></li>
@@ -88,7 +89,18 @@
       <p class="hero-note">出典は公式ページだけ。良い・悪いの評価は載せない。</p>
       <p class="hero-latest" id="hero-latest" hidden></p>
     </div>
-    <a class="hero-scroll" href="#stream"><span>スクロール</span></a>
+    <a class="hero-scroll" href="#new"><span>スクロール</span></a>
+  </section>
+
+  <section class="fresh" id="new" aria-labelledby="new-title">
+    <header class="fresh-head reveal">
+      <p class="eyebrow">Latest</p>
+      <h2 class="fresh-title" id="new-title">新着ニュース</h2>
+      <p class="fresh-meta" id="new-meta"></p>
+    </header>
+    <ul class="fresh-grid" id="new-list"></ul>
+    <p class="fresh-more" hidden><button type="button" class="ch-open" id="new-more" aria-expanded="false" aria-controls="new-list"></button></p>
+    <noscript><p class="fresh-meta">新しい記事は <a href="a/">記事一覧</a> で読めます。</p></noscript>
   </section>
 
   <section class="stream" id="stream" aria-labelledby="stream-title">

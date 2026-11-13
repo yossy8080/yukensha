@@ -1,4 +1,5 @@
 /* 有権者 — 新しいトップ（index.html）の組み立てと演出（ES module）
+   0. ヒーローのすぐ下に「新着ニュース」（news.json と local_news.json の、いちばん新しい公開日の記事）
    1. news.json から「府省の章」を作る（記事が1件以上ある府省を sources.json の順に。0件の府省は最後に名前だけ）
    2. スクロール位置から「章の位置 f」（-1=ヒーロー, 0..n-1=各章, 小数=章のあいだ）を計算し、背面の WebGL（scene3d.js）に渡す
       （スクロールの乗っ取りはしない）。3D の物体は画面に貼り付いた1つだけで、f に合わせて府省の物体どうしが変形する
@@ -82,6 +83,43 @@ function chapterHTML(s, i, n, items) {
   </section>`;
 }
 
+/* ── 新着ニュース（国の記事と地方の記事をまとめて、いちばん新しい公開日のものを先頭に） ── */
+const FRESH_MIN = 6, FRESH_SHOW = 8;
+const jstDay = (t) => new Date(t + 9 * 3600e3).toISOString().slice(0, 10); // 日本時間の日付
+function pickFresh(all) {
+  const rows = all.map((it) => {
+    const t = Date.parse(it.published_at || "");
+    // published_at が無い記事は date（その日の日本時間 0 時）で数える
+    const ts = Number.isNaN(t) ? Date.parse(it.date + "T00:00:00+09:00") || 0 : t;
+    return { it, ts, day: Number.isNaN(t) ? it.date : jstDay(t) };
+  });
+  const day = rows.reduce((m, r) => (r.day > m ? r.day : m), "");
+  const picked = rows.filter((r) => r.day === day);
+  const sameDay = picked.length;
+  if (picked.length < FRESH_MIN) {
+    const rest = rows.filter((r) => r.day !== day)
+      .sort((a, b) => b.ts - a.ts || b.it.date.localeCompare(a.it.date));
+    picked.push(...rest.slice(0, FRESH_MIN - picked.length));
+  }
+  picked.sort((a, b) => Y.byDateDesc(a.it, b.it) || b.ts - a.ts);
+  return { day, sameDay, items: picked.map((r) => r.it) };
+}
+function freshHTML(it, i, srcMap, prefMap) {
+  const local = !!it.pref;
+  const href = local ? `local.html?p=${encodeURIComponent(it.pref)}#a=${encodeURIComponent(it.id)}` : `#a=${encodeURIComponent(it.id)}`;
+  const name = local ? `地方・${prefMap[it.pref]?.name || ""}` : srcMap[it.ministry]?.name || "";
+  const p = Array.isArray(it.photos) && it.photos[0];
+  const img = p && p.src && p.ok_license === true && p.ok_people === true
+    ? `<span class="fresh-ph"><img src="${Y.esc(p.src)}" alt="${Y.esc(p.alt)}" loading="lazy" decoding="async"${p.width && p.height ? ` width="${Number(p.width)}" height="${Number(p.height)}"` : ""}></span>` : "";
+  return `
+      <li${i >= FRESH_SHOW ? " hidden" : ""}><a class="fresh-card" href="${href}">${img}
+        <span class="fresh-body">
+          <span class="fresh-kicker"><span class="fresh-badge">NEW</span>${it.featured ? `<span class="fresh-star">★ 重要</span>` : ""}<time datetime="${Y.esc(it.date)}">${Y.fmtDate(it.date)}</time><span class="fresh-m">${Y.esc(name)}</span></span>
+          <span class="fresh-headline">${Y.esc(it.title)}</span>
+          <span class="fresh-sum">${Y.esc(it.summary)}</span>
+        </span></a></li>`;
+}
+
 /* ── 光の流れ（ページ全長を貫く1本の線） ── */
 const flow = { svg: null, glow: null, core: null, spark: null, len: 0, samples: [] };
 function buildFlow(chapterEls) {
@@ -97,9 +135,12 @@ function buildFlow(chapterEls) {
   const pts = [];
   const hero = $("#hero");
   pts.push([W / 2, yOf(hero) + hero.offsetHeight * 0.74]);
+  const side = Math.max(10, W * 0.06);
+  // 新着のカードの上は横切らない（左の余白を通す）
+  const fresh = $("#new");
+  if (fresh && !fresh.hidden) pts.push([side, yOf(fresh) + fresh.offsetHeight * 0.5]);
   const head = $(".stream-head");
   if (head) pts.push([W / 2, yOf(head) + head.offsetHeight * 0.5]);
-  const side = Math.max(10, W * 0.06);
   for (const ch of chapterEls) {
     const r = $(".ch-anchor", ch).getBoundingClientRect();
     const cx = r.left + r.width / 2 - mr.left;
@@ -178,8 +219,12 @@ function webglAvailable() {
 
 /* ── 組み立て ── */
 async function main() {
-  const [sources, news] = await Promise.all([Y.load("data/sources.json"), Y.load("data/news.json")]);
+  const [sources, news, prefs, localNews] = await Promise.all([
+    Y.load("data/sources.json"), Y.load("data/news.json"),
+    Y.load("data/prefectures.json").catch(() => []), Y.load("data/local_news.json").catch(() => []),
+  ]);
   const srcMap = Object.fromEntries(sources.map((s) => [s.id, s]));
+  const prefMap = Object.fromEntries((Array.isArray(prefs) ? prefs : []).map((p) => [p.id, p]));
   news.sort(Y.byDateDesc);
   const has = (n, id) => n.ministry === id || (n.also || []).includes(id);
   const itemsOf = (id) => news.filter((n) => has(n, id));
@@ -194,6 +239,25 @@ async function main() {
     latest.innerHTML = `<span class="hero-latest-label">最新</span><a href="#a=${encodeURIComponent(top.id)}">${Y.esc(top.title)}</a><span class="hero-latest-m">${Y.esc(srcMap[top.ministry]?.name || "")}</span>`;
     latest.hidden = false;
   }
+
+  // 新着ニュース（地方の記事は県が分かるものだけ）
+  const freshSec = $("#new");
+  const fresh = pickFresh([
+    ...news.filter((n) => n.id && n.date && n.title),
+    ...(Array.isArray(localNews) ? localNews : []).filter((n) => n && n.id && n.date && n.title && prefMap[n.pref]),
+  ]);
+  const freshMore = $("#new-more");
+  if (fresh.items.length) {
+    const [, m, d] = fresh.day.split("-").map(Number);
+    const extra = fresh.items.length > fresh.sameDay ? "と最近の記事" : "";
+    $("#new-meta").textContent = `${m}月${d}日に公開した記事${extra} · ${fresh.items.length}件`;
+    $("#new-list").innerHTML = fresh.items.map((it, i) => freshHTML(it, i, srcMap, prefMap)).join("");
+    const rest = fresh.items.length - FRESH_SHOW;
+    if (rest > 0) {
+      freshMore.textContent = `新着をすべて見る（${fresh.items.length}件）`;
+      freshMore.parentElement.hidden = false;
+    }
+  } else freshSec.hidden = true;
 
   // 府省の章
   $("#stream-meta").textContent = `${chapters.length}の府省 · ${news.length}件の記事`;
@@ -240,6 +304,9 @@ async function main() {
       stage = { x: r.left + r.width / 2, y: vh / 2 + hh / 2, size: size * 0.95 };
     }
     const k = [[pageY(hero) + hero.offsetHeight / 2 - vh / 2, -1]];
+    // 新着の欄はヒーローの続き（f = -1 のまま）。その分だけ後ろへずらしてから、府省の流れ（#stream）で物体が集まり始める
+    const gap = pageY(stream) - (pageY(hero) + hero.offsetHeight);
+    if (gap > 1) k.push([k[0][0] + gap, -1]);
     chapterEls.forEach((ch, i) => {
       if (isMobile) {
         const card = $(".ch-card", ch), top = pageY(card), bottom = top + card.offsetHeight;
@@ -255,7 +322,8 @@ async function main() {
   function computeState() {
     const vh = innerHeight;
     const hr = hero.getBoundingClientRect();
-    const st = { hero: clamp01(hr.bottom / Math.max(1, hr.height)), f: -1, anchor: stage, end: 0 };
+    // ヒーローのカメラは新着の欄の終わりまで保ち、#stream が画面の上に来るまでに府省の構図へ移る（新着が無いときは今までどおり）
+    const st = { hero: clamp01(stream.getBoundingClientRect().top / Math.max(1, hr.height)), f: -1, anchor: stage, end: 0 };
     const y = scrollY, k = knots;
     if (k.length > 1) {
       if (y <= k[0][0]) st.f = k[0][1];
@@ -288,6 +356,14 @@ async function main() {
   const relayout = () => { measure(); buildFlow(chapterEls); onScroll(); };
   addEventListener("resize", () => { clearTimeout(resizeT); resizeT = setTimeout(relayout, 150); });
   relayout();
+  // 新着をすべて見る：その場で残りを広げる（ページの長さが変わるので測り直す）
+  freshMore.addEventListener("click", () => {
+    $("#new-list").querySelectorAll("li[hidden]").forEach((li) => { li.hidden = false; });
+    freshMore.setAttribute("aria-expanded", "true");
+    freshMore.parentElement.hidden = true;
+    $("#new-list li:nth-child(" + (FRESH_SHOW + 1) + ") a")?.focus({ preventScroll: true });
+    relayout();
+  });
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(relayout);
   addEventListener("load", relayout);
 
@@ -320,7 +396,7 @@ async function main() {
 
 /* 3D の物体をホバー・クリック（Raycaster）。今表示している府省の記事ビューを開く。文字や操作部品の上では何もしない */
 function setupPicking(scene, chapters, hall) {
-  const blocked = (t) => t.closest && t.closest("a, button, input, .ch-card, .site-header, .hero-inner, .later, footer, .hall");
+  const blocked = (t) => t.closest && t.closest("a, button, input, .ch-card, .site-header, .hero-inner, .fresh, .later, footer, .hall");
   let hover = -1, pending = null;
   addEventListener("pointermove", (e) => {
     if (e.pointerType === "touch") return;
