@@ -107,6 +107,50 @@ html.js .reveal.is-in { opacity: 1; filter: none; transform: none; transition: o
   html.js .reveal, html.js .reveal.is-in { opacity: 1; filter: none; transform: none; transition: none; }
 }
 
+/* ── 新着ニュース（ヒーローのすぐ下。背面の 3D の上でも読めるように、ほぼ不透明の夜の色を敷く） ── */
+.fresh {
+  position: relative; padding: 12vh clamp(16px, 4vw, 64px) 10vh;
+  background: linear-gradient(180deg, rgba(4, 8, 15, 0), rgba(4, 8, 15, .86) 9vh, rgba(4, 8, 15, .86) calc(100% - 9vh), rgba(4, 8, 15, 0));
+}
+.fresh[hidden] { display: none; }
+.fresh-head { text-align: center; max-width: 760px; margin: 0 auto 40px; }
+.fresh-title { margin: 0; font-family: var(--serif); font-weight: 800; font-size: clamp(32px, 4.4vw, 56px); letter-spacing: .16em; line-height: 1.3; }
+.fresh-meta { margin: 12px 0 0; color: var(--sub); font-size: 15px; letter-spacing: .08em; }
+.fresh-grid {
+  list-style: none; margin: 0 auto; padding: 0; max-width: 1280px;
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px;
+}
+.fresh-grid li { display: flex; min-width: 0; }
+.fresh-grid li[hidden] { display: none; }
+.fresh-card {
+  flex: 1; display: flex; flex-direction: column; overflow: hidden;
+  border-radius: 18px; border: 1px solid rgba(214, 236, 255, .1);
+  background: linear-gradient(180deg, rgba(10, 20, 36, .92), rgba(6, 12, 22, .92));
+  color: var(--text); text-decoration: none;
+  transition: border-color .2s, transform .2s, box-shadow .2s;
+}
+.fresh-card:hover, .fresh-card:focus-visible { border-color: rgba(143, 208, 255, .5); box-shadow: 0 0 28px rgba(143, 208, 255, .14); transform: translateY(-2px); color: var(--text); }
+.fresh-ph { display: block; aspect-ratio: 3 / 2; overflow: hidden; background: #0a1424; }
+.fresh-ph img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.fresh-body { display: flex; flex-direction: column; gap: 8px; padding: 18px 20px 22px; }
+.fresh-kicker { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; font-size: 13px; color: var(--sub); }
+.fresh-badge { padding: 1px 8px; border-radius: 4px; background: var(--shu); color: #fff; font-weight: 700; font-size: 12px; letter-spacing: .1em; }
+.fresh-star { color: #f5c96a; font-weight: 700; }
+.fresh-m { color: var(--glow-2); }
+.fresh-headline { font-size: 17px; font-weight: 700; line-height: 1.6; }
+.fresh-card:hover .fresh-headline { color: var(--glow); text-decoration: underline; }
+.fresh-sum {
+  font-size: 15px; line-height: 1.75; color: #c3cedc;
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden;
+}
+.fresh-more { margin: 36px 0 0; text-align: center; }
+.fresh-more[hidden] { display: none; }
+@media (max-width: 1024px) { .fresh-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 600px) { .fresh-grid { grid-template-columns: minmax(0, 1fr); gap: 14px; } .fresh-head { margin-bottom: 28px; } }
+@media (prefers-reduced-motion: reduce) { .fresh-card { transition: none; } .fresh-card:hover { transform: none; } }
+/* トップだけメニューが6つ（新着を足した）。スマホ（390px）でも全部収まるように少し詰める */
+@media (max-width: 420px) { body.home .site-nav a { padding: 0 6px; } }
+
 /* ── 府省の流れ ── */
 .eyebrow { margin: 0 0 10px; font-size: 12px; letter-spacing: .32em; color: var(--glow-2); }
 .stream-head { position: relative; text-align: center; padding: 18vh 20px 6vh; max-width: 760px; margin: 0 auto; }
