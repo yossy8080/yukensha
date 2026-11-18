@@ -352,8 +352,8 @@
     "page_url": "https://www.kantei.go.jp/jp/105/actions/202611/17asean2.html",
     "license": "PDL1.0",
     "people": true,
-    "ok_license": false,
-    "ok_people": false,
+    "ok_license": true,
+    "ok_people": true,
     "width": 1600,
     "height": 1067
    },
@@ -364,13 +364,14 @@
     "page_url": "https://www.kantei.go.jp/jp/105/actions/202611/17asean2.html",
     "license": "PDL1.0",
     "people": true,
-    "ok_license": false,
-    "ok_people": false,
+    "ok_license": true,
+    "ok_people": true,
     "width": 1600,
     "height": 1067
    }
   ],
-  "published_at": "2026-11-19T00:09:24+09:00"
+  "published_at": "2026-11-19T00:09:24+09:00",
+  "updated_at": "2026-11-19T00:09:47+09:00"
  },
  {
   "id": "2026-11-17-mofa-japan-korea-summit",
