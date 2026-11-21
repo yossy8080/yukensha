@@ -81,7 +81,8 @@
   background: rgba(143, 208, 255, .05); border: 1px solid rgba(143, 208, 255, .18); }
 .g-intro { margin: 0 0 14px; }
 .g-src { list-style: none; margin: 0 0 6px; padding: 0; font-size: 14px; line-height: 1.8; }
-.g-src a { color: var(--text); }
+.g-src a { color: var(--text); overflow-wrap: anywhere; }
+@media print { .ap .explain-q { color: #000; } }
 .g-note { margin: 0 0 8px; font-size: 13px; color: var(--muted); }
 .g-sec, .ap-sec { margin: 32px 0 0; }
 .g-sec .section-title { margin-bottom: 0; }

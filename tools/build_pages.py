@@ -226,13 +226,16 @@ def latest(items) -> str:
     return max((lastmod(it) for it in items), default="", key=lambda s: s[:10] + s)
 
 
+LAZY = ' loading="lazy"'
+
+
 def photo_html(p, lazy=False) -> str:
     w, h = p.get("width"), p.get("height")
     size = f' width="{w}" height="{h}" style="aspect-ratio:{w}/{h}"' if isinstance(w, int) and isinstance(h, int) and w > 0 and h > 0 else ""
     link = f'（<a href="{esc(p["page_url"])}" target="_blank" rel="noopener">出典ページ ↗</a>）' if re.match(r"^https?://", str(p.get("page_url") or "")) else ""
     cap = esc(p.get("credit")) + link
     src = "/" + str(p["src"]).lstrip("/")
-    return (f'<figure class="photo"><img src="{esc(src)}" alt="{esc(p.get("alt"))}"{' loading="lazy"' if lazy else ""} decoding="async"{size}>'
+    return (f'<figure class="photo"><img src="{esc(src)}" alt="{esc(p.get("alt"))}"{LAZY if lazy else ""} decoding="async"{size}>'
             + (f"<figcaption>{cap}</figcaption>" if cap else "") + "</figure>")
 
 
@@ -477,7 +480,8 @@ def group_page(kind, g, its, ctx: Ctx, home_url="", home_label="") -> str:
     gid, name = g["id"], g["name"]
     canonical = f"{SITE}/{kind}/{gid}.html"
     title = f"{name}のニュース一覧（最新の発表をわかりやすく）｜有権者"
-    desc = short_desc(f"{name}の発表をもとにした記事{len(its)}件を、新しい順に要約で紹介。最新：{its[0].get('title', '')}")
+    what = g.get("note") or f"{name}の発表"  # 「総理・官房長官の発言」は note（官邸の会見・演説…と国会での発言）を使う
+    desc = short_desc(f"{what}をもとにした記事{len(its)}件を、新しい順に要約で紹介。最新：{its[0].get('title', '')}")
     if local:
         lead = f"{name}の公式発表をもとにした記事（{len(its)}件）を、新しい順に並べています。"
         views = f'<a class="ap-btn" href="/local.html?p={esc(gid)}">3Dの日本地図で見る</a>'
@@ -778,6 +782,8 @@ def stage_of(p) -> int:
         v = 0
     if v != v:  # NaN
         v = 0
+    if not math.isfinite(v):  # Infinity（JS の Math.round と同じく上限・下限に収める）
+        v = MAX_STAGE if v > 0 else 0
     return max(0, min(MAX_STAGE, int(math.floor(v + 0.5))))  # JS の Math.round と同じ（0.5 は切り上げ）
 
 
@@ -801,7 +807,14 @@ def static_pledges(data) -> str:
     if not isinstance(data, dict):
         return ""
     themes = [t for t in data.get("themes") or [] if isinstance(t, dict)]
-    parties = sorted([p for p in data.get("parties") or [] if isinstance(p, dict)], key=lambda p: -(p.get("seats_shugiin") or 0))
+    def seats(p):
+        try:
+            v = float(p.get("seats_shugiin") or 0)
+        except (TypeError, ValueError):
+            v = 0
+        return v if v == v else 0
+
+    parties = sorted([p for p in data.get("parties") or [] if isinstance(p, dict)], key=lambda p: -seats(p))  # 議席の多い順
     el = data.get("election") or {}
     meta = f'対象：{ext_link(el.get("url"), esc(el.get("name") or ""))}' + (f'（{fmt_day(el["date"])}投開票）' if el.get("date") else "")
     if data.get("updated"):
