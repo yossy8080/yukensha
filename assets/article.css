@@ -63,3 +63,33 @@
 .mg-prefs a { text-decoration: none; font-weight: 700; }
 .mg-prefs a:hover { color: var(--glow); }
 .mg-prefs .mg-none { color: var(--muted); opacity: .7; }
+
+/* 用語集（g/） */
+.g-yomi { margin: 0 0 4px; font-size: 14px; color: var(--muted); }
+.g-short { margin: 14px 0 16px; padding: 14px 16px; border-radius: 12px; font-size: 17.5px; line-height: 1.9;
+  background: rgba(143, 208, 255, .05); border: 1px solid rgba(143, 208, 255, .18); }
+.g-intro { margin: 0 0 14px; }
+.g-src { list-style: none; margin: 0 0 6px; padding: 0; font-size: 14px; line-height: 1.8; }
+.g-src a { color: var(--text); }
+.g-note { margin: 0 0 8px; font-size: 13px; color: var(--muted); }
+.g-sec, .ap-sec { margin: 32px 0 0; }
+.g-sec .section-title { margin-bottom: 0; }
+.g-terms { list-style: none; margin: 10px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.g-terms a {
+  display: inline-flex; align-items: center; min-height: 38px; padding: 4px 14px; border-radius: 999px;
+  border: 1px solid var(--rule); font-size: 15px; text-decoration: none;
+}
+.g-terms a:hover { border-color: var(--glow-2); color: var(--glow); }
+.g-jump { margin: 0 0 20px; }
+.g-row { margin: 0 0 28px; }
+.g-list { list-style: none; margin: 0; padding: 0; }
+.g-list li { display: grid; grid-template-columns: minmax(0, auto) 1fr; column-gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--rule); }
+.g-list a { font-weight: 700; text-decoration: none; }
+.g-list a:hover { text-decoration: underline; }
+.g-count { color: var(--muted); font-size: 13px; align-self: center; }
+.g-sum { grid-column: 1 / -1; font-size: 14px; line-height: 1.7; color: var(--muted); }
+/* 記事の下の見出し（この記事に出てくる言葉・関連する記事）：section-title と同じ小さな見出し */
+.ap-h2 {
+  font-family: var(--serif); font-size: 15px; font-weight: 700; letter-spacing: .1em; line-height: 1.6;
+  margin: 0; padding-bottom: 8px; border-bottom: 1px solid var(--rule);
+}

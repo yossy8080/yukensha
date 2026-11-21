@@ -150,7 +150,7 @@ FOOTER = f"""<footer>
   <div class="wrap">
     <p>有権者 — 要約はAI（Hermes）が下書きし、運営者が確認してから公開しています。誤りに気づいたら<a href="{FORM}" target="_blank" rel="noopener">お問い合わせフォーム</a>からお知らせください。</p>
     <p>各記事は、政府のウェブサイト（公共データ利用規約 PDL1.0 等）の情報をもとに、有権者が要約・加工して作成したものです。正確な内容は必ず出典をご確認ください。</p>
-    <p class="footer-links"><a href="/about.html">このサイトについて</a> ・ <a href="/privacy.html">プライバシーポリシー</a> ・ <a href="/a/">記事一覧</a> ・ <a href="{FORM}" target="_blank" rel="noopener">お問い合わせ</a></p>
+    <p class="footer-links"><a href="/about.html">このサイトについて</a> ・ <a href="/privacy.html">プライバシーポリシー</a> ・ <a href="/a/">記事一覧</a> ・ <a href="/g/">用語集</a> ・ <a href="{FORM}" target="_blank" rel="noopener">お問い合わせ</a></p>
   </div>
 </footer>"""
 
@@ -178,7 +178,8 @@ def page(*, title, desc, canonical, og_type, og_image, ld, body, current="", glo
 <meta property="og:image" content="{esc(og_image)}">
 <meta property="og:locale" content="ja_JP">
 <meta name="twitter:card" content="summary_large_image">
-{lds}<link rel="icon" href="{ICON}">
+{lds}<link rel="alternate" type="application/atom+xml" title="有権者" href="/feed.xml">
+<link rel="icon" href="{ICON}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&family=Shippori+Mincho:wght@700;800&display=swap" rel="stylesheet">
@@ -306,7 +307,15 @@ class Ctx:
         return f"/local.html?p={it['pref']}#a={it['id']}" if self.is_local(it) else f"/#a={it['id']}"
 
 
-def article_page(it, ctx: Ctx, newer, older) -> str:
+def words_html(words) -> str:
+    """この記事に出てくる言葉（用語集のページがあるものだけ）。"""
+    if not words:
+        return ""
+    return ('<section class="ap-sec ap-words" aria-labelledby="ap-words"><h2 class="ap-h2" id="ap-words">この記事に出てくる言葉</h2><ul class="g-terms">'
+            + "".join(f'<li><a href="{esc(g_href(s))}">{esc(t)}</a></li>' for t, s in words) + "</ul></section>")
+
+
+def article_page(it, ctx: Ctx, newer, older, words=(), related=()) -> str:
     aid = it["id"]
     canonical = f"{SITE}/a/{aid}.html"
     gid = ctx.gid(it)
@@ -368,6 +377,7 @@ def article_page(it, ctx: Ctx, newer, older) -> str:
   {source_line(it)}{refs_line(it)}
   {f'<p class="tags">{tags}</p>' if tags else ""}
 </article>
+{words_html(words)}
 <nav class="ap-links" aria-label="ほかの記事">
   <p class="ap-actions"><a class="ap-btn" href="{esc(ctx.view_href(it))}">3Dの記事ビューで読む</a>{f'<a class="ap-btn" href="{esc(ctx.list_href(it, gid))}">{esc(gname)}の記事一覧</a>' if gname else ""}<a class="ap-btn" href="/a/">すべての記事</a></p>
   {f'<div class="ap-steps">{steps}</div>' if steps else ""}
@@ -535,6 +545,189 @@ def static_prefs(by_pref, ctx: Ctx) -> str:
             f'<small><a href="/p/">47都道府県</a></small></h2>{"".join(secs)}\n</section>')
 
 
+# ── 用語集（g/）：glossary.js と同じ決まりで、記事に出てくる用語を探す ──
+
+ASCII_KEY = re.compile(r"^[\x21-\x7e]+$")
+WORD_CHAR = re.compile(r"[A-Za-z0-9]")
+BAD_CHARS = re.compile(r'[\\/:*?"<>|#%&\s]')  # Windows のファイル名・URL に使えない文字
+WIN_RESERVED = {"con", "prn", "aux", "nul", *(f"com{i}" for i in range(1, 10)), *(f"lpt{i}" for i in range(1, 10))}
+
+
+def term_slug(term: str) -> str:
+    """用語 → g/ のファイル名（.html の前）。英数字だけの語は小文字・空白はハイフン（JC-STAR → jc-star）、
+    ほかはその語のまま（ファイル名・URL に使えない文字だけ消す）。重なったときの -2 は build の中でつける。"""
+    term = str(term or "").strip()
+    if re.fullmatch(r"[\x20-\x7e]+", term):
+        s = re.sub(r"[^a-z0-9-]", "", re.sub(r"\s+", "-", term.lower()))
+        s = re.sub(r"-{2,}", "-", s).strip("-")
+        if s:
+            return s
+    return BAD_CHARS.sub("", term).rstrip(".") or "term"
+
+
+def g_href(slug: str) -> str:
+    return "/g/" + quote(slug) + ".html"
+
+
+def utf16_len(s: str) -> int:
+    return len(s.encode("utf-16-le")) // 2  # JS の length と同じ数え方（長い語から先に探す順番をそろえる）
+
+
+class Glossary:
+    """data/glossary.json の用語。find(記事) で、その記事に出てくる用語（term）を出てくる順に返す。"""
+
+    def __init__(self, entries):
+        self.entries = [e for e in entries if isinstance(e, dict) and e.get("term")]
+        self.by_key = {}
+        for e in self.entries:
+            for k in [e["term"], *(e.get("aliases") or [])]:
+                if k:
+                    self.by_key[k] = e
+        keys = sorted(self.by_key, key=utf16_len, reverse=True)
+        self.rx = re.compile("|".join(re.escape(k) for k in keys)) if keys else None
+
+    def find_text(self, text: str, found: list):
+        if not self.rx or not text:
+            return
+        pos = 0
+        while True:
+            m = self.rx.search(text, pos)
+            if not m:
+                return
+            key = m.group(0)
+            # 英字の略語は前後が英数字でないときだけ（glossary.js と同じ。例: "GDP"）
+            if ASCII_KEY.match(key) and (WORD_CHAR.match(text[m.start() - 1] if m.start() else "")
+                                         or WORD_CHAR.match(text[m.end()] if m.end() < len(text) else "")):
+                pos = m.start() + 1
+                continue
+            t = self.by_key[key]["term"]
+            if t not in found:
+                found.append(t)
+            pos = m.end()
+
+    def find(self, it) -> list:
+        found = []
+        texts = [it.get("title"), it.get("summary")]
+        for x in it.get("explain") or []:
+            if isinstance(x, dict):
+                texts += [x.get("q"), x.get("a")]
+        texts += list(it.get("points") or []) + list(it.get("quotes") or [])
+        for s in texts:
+            if isinstance(s, str):
+                self.find_text(s, found)
+        return found
+
+
+KANA_ROWS = [("あ行", "あいうえおぁぃぅぇぉゔ"), ("か行", "かきくけこがぎぐげごゕゖ"), ("さ行", "さしすせそざじずぜぞ"),
+             ("た行", "たちつてとだぢづでどっ"), ("な行", "なにぬねの"), ("は行", "はひふへほばびぶべぼぱぴぷぺぽ"),
+             ("ま行", "まみむめも"), ("や行", "やゆよゃゅょ"), ("ら行", "らりるれろ"), ("わ行", "わゐゑをんゎ")]
+OTHER_ROW = "英数字"
+
+
+def kana_row(yomi: str) -> str:
+    c = (yomi or "").strip()[:1]
+    if "ァ" <= c <= "ヶ":
+        c = chr(ord(c) - 0x60)  # カタカナ → ひらがな
+    for name, chars in KANA_ROWS:
+        if c and c in chars:
+            return name
+    return OTHER_ROW
+
+
+def cut(s, n=40) -> str:
+    s = re.sub(r"\s+", " ", str(s or "")).strip()
+    return s if len(s) <= n else s[: n - 1] + "…"
+
+
+def term_page(e, slug, its, related, extra, ctx: Ctx, slugs) -> str:
+    """g/<slug>.html：用語の簡単な説明と、その用語が出てくる記事。"""
+    term = e["term"]
+    canonical = SITE + g_href(slug)
+    title = f"{term}とは？意味と政府の最近の動き｜有権者"
+    desc = short_desc(e.get("short") or f"{term}の簡単な説明")
+    crumbs = [("有権者", SITE + "/"), ("用語集", SITE + "/g/"), (term, canonical)]
+    parts = [crumbs_nav(crumbs), f'<h1 class="page-title">{esc(term)}とは</h1>']
+    if e.get("yomi"):
+        parts.append(f'<p class="g-yomi">よみ：{esc(e["yomi"])}</p>')
+    aliases = [a for a in e.get("aliases") or [] if a and a != term]
+    if aliases:
+        parts.append(f'<p class="g-yomi">ほかの書き方：{esc("・".join(aliases))}</p>')
+    if e.get("short"):
+        parts.append(f'<p class="g-short">{esc(e["short"])}</p>')
+    for para in extra.get("intro") or []:
+        if isinstance(para, str) and para.strip():
+            parts.append(f'<p class="g-intro">{esc(para)}</p>')
+    links = []
+    if re.match(r"^https?://", str(e.get("src_url") or "")):
+        links.append(f'<a href="{esc(e["src_url"])}" target="_blank" rel="noopener">くわしく：{esc(e.get("src_name") or "公式ページ")} ↗</a>')
+    for r in extra.get("refs") or []:
+        if isinstance(r, dict) and re.match(r"^https?://", str(r.get("url") or "")):
+            site = f"（{esc(r['site'])}）" if r.get("site") else ""
+            links.append(f'<a href="{esc(r["url"])}" target="_blank" rel="noopener">「{esc(r.get("title") or r["url"])}」{site} ↗</a>')
+    if links:
+        parts.append('<ul class="g-src">' + "".join(f"<li>{x}</li>" for x in links) + "</ul>")
+    parts.append('<p class="g-note">有権者編集部による簡単な説明</p>')
+    parts.append(f'<section class="g-sec" aria-labelledby="g-articles"><h2 class="section-title" id="g-articles">{esc(term)}が出てくる記事（{len(its)}件）</h2>'
+                 f'<ol class="ml-list">{"".join(list_item(it, ctx, h="h3", tags=False) for it in its)}\n</ol></section>')
+    if related:
+        parts.append('<section class="g-sec" aria-labelledby="g-related"><h2 class="section-title" id="g-related">関連する言葉</h2><ul class="g-terms">'
+                     + "".join(f'<li><a href="{esc(g_href(slugs[t]))}">{esc(t)}</a></li>' for t in related) + "</ul></section>")
+    parts.append('<p class="ap-actions"><a class="ap-btn" href="/g/">用語集のほかの言葉</a><a class="ap-btn" href="/a/">すべての記事</a></p>')
+    ld = {"@context": "https://schema.org", "@type": "DefinedTerm", "name": term, "description": e.get("short", ""), "url": canonical,
+          "inDefinedTermSet": SITE + "/g/"}
+    if aliases:
+        ld["alternateName"] = aliases
+    body = '<div class="ap">\n' + "\n".join(parts) + "\n</div>"
+    return page(title=title, desc=desc, canonical=canonical, og_type="article", og_image=OG_DEFAULT,
+                ld=[ld, crumbs_ld(crumbs)], body=body)
+
+
+def g_index_page(terms, by_term, slugs) -> str:
+    """g/index.html：用語集（よみの最初の字で、あ行・か行…・英数字に分ける）。"""
+    canonical = SITE + "/g/"
+    crumbs = [("有権者", SITE + "/"), ("用語集", canonical)]
+    rows = {}
+    for e in terms:
+        rows.setdefault(kana_row(e.get("yomi") or e["term"]), []).append(e)
+    order = [n for n, _ in KANA_ROWS] + [OTHER_ROW]
+    names = [n for n in order if n in rows]
+    jump = "".join(f'<a href="#r-{i}">{esc(n)}</a>' for i, n in enumerate(order) if n in rows)
+    secs = []
+    for i, n in enumerate(order):
+        if n not in rows:
+            continue
+        es = sorted(rows[n], key=lambda e: ((e.get("yomi") or e["term"]), e["term"]))
+        lis = "".join(f'\n  <li><a href="{esc(g_href(slugs[e["term"]]))}">{esc(e["term"])}</a>'
+                      f'<span class="g-count">{len(by_term[e["term"]])}件</span><span class="g-sum">{esc(cut(e.get("short")))}</span></li>' for e in es)
+        secs.append(f'<section class="g-row" aria-labelledby="r-{i}"><h2 class="section-title" id="r-{i}">{esc(n)}<small>{len(es)}語</small></h2>'
+                    f'<ul class="g-list">{lis}\n</ul></section>')
+    body = f"""<div class="ap">
+{crumbs_nav(crumbs)}
+<h1 class="page-title">用語集</h1>
+<p class="lead">記事に出てくる言葉（{len(terms)}語）の簡単な説明です。言葉を押すと、くわしい説明と、その言葉が出てくる記事の一覧がひらきます。数字は記事の数です。</p>
+<nav class="chips g-jump" aria-label="行で選ぶ">{jump}</nav>
+{chr(10).join(secs)}
+</div>"""
+    desc = short_desc(f"有権者の記事に出てくる政治・行政の言葉{len(terms)}語を、初めての人にもわかるように短く説明した用語集です。" + "・".join(names) + "で引けます。")
+    ld = {"@context": "https://schema.org", "@type": "DefinedTermSet", "name": "有権者の用語集", "url": canonical,
+          "hasDefinedTerm": [{"@type": "DefinedTerm", "name": e["term"], "url": SITE + g_href(slugs[e["term"]])} for e in terms]}
+    return page(title="用語集（政治・行政の言葉をやさしく）｜有権者", desc=desc, canonical=canonical, og_type="website",
+                og_image=OG_DEFAULT, ld=[ld, crumbs_ld(crumbs)], body=body)
+
+
+def assign_slugs(terms) -> dict:
+    """用語 → ファイル名。重なったら -2, -3 …（Windows は大文字・小文字を区別しないので小文字で比べる）。"""
+    taken, out = {"index"}, {}
+    for e in terms:
+        base = term_slug(e["term"])
+        s, n = base, 2
+        while s.lower() in taken or s.lower() in WIN_RESERVED:
+            s, n = f"{base}-{n}", n + 1
+        taken.add(s.lower())
+        out[e["term"]] = s
+    return out
+
+
 def sitemap(items) -> str:
     urls = [f"  <url><loc>{SITE}{p}</loc></url>" for p in FIXED_PAGES]
     newest = max((lastmod(it) for it in items), default="", key=lambda s: s[:10] + s)
@@ -582,6 +775,20 @@ def build(root) -> dict:
     ctx.p_pages = set(by_pref)
     pref_home = {s.get("id"): s.get("home") for s in read_json(root / "data" / "pref_sources.json", []) if isinstance(s, dict)}
 
+    # 用語：記事ごとに出てくる用語。1件以上の記事に出てくる用語だけ g/ のページを作る
+    gl = Glossary(read_json(root / "data" / "glossary.json", []))
+    gp = read_json(root / "data" / "glossary_pages.json", {})  # 任意（Hermes があとで足す説明文）
+    gp = gp if isinstance(gp, dict) else {}
+    terms_of = {it["id"]: gl.find(it) for it in items}
+    by_term = {}
+    for it in items:
+        for t in terms_of[it["id"]]:
+            by_term.setdefault(t, []).append(it)
+    g_terms = [e for e in gl.entries if e["term"] in by_term]
+    g_terms = list({e["term"]: e for e in g_terms}.values())  # 同じ term が2回あっても1ページ
+    slugs = assign_slugs(g_terms)
+    g_order = {e["term"]: i for i, e in enumerate(g_terms)}
+
     # 前・次：同じ府省（地方は同じ県）の中で日付順
     by_group = {}
     for it in items:
@@ -589,13 +796,27 @@ def build(root) -> dict:
 
     o = Out(root)
     (root / "a").mkdir(exist_ok=True)
-    keep = {"a": {"index.html"}, "m": {"index.html"}, "p": {"index.html"}}
+    keep = {"a": {"index.html"}, "m": {"index.html"}, "p": {"index.html"}, "g": {"index.html"}}
     for grp in by_group.values():
         for i, it in enumerate(grp):  # grp は新しい順
             newer = grp[i - 1] if i > 0 else None
             older = grp[i + 1] if i + 1 < len(grp) else None
-            o.write(f"a/{it['id']}.html", article_page(it, ctx, newer, older))
+            words = [(t, slugs[t]) for t in terms_of[it["id"]] if t in slugs]
+            o.write(f"a/{it['id']}.html", article_page(it, ctx, newer, older, words))
             keep["a"].add(f"{it['id']}.html")
+
+    for e in g_terms:
+        t = e["term"]
+        co = {}
+        for it in by_term[t]:
+            for u in terms_of[it["id"]]:
+                if u != t and u in slugs:
+                    co[u] = co.get(u, 0) + 1
+        related = sorted(co, key=lambda u: (-co[u], g_order[u]))[:8]
+        extra = gp.get(t) if isinstance(gp.get(t), dict) else {}
+        o.write(f"g/{slugs[t]}.html", term_page(e, slugs[t], by_term[t], related, extra, ctx, slugs))
+        keep["g"].add(f"{slugs[t]}.html")
+    o.write("g/index.html", g_index_page(g_terms, by_term, slugs))
     o.write("a/index.html", index_page(items, ctx))
 
     for s, its in m_groups:
@@ -624,7 +845,8 @@ def build(root) -> dict:
     urls = [page_url(r) for r in o.changed + removed if r.endswith(".html")]
     return {"pages": len(items), "written": o.written, "deleted": deleted, "removed": removed, "skipped": skipped,
             "changed": o.changed, "urls": urls,
-            "counts": {"a": len(keep["a"]) - 1, "m": len(m_groups), "p": len(by_pref)}}
+            "counts": {"a": len(keep["a"]) - 1, "m": len(m_groups), "p": len(by_pref), "g": len(g_terms)},
+            "terms": {aid: [slugs[t] for t in ts if t in slugs] for aid, ts in terms_of.items()}}
 
 
 if __name__ == "__main__":
