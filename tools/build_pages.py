@@ -88,13 +88,13 @@ def header(current="") -> str:
         return ' aria-current="page"' if k == current else ""
     return f"""<header class="site-header">
   <div class="site-header-inner">
-    <a class="site-logo" href="/index.html">有権者</a>
+    <a class="site-logo" href="/">有権者</a>
     <nav class="site-nav" aria-label="メニュー">
       <ul>
-        <li><a href="/index.html#stream"{cur("stream")}>府省</a></li>
-        <li><a href="/index.html#opinion">オピニオン</a></li>
-        <li><a href="/index.html#local"{cur("local")}>地方</a></li>
-        <li><a href="/index.html#pledges" aria-label="公約チェッカー">公約<span class="nav-long">チェッカー</span></a></li>
+        <li><a href="/#stream"{cur("stream")}>府省</a></li>
+        <li><a href="/#opinion">オピニオン</a></li>
+        <li><a href="/#local"{cur("local")}>地方</a></li>
+        <li><a href="/#pledges" aria-label="公約チェッカー">公約<span class="nav-long">チェッカー</span></a></li>
         <li><a href="/about.html" aria-label="このサイトについて"><span class="nav-long">このサイトについて</span><span class="nav-short">概要</span></a></li>
       </ul>
     </nav>
@@ -274,7 +274,7 @@ def article_page(it, ctx: Ctx, newer, older) -> str:
     date = str(it.get("date", ""))
 
     crumb_nav = ('<nav class="ap-crumbs" aria-label="現在地"><ol>'
-                 '<li><a href="/index.html">有権者</a></li>'
+                 '<li><a href="/">有権者</a></li>'
                  + (f'<li><a href="{esc(ctx.list_href(it, gid))}">{esc(gname)}</a></li>' if gname else "")
                  + '<li><a href="/a/">記事一覧</a></li></ol></nav>')
 
