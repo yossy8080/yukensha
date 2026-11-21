@@ -420,6 +420,34 @@ class Handler(SimpleHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(b)
 
+    def _origins(self):
+        return {f"http://localhost:{PORT}", f"http://127.0.0.1:{PORT}"}
+
+    def parse_request(self):
+        # Host が localhost / 127.0.0.1 でなければ断る（よそのサイトが DNS を差し替えて下書きを読むのを防ぐ）
+        if not super().parse_request():
+            return False
+        if "http://" + self.headers.get("Host", "").lower() not in self._origins():
+            b = "Forbidden (Host)\n".encode("utf-8")
+            self.send_response(403)
+            self.send_header("Content-Type", "text/plain; charset=utf-8")
+            self.send_header("Content-Length", str(len(b)))
+            self.end_headers()
+            self.wfile.write(b)
+            return False
+        return True
+
+    def _post_ok(self):
+        """確認ページ（同じサーバーのページ）からの POST だけを通す。よそのサイトからの書き換えを防ぐ。"""
+        origin = self.headers.get("Origin")
+        if origin is not None:
+            if origin not in self._origins():
+                return False
+        elif self.headers.get("Sec-Fetch-Site", "none") not in ("same-origin", "none"):
+            return False
+        # application/json だとブラウザはよそのサイトから送る前に確かめる（このサーバーは許可を返さない）
+        return self.headers.get("Content-Type", "").lower().startswith("application/json")
+
     def do_GET(self):
         if self.path.split("?")[0] in ("/review", "/review/"):
             b = REVIEW_HTML.read_bytes()
@@ -447,6 +475,8 @@ class Handler(SimpleHTTPRequestHandler):
         actions = {"/api/publish": publish, "/api/manage": manage, "/api/publish_opinion": publish_opinion}
         if self.path not in actions:
             return self.send_error(404)
+        if not self._post_ok():
+            return self._json({"error": "このページ以外からの書き換えは受け付けません"}, 403)
         n = int(self.headers.get("Content-Length", 0))
         try:
             self._json(actions[self.path](json.loads(self.rfile.read(n) or b"{}")))
