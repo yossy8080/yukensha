@@ -9,8 +9,10 @@
      すでに公開中の記事と同じ id の下書きは「書き直し」として、その記事を置きかえる
      地方の下書き（"scope": "local" と "pref": 都道府県id）は data/local_news.json に入れる（news.json には入れない）
   2. 「公開しない」を選んだものは drafts/rejected.json に移す
-  3. 記事ごとのページ（a/）と sitemap.xml を作り直す（tools/build_pages.py。公開済みの記事の修正・非公開に戻すときも）
-  4. git にコミットする（記事が使っている写真 assets/photos/ と a/・sitemap.xml も一緒に。GitHubとつながっていれば push もする）
+  3. 記事ごとのページ（a/）・府省別（m/）・都道府県別（p/）・用語（g/）・feed.xml・sitemap.xml を作り直す
+     （tools/build_pages.py。公開済みの記事の修正・非公開に戻すときも）
+  4. git にコミットする（記事が使っている写真 assets/photos/ と作り直したページも一緒に。GitHubとつながっていれば push もする）
+  5. push できたら、変わったページを IndexNow で検索エンジンに知らせる（tools/indexnow.py。失敗しても公開は止めない）
 自分のPCの中だけで動き、外からはアクセスできません（127.0.0.1 のみ）。
 公開の振り分けの確認: python tools/check_review_local.py（一時フォルダのコピーで試す。本物の data/ には触らない）
 """
@@ -226,41 +228,85 @@ def publish(body: dict) -> dict:
         parts.append(f"地方{lnew}件公開")
     if lupdated:
         parts.append(f"地方{lupdated}件書き直し")
-    msg = save_git("記事を" + "・".join(parts) + f"（{now[:10]}）", pages=True) if parts else ""
+    msg = save_git("記事を" + "・".join(parts) + f"（{now[:10]}）", pages=True, ids=[p["id"] for p in published]) if parts else ""
     return {"published": new + lnew, "updated": updated + lupdated, "local_published": lnew, "local_updated": lupdated,
             "rejected": len(rejected), "remaining": len(remaining), "git": msg}
 
 
-def rebuild_pages() -> str:
-    """記事ごとのページ（a/）と sitemap.xml を作り直す（tools/build_pages.py）。
-    失敗しても公開は止めない：保存はそのままにして、理由を返す（成功したら ""）。"""
+def load_tool(name):
+    import importlib.util
+    spec = importlib.util.spec_from_file_location(name, Path(__file__).resolve().parent / f"{name}.py")
+    m = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(m)
+    return m
+
+
+def rebuild_pages():
+    """記事ごとのページ（a/）・府省別（m/）・都道府県別（p/）・用語（g/）・feed.xml・sitemap.xml を作り直す（tools/build_pages.py）。
+    失敗しても公開は止めない：保存はそのままにして、理由を返す。(note, build の結果) を返す（成功したら note は ""、失敗したら結果は None）。"""
     try:
-        import importlib.util
-        spec = importlib.util.spec_from_file_location("build_pages", Path(__file__).resolve().parent / "build_pages.py")
-        bp = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(bp)
-        r = bp.build(ROOT)
+        r = load_tool("build_pages").build(ROOT)
     except Exception as e:
-        return f"記事ページ（a/）の作り直しに失敗しました（記事の保存は完了しています。python tools/build_pages.py で作り直せます）: {e}"
+        return f"記事ページ（a/）の作り直しに失敗しました（記事の保存は完了しています。python tools/build_pages.py で作り直せます）: {e}", None
     if r.get("skipped"):
-        return "記事ページを作れなかった記事（id がファイル名に使えない）: " + ", ".join(r["skipped"])
-    return ""
+        return "記事ページを作れなかった記事（id がファイル名に使えない）: " + ", ".join(r["skipped"]), r
+    return "", r
 
 
-def save_git(message: str, pages=False) -> str:
+# build_pages.py が作る・書きかえるもの（公開・修正のときに一緒にコミットする）
+PAGE_PATHS = ("a", "m", "p", "g", "feed.xml", "sitemap.xml", "ministries.html", "local.html", "pledges.html")
+SITE = "https://yukensha.com"
+
+
+def indexnow_urls(result, ids) -> list:
+    """IndexNow に送る URL：公開・修正・非公開にした記事と、その府省（県）の一覧・用語のページ、トップ・記事一覧・feed、
+    それに今回の作り直しで中身が変わったページ。"""
+    from urllib.parse import quote
+    result = result or {}
+    items = {n.get("id"): n for n in read(NEWS, []) + read(LOCAL_NEWS, [])}
+    urls = []
+    for aid in ids:
+        urls.append(f"{SITE}/a/{aid}.html")
+        it = items.get(aid)
+        if it:
+            local = "pref" in it
+            gids = [it.get("pref"), *(it.get("pref_also") or [])] if local else [it.get("ministry"), *(it.get("also") or [])]
+            for g in gids:
+                rel = f"{'p' if local else 'm'}/{g}.html"
+                if g and (ROOT / rel).is_file():
+                    urls.append(f"{SITE}/{rel}")
+        for slug in (result.get("terms") or {}).get(aid, []):
+            urls.append(f"{SITE}/g/{quote(slug)}.html")
+    urls += [SITE + "/", SITE + "/a/", SITE + "/feed.xml"]
+    urls += result.get("urls") or []
+    return urls
+
+
+def save_git(message: str, pages=False, ids=()) -> str:
     """data/news.json・data/local_news.json と、記事が使っている写真をコミットしてGitHubに送る。結果をやさしい日本語で返す。
     写真は news.json / local_news.json のどれかの記事が使っているものだけ入れる（使っていない写真は git に入れない）。
-    pages=True（記事を公開・修正・非公開にしたとき）は、先に記事ごとのページと sitemap.xml を作り直して一緒にコミットする。"""
-    note = rebuild_pages() if pages else ""
+    pages=True（記事を公開・修正・非公開にしたとき）は、先にページ（a/・m/・p/・g/・feed.xml・sitemap.xml）を作り直して一緒にコミットする。
+    ids = 公開・修正・非公開にした記事の id（push できたら IndexNow で検索エンジンに知らせる）。"""
+    note, result = rebuild_pages() if pages else ("", None)
     if not (ROOT / ".git").exists():
         return note
-    msg = git_commit(message, pages)
+    msg = git_commit(message, pages, ids, result)
     return f"{msg} {note}" if note else msg
 
 
-def git_commit(message: str, pages: bool) -> str:
+def notify_indexnow(result, ids) -> str:
+    """push できたあとに IndexNow に送る。どんな失敗でも公開は止めない（結果を一言で返すだけ）。"""
+    try:
+        return load_tool("indexnow").submit(indexnow_urls(result, ids))
+    except Exception as e:
+        return f"IndexNow：送れませんでした（{type(e).__name__}）"
+
+
+def git_commit(message: str, pages: bool, ids=(), result=None) -> str:
     if pages:
-        git("add", "-A", "--", "a", "sitemap.xml")  # -A：非公開に戻した記事の消えたページも入れる
+        for p in PAGE_PATHS:  # -A：非公開に戻した記事の消えたページも入れる。1つずつ（無いパスがあっても、ほかは入れる）
+            if (ROOT / p).exists() or git("ls-files", "--", p)[1]:
+                git("add", "-A", "--", p)
     git("add", "data/news.json")
     if LOCAL_NEWS.exists():
         git("add", "data/local_news.json")
@@ -274,6 +320,8 @@ def git_commit(message: str, pages: bool) -> str:
     if git("remote")[1]:
         code, out = git("push")
         msg += " 1分ほどで公開サイトに反映されます。" if code == 0 else f" GitHubへの送信に失敗: {out[-200:]}"
+        if code == 0 and pages:
+            msg += " " + notify_indexnow(result, ids)
     return msg
 
 
@@ -350,7 +398,8 @@ def manage(body: dict) -> dict:
         parts.append(f"地方{ledited}件を修正")
     if lremoved:
         parts.append(f"地方{len(lremoved)}件を非公開")
-    msg = save_git("公開済みの記事：" + "・".join(parts) + f"（{now[:10]}）", pages=True) if parts else ""
+    touched = [n["id"] for n in keep + lkeep if n["id"] in edits or n["id"] in ledits] + [n["id"] for n in removed + lremoved]
+    msg = save_git("公開済みの記事：" + "・".join(parts) + f"（{now[:10]}）", pages=True, ids=touched) if parts else ""
     return {"edited": edited + ledited, "unpublished": len(removed) + len(lremoved), "total": len(keep),
             "local_edited": ledited, "local_unpublished": len(lremoved), "git": msg}
 

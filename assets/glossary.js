@@ -8,7 +8,7 @@
   if (window.YG) return;
 
   // 用語を探さない場所（リンク・見出し・日付・タグなど）
-  const SKIP = "a, h1, h2, h3, h4, h5, h6, button, .term, script, style, time, .tags, .tag, .kicker, figcaption, [data-no-gloss], .gl-pop";
+  const SKIP = "a, h1, h2:not(.explain-q), h3, h4, h5, h6, button, .term, script, style, time, .tags, .tag, .kicker, figcaption, [data-no-gloss], .gl-pop";
   const ASCII = /^[\x21-\x7e]+$/;
   const isWordChar = (c) => /[A-Za-z0-9]/.test(c || "");
 
