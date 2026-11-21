@@ -1,11 +1,15 @@
-"""有権者：記事ごとのページ（a/<記事id>.html）・記事一覧（a/index.html）・sitemap.xml を作る
+"""有権者：検索に載せるための静的なページを作る
 
 使い方: python tools/build_pages.py
-- data/news.json（国）と data/local_news.json（地方）の記事を1件ずつ、本文の入った静的な HTML にする（Google に1件ずつ載るように）
-- 公開をやめた記事のページ（a/ にあって、もう JSON に無い id）は消す。a/index.html は消さない
-- sitemap.xml を作り直す（決まったページ + /a/ + 全記事）
+- a/<記事id>.html 記事ごとのページ（本文・この記事に出てくる言葉・関連する記事）と a/index.html 記事一覧
+- m/<府省id>.html・m/index.html 府省ごとの記事一覧 / p/<県id>.html・p/index.html 都道府県ごとの記事一覧
+- g/<用語>.html・g/index.html 用語集（data/glossary.json の語のうち、記事に出てくるものだけ。
+  data/glossary_pages.json があれば説明文 intro と参考リンク refs も出す。無くてもよい）
+- feed.xml（Atom・新しい記事 50件）と sitemap.xml（決まったページ + /a/ + 全記事 + m/ p/ g/）
+- ministries.html・local.html の <!-- STATIC-LIST --> と pledges.html の <!-- STATIC-PLEDGES --> のあいだに、文字だけの一覧を入れる
+- 公開をやめた記事・記事の無くなった府省・県・用語のページは消す。index.html は消さない
 - 入力の JSON には書き込まない。確認ページ（tools/review_server.py）で公開・修正すると自動で呼ばれる
-- 書くのは中身が変わったファイルだけ（git の差分が出ないように）
+- 書くのは中身が変わったファイルだけ（git の差分が出ないように）。build() は変わったページの URL も返す（IndexNow 用）
 """
 import datetime as dt
 import html
@@ -442,7 +446,8 @@ def index_page(items, ctx: Ctx) -> str:
             + "\n".join(secs))
     ld = {"@context": "https://schema.org", "@type": "CollectionPage", "name": "記事一覧｜有権者", "url": SITE + "/a/",
           "isPartOf": {"@type": "WebSite", "name": "有権者", "url": SITE + "/"}}
-    return page(title="記事一覧｜有権者", desc=desc, canonical=SITE + "/a/", og_type="website", og_image=OG_DEFAULT, ld=[ld], body=body)
+    crumbs = crumbs_ld([("有権者", SITE + "/"), ("記事一覧", SITE + "/a/")])
+    return page(title="記事一覧｜有権者", desc=desc, canonical=SITE + "/a/", og_type="website", og_image=OG_DEFAULT, ld=[ld, crumbs], body=body)
 
 
 # ── 府省ごと（m/）・都道府県ごと（p/）の一覧 ──
@@ -1025,7 +1030,8 @@ if __name__ == "__main__":
     except Exception:
         pass
     r = build(Path(__file__).resolve().parent.parent)
-    print(f"記事ページ {r['pages']}件（書きかえ {r['written']}ファイル）")
+    c = r["counts"]
+    print(f"記事ページ {r['pages']}件・府省 {c['m']}・都道府県 {c['p']}・用語 {c['g']}（書きかえ {r['written']}ファイル）")
     if r["deleted"]:
         print("消したページ（公開をやめた記事）:", ", ".join(r["deleted"]))
     if r["skipped"]:
