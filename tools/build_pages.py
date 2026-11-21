@@ -221,13 +221,13 @@ def latest(items) -> str:
     return max((lastmod(it) for it in items), default="", key=lambda s: s[:10] + s)
 
 
-def photo_html(p) -> str:
+def photo_html(p, lazy=False) -> str:
     w, h = p.get("width"), p.get("height")
     size = f' width="{w}" height="{h}" style="aspect-ratio:{w}/{h}"' if isinstance(w, int) and isinstance(h, int) and w > 0 and h > 0 else ""
     link = f'（<a href="{esc(p["page_url"])}" target="_blank" rel="noopener">出典ページ ↗</a>）' if re.match(r"^https?://", str(p.get("page_url") or "")) else ""
     cap = esc(p.get("credit")) + link
     src = "/" + str(p["src"]).lstrip("/")
-    return (f'<figure class="photo"><img src="{esc(src)}" alt="{esc(p.get("alt"))}" decoding="async"{size}>'
+    return (f'<figure class="photo"><img src="{esc(src)}" alt="{esc(p.get("alt"))}"{' loading="lazy"' if lazy else ""} decoding="async"{size}>'
             + (f"<figcaption>{cap}</figcaption>" if cap else "") + "</figure>")
 
 
@@ -245,10 +245,13 @@ def refs_line(it) -> str:
 
 
 def explain_html(it) -> str:
+    """背景の説明。問いを <h2> にする（「〇〇って？」で検索されたときに見出しとして読まれるように）。"""
     qa = [x for x in it.get("explain") or [] if isinstance(x, dict) and (x.get("q") or x.get("a"))]
     if not qa:
         return ""
-    return '<section class="explain" aria-label="背景の説明"><dl>' + "".join(f"<dt>{esc(x.get('q'))}</dt><dd>{esc(x.get('a'))}</dd>" for x in qa) + "</dl></section>"
+    return ('<section class="explain" aria-label="背景の説明">'
+            + "".join((f'<h2 class="explain-q">{esc(x["q"])}</h2>' if x.get("q") else "")
+                      + (f'<p class="explain-a">{esc(x["a"])}</p>' if x.get("a") else "") for x in qa) + "</section>")
 
 
 def quotes_html(it) -> str:
@@ -315,6 +318,33 @@ def words_html(words) -> str:
             + "".join(f'<li><a href="{esc(g_href(s))}">{esc(t)}</a></li>' for t, s in words) + "</ul></section>")
 
 
+def related_html(related, ctx: Ctx) -> str:
+    if not related:
+        return ""
+    lis = "".join(f'<li><a href="/a/{esc(r["id"])}.html">{esc(r.get("title"))}</a>'
+                  f'<span class="ap-rel-meta"><time datetime="{esc(r["date"])}">{fmt_date(r["date"])}</time>・{esc(ctx.name(r, ctx.gid(r)))}</span></li>'
+                  for r in related)
+    return f'<section class="ap-sec ap-related" aria-labelledby="ap-related"><h2 class="ap-h2" id="ap-related">関連する記事</h2><ul class="ap-rel">{lis}</ul></section>'
+
+
+def related_items(items, ctx: Ctx, terms_of, n=4) -> dict:
+    """関連する記事：同じ用語 ×3 + 同じタグ ×2 + 同じ府省（県）×1。同点は新しい記事が先。その記事自身は入れない。"""
+    info = {it["id"]: (set(terms_of[it["id"]]), set(it.get("tags") or []), (ctx.is_local(it), ctx.gid(it))) for it in items}
+    newest = sorted(items, key=sort_key, reverse=True)
+    out = {}
+    for it in items:
+        tm, tg, grp = info[it["id"]]
+        scored = []
+        for j, x in enumerate(newest):
+            if x["id"] == it["id"]:
+                continue
+            xt, xg, xgrp = info[x["id"]]
+            scored.append((-(3 * len(tm & xt) + 2 * len(tg & xg) + (grp == xgrp)), j, x))
+        scored.sort(key=lambda s: (s[0], s[1]))
+        out[it["id"]] = [x for _, _, x in scored[:n]]
+    return out
+
+
 def article_page(it, ctx: Ctx, newer, older, words=(), related=()) -> str:
     aid = it["id"]
     canonical = f"{SITE}/a/{aid}.html"
@@ -346,7 +376,7 @@ def article_page(it, ctx: Ctx, newer, older, words=(), related=()) -> str:
     crumbs.append((it.get("title", ""), canonical))
     crumb_ld = crumbs_ld(crumbs)
 
-    ph = [photo_html(p) for p in photos]
+    ph = [photo_html(p, lazy=i > 0) for i, p in enumerate(photos)]  # 1枚目は見出しのすぐ下なので先に読む
     pts = "".join(f"<li>{esc(p)}</li>" for p in it.get("points") or [])
     tags = "".join(f'<span class="tag">{esc(t)}</span>' for t in it.get("tags") or [])
     ex = explain_html(it)
@@ -372,12 +402,13 @@ def article_page(it, ctx: Ctx, newer, older, words=(), related=()) -> str:
   {ph[0] if ph else ""}
   <p class="summary">{esc(it.get("summary"))}</p>
   {ex}{quotes_html(it)}
-  {(('<p class="points-label" data-no-gloss>今回のポイント</p>' if ex else "") + f'<ul class="points">{pts}</ul>') if pts else ""}
+  {(('<h2 class="points-label" data-no-gloss>今回のポイント</h2>' if ex else "") + f'<ul class="points">{pts}</ul>') if pts else ""}
   {"".join(ph[1:])}
   {source_line(it)}{refs_line(it)}
   {f'<p class="tags">{tags}</p>' if tags else ""}
 </article>
 {words_html(words)}
+{related_html(related, ctx)}
 <nav class="ap-links" aria-label="ほかの記事">
   <p class="ap-actions"><a class="ap-btn" href="{esc(ctx.view_href(it))}">3Dの記事ビューで読む</a>{f'<a class="ap-btn" href="{esc(ctx.list_href(it, gid))}">{esc(gname)}の記事一覧</a>' if gname else ""}<a class="ap-btn" href="/a/">すべての記事</a></p>
   {f'<div class="ap-steps">{steps}</div>' if steps else ""}
@@ -788,6 +819,7 @@ def build(root) -> dict:
     g_terms = list({e["term"]: e for e in g_terms}.values())  # 同じ term が2回あっても1ページ
     slugs = assign_slugs(g_terms)
     g_order = {e["term"]: i for i, e in enumerate(g_terms)}
+    related = related_items(items, ctx, terms_of)
 
     # 前・次：同じ府省（地方は同じ県）の中で日付順
     by_group = {}
@@ -802,7 +834,7 @@ def build(root) -> dict:
             newer = grp[i - 1] if i > 0 else None
             older = grp[i + 1] if i + 1 < len(grp) else None
             words = [(t, slugs[t]) for t in terms_of[it["id"]] if t in slugs]
-            o.write(f"a/{it['id']}.html", article_page(it, ctx, newer, older, words))
+            o.write(f"a/{it['id']}.html", article_page(it, ctx, newer, older, words, related[it["id"]]))
             keep["a"].add(f"{it['id']}.html")
 
     for e in g_terms:

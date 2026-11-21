@@ -12,6 +12,17 @@
 .ap .summary { font-size: 18px; margin-bottom: 18px; }
 .ap .source { font-size: 14px; line-height: 1.8; }
 .ap .source + .source { margin-top: 6px; }
+/* 背景の説明の問い・「今回のポイント」は検索のために <h2> だが、見た目は前の dt・小見出しのまま */
+.ap .explain-q { font-family: inherit; font-size: 1em; font-weight: 700; line-height: 1.9; letter-spacing: 0; color: var(--glow); margin: 0; }
+.ap .explain-a { margin: 0 0 12px; line-height: 1.85; }
+.ap .explain-a:last-child { margin-bottom: 0; }
+.ap h2.points-label { font-family: inherit; line-height: 1.9; }
+.ap-rel { list-style: none; margin: 0; padding: 0; }
+.ap-rel li { padding: 10px 0; border-bottom: 1px solid var(--rule); line-height: 1.6; }
+.ap-rel a { text-decoration: none; font-size: 16px; }
+.ap-rel a:hover { text-decoration: underline; }
+.ap-rel-meta { display: block; margin-top: 2px; font-size: 13px; color: var(--muted); }
+.ap-sec + .ap-links { margin-top: 32px; }
 
 .ap-links { margin: 28px 0 0; }
 .ap-actions { display: flex; flex-wrap: wrap; gap: 10px; margin: 0 0 20px; }
