@@ -234,6 +234,29 @@ html.pc-detail-open { overflow: hidden; } /* パネルを開いている間は�
 @media (prefers-reduced-motion: no-preference) {
   .pc-dialog[open] { animation: pc-in .25s ease-out; }
 }
+
+/* 公約の一覧（文字だけ）：tools/build_pages.py が pledges.html の下に入れる。ふだんは閉じている */
+.static-pledges-wrap { padding-top: 4vh; padding-bottom: 8vh; }
+.static-pledges { max-width: 920px; margin: 0 auto; border-radius: 18px; border: 1px solid var(--pc-line); background: var(--pc-panel); }
+.static-pledges > summary { cursor: pointer; min-height: 48px; padding: 12px 22px; font-weight: 700; font-size: 16px; display: flex; align-items: center; gap: 10px; }
+.static-pledges > summary::before { content: "＋"; color: var(--pc-accent); }
+.static-pledges[open] > summary::before { content: "－"; }
+.sp-body { padding: 0 22px 22px; }
+.sp-meta, .sp-note { margin: 0 0 10px; font-size: 14px; color: var(--sub); }
+.sp-meta a { color: var(--text); }
+.sp-theme h2 { margin: 28px 0 6px; padding-bottom: 6px; border-bottom: 1px solid var(--pc-line); font-family: var(--serif); font-size: 22px; letter-spacing: .08em; }
+.sp-party h3 { margin: 18px 0 2px; font-size: 17px; display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; }
+.sp-side { font-size: 12px; font-weight: 400; padding: 0 8px; border: 1px solid var(--pc-line); border-radius: 999px; color: var(--sub); }
+.sp-score { margin: 0 0 6px; font-size: 14px; color: var(--sub); }
+.sp-score b { color: var(--text); }
+.sp-list { list-style: none; margin: 0; padding: 0; }
+.sp-pledge { padding: 12px 0 6px; border-top: 1px dashed var(--pc-line); }
+.sp-text { margin: 0 0 6px; font-weight: 700; line-height: 1.75; }
+.sp-pledge .source { margin: 0 0 4px; font-size: 13px; }
+@media (max-width: 720px) {
+  .static-pledges > summary { padding: 12px 16px; }
+  .sp-body { padding: 0 16px 18px; }
+}
 @keyframes pc-in { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
 @media print {
   .night, #scene, .pc-dialog { display: none !important; }

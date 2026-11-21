@@ -10,6 +10,7 @@
 import datetime as dt
 import html
 import json
+import math
 import re
 import sys
 from pathlib import Path
@@ -759,13 +760,143 @@ def assign_slugs(terms) -> dict:
     return out
 
 
-def sitemap(items) -> str:
+# ── 公約チェッカー（pledges.html）の文字だけの一覧：pledges.js と同じ言葉・同じ計算 ──
+
+STAGE_NAMES = ["動きなし", "国会で求めた", "具体案を出した", "決定に近づいた", "実現した"]  # pledges.js の STAGES の name
+MAX_STAGE = 4
+
+
+def stage_of(p) -> int:
+    try:
+        v = float(p.get("stage") or 0)
+    except (TypeError, ValueError):
+        v = 0
+    if v != v:  # NaN
+        v = 0
+    return max(0, min(MAX_STAGE, int(math.floor(v + 0.5))))  # JS の Math.round と同じ（0.5 は切り上げ）
+
+
+def theme_rate(ps):
+    if not ps:
+        return None
+    return int(math.floor(sum(stage_of(p) for p in ps) / len(ps) / MAX_STAGE * 100 + 0.5))
+
+
+def fmt_day(iso) -> str:
+    return fmt_date(iso) if re.match(r"^\d{4}-\d{2}-\d{2}$", str(iso or "")) else esc(iso)
+
+
+def ext_link(url, label) -> str:
+    """pledges.js の ext と同じ：http(s) の URL ならリンク、そうでなければ文字だけ（label はエスケープ済み）。"""
+    return f'<a href="{esc(url)}" target="_blank" rel="noopener">{label}</a>' if re.match(r"^https?://", str(url or "")) else label
+
+
+def static_pledges(data) -> str:
+    """pledges.html の <!-- STATIC-PLEDGES --> のあいだ：テーマ（h2）→ 党（h3）→ 公約の文・段階・今の状況・出典・行動の記録。"""
+    if not isinstance(data, dict):
+        return ""
+    themes = [t for t in data.get("themes") or [] if isinstance(t, dict)]
+    parties = sorted([p for p in data.get("parties") or [] if isinstance(p, dict)], key=lambda p: -(p.get("seats_shugiin") or 0))
+    el = data.get("election") or {}
+    meta = f'対象：{ext_link(el.get("url"), esc(el.get("name") or ""))}' + (f'（{fmt_day(el["date"])}投開票）' if el.get("date") else "")
+    if data.get("updated"):
+        meta += f' ・ 更新 {fmt_day(data["updated"])}'
+    secs = []
+    for t in themes:
+        blocks = []
+        for p in parties:
+            ps = [x for x in p.get("pledges") or [] if isinstance(x, dict) and x.get("theme") == t.get("id")]
+            if not ps:
+                continue
+            items = []
+            for pl in ps:
+                st, src = stage_of(pl), pl.get("src") or {}
+                acts = sorted([a for a in pl.get("actions") or [] if isinstance(a, dict)], key=lambda a: str(a.get("date")))
+                tl = "".join(
+                    f'<li><p class="pc-tl-head"><time datetime="{esc(a.get("date"))}">{fmt_day(a.get("date"))}</time><span class="pc-tl-type">{esc(a.get("type"))}</span>'
+                    + (f'<span class="pc-tl-stage">段階{esc(a["stage"])}</span>' if isinstance(a.get("stage"), (int, float)) and not isinstance(a.get("stage"), bool) else "")
+                    + f'</p><p class="pc-tl-text">{esc(a.get("text"))}</p>'
+                    + (f'<p class="source">出典：{ext_link(a["src"].get("url"), "「" + esc(a["src"].get("title")) + "」" + ("（" + esc(a["src"]["site"]) + "）" if a["src"].get("site") else "") + " ↗")}</p>'
+                       if isinstance(a.get("src"), dict) else "") + "</li>" for a in acts)
+                items.append(
+                    f'<li class="sp-pledge"><p class="sp-text">{esc(pl.get("text"))}</p>'
+                    + (f'<blockquote class="pc-quote">「{esc(pl["quote"])}」</blockquote>' if pl.get("quote") else "")
+                    + f'<p class="source">公約の出典：{ext_link(src.get("url"), "「" + esc(src.get("title")) + "」" + esc(src.get("page") or "") + " ↗")}</p>'
+                    + f'<p class="pc-stage-now">段階 <b>{st}</b> / {MAX_STAGE}：{esc(STAGE_NAMES[st])}</p>'
+                    + (f'<p class="pc-status"><span>今の状況</span>{esc(pl["status"])}</p>' if pl.get("status") else "")
+                    + '<h4 class="pc-tl-title">行動の記録</h4>'
+                    + (f'<ol class="pc-timeline">{tl}</ol>' if tl else '<p class="pc-empty">出典つきで確かめられた行動は、まだありません。</p>')
+                    + "</li>")
+            side = esc(p.get("side"))
+            blocks.append(f'\n<section class="sp-party"><h3>{esc(p.get("name"))}<span class="sp-side">{side}</span></h3>'
+                          f'<p class="sp-score">このテーマの達成率 <b>{theme_rate(ps)}%</b>（公約{len(ps)}件の段階の平均 ÷ 4）</p>'
+                          f'<ol class="sp-list">{"".join(items)}</ol></section>')
+        if blocks:
+            secs.append(f'\n<section class="sp-theme"><h2>{esc(t.get("name"))}</h2>{"".join(blocks)}\n</section>')
+    dummy = '<p class="pc-dummy-inline">ダミーデータです（実在の公約・行動ではありません）</p>' if data.get("_dummy") else ""
+    return (f'<section class="pc-section static-pledges-wrap" aria-label="公約の一覧（文字だけ）">\n<details class="static-pledges">'
+            f'<summary>公約の一覧（文字だけで見る）</summary>\n<div class="sp-body">\n<p class="sp-meta">{meta}</p>{dummy}'
+            '\n<p class="sp-note">上の画面と同じ内容を、テーマごと・党ごとに文字だけで並べています（衆議院の議席が多い順）。段階の決め方は「達成率の決め方」のとおりです。</p>'
+            f'{"".join(secs)}\n</div>\n</details>\n</section>')
+
+
+FEED_MAX = 50
+
+
+def rfc3339(it) -> str:
+    """Atom の日時（秒まで・時差つき）。日付しかないときはその日の 0 時（日本時間）。"""
+    for k in ("updated_at", "published_at"):
+        v = str(it.get(k) or "")
+        m = re.match(r"^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2})(:\d{2})?([+-]\d{2}:\d{2}|Z)$", v)
+        if m:
+            return m.group(1) + (m.group(2) or ":00") + m.group(3)
+    return str(it.get("date", ""))[:10] + "T00:00:00+09:00"
+
+
+def published3339(it) -> str:
+    return rfc3339({"published_at": it.get("published_at"), "date": it.get("date")})
+
+
+def feed(items, ctx: Ctx) -> str:
+    """feed.xml（Atom 1.0）：国と地方の新しい記事 50件。id はページの URL（変わらない）。"""
+    top = items[:FEED_MAX]
+    updated = max((rfc3339(it) for it in top), default="2026-01-01T00:00:00+09:00")
+    entries = []
+    for it in top:
+        url = f"{SITE}/a/{it['id']}.html"
+        cat = ctx.name(it, ctx.gid(it))
+        entries.append(f"""  <entry>
+    <title>{esc(it.get("title"))}</title>
+    <link rel="alternate" type="text/html" href="{esc(url)}"/>
+    <id>{esc(url)}</id>
+    <published>{published3339(it)}</published>
+    <updated>{rfc3339(it)}</updated>
+""" + (f'    <category term="{esc(cat)}"/>\n' if cat else "") + f"""    <summary>{esc(it.get("summary"))}</summary>
+  </entry>""")
+    return f"""<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="ja">
+  <title>有権者</title>
+  <subtitle>官邸・各府省と都道府県の発表を、出典リンクつきで要約したニュース</subtitle>
+  <link rel="alternate" type="text/html" href="{SITE}/"/>
+  <link rel="self" type="application/atom+xml" href="{SITE}/feed.xml"/>
+  <id>{SITE}/</id>
+  <updated>{updated}</updated>
+  <author><name>有権者</name><uri>{SITE}/</uri></author>
+{chr(10).join(entries)}
+</feed>
+"""
+
+
+def sitemap(items, extra=()) -> str:
+    """決まったページ + /a/ + 全記事 + extra（[(パス, lastmod)]：/m/・/p/・/g/ とその中のページ）。"""
     urls = [f"  <url><loc>{SITE}{p}</loc></url>" for p in FIXED_PAGES]
-    newest = max((lastmod(it) for it in items), default="", key=lambda s: s[:10] + s)
+    newest = latest(items)
     urls.append(f"  <url><loc>{SITE}/a/</loc>" + (f"<lastmod>{newest}</lastmod>" if newest else "") + "</url>")
     for it in items:
         lm = lastmod(it)
         urls.append(f"  <url><loc>{SITE}/a/{esc(it['id'])}.html</loc>" + (f"<lastmod>{esc(lm)}</lastmod>" if lm else "") + "</url>")
+    for path, lm in extra:
+        urls.append(f"  <url><loc>{esc(SITE + path)}</loc>" + (f"<lastmod>{esc(lm)}</lastmod>" if lm else "") + "</url>")
     return '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + "\n".join(urls) + "\n</urlset>\n"
 
 
@@ -863,6 +994,9 @@ def build(root) -> dict:
     o.write("p/index.html", p_index_page(by_pref, ctx))
     o.inject("ministries.html", "STATIC-LIST", static_ministries(m_groups))
     o.inject("local.html", "STATIC-LIST", static_prefs(by_pref, ctx))
+    pledges = read_json(root / "data" / "pledges.json", None)
+    if pledges is not None:
+        o.inject("pledges.html", "STATIC-PLEDGES", static_pledges(pledges))
 
     # もう無い記事・府省・県のページは消す（index.html は残す）
     deleted, removed = [], []
@@ -873,7 +1007,11 @@ def build(root) -> dict:
                 removed.append(f"{d}/{f.name}")
                 if d == "a":
                     deleted.append(f.name)
-    o.write("sitemap.xml", sitemap(items))
+    extra = [("/m/", latest(national))] + [(f"/m/{s['id']}.html", latest(its)) for s, its in m_groups]
+    extra += [("/p/", latest([it for its in by_pref.values() for it in its]))] + [(f"/p/{pid}.html", latest(its)) for pid, its in by_pref.items()]
+    extra += [("/g/", latest([it for its in by_term.values() for it in its]))] + [(g_href(slugs[e["term"]]), latest(by_term[e["term"]])) for e in g_terms]
+    o.write("sitemap.xml", sitemap(items, extra))
+    o.write("feed.xml", feed(items, ctx))
     urls = [page_url(r) for r in o.changed + removed if r.endswith(".html")]
     return {"pages": len(items), "written": o.written, "deleted": deleted, "removed": removed, "skipped": skipped,
             "changed": o.changed, "urls": urls,
