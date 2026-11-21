@@ -11,7 +11,7 @@
    - 地方の下書き（`"scope": "local"`）は `data/local_news.json` に入る（下の「地方（都道府県）」を参照）
 
 ## フォルダ
-- `index.html` トップ（夜の海と天の川のスクロールページ。府省ごとの章 → 物体をひらくと記事ビュー） / `ministries.html` 省庁別 / `local.html` 地方（3D の日本地図から都道府県を選ぶと、その県の記事が並ぶ。`?p=県id` でその県を直接開ける。下の「地方（都道府県）」を参照） / `pledges.html` 公約チェッカー（直近の衆院選で各党が約束したことと、その後の行動・達成率。`data/pledges.json` から `assets/pledges.js` + `pledges.css` で組み立てる。`#p=公約id` で詳細を直接開ける。3D の配色は `?v=a/b/c` の試作） / `opinion.html` オピニオン（準備中） / `about.html` このサイトについて
+- `index.html` トップ（夜の海と天の川のスクロールページ。府省ごとの章 → 物体をひらくと記事ビュー） / `ministries.html` 省庁別 / `local.html` 地方（3D の日本地図から都道府県を選ぶと、その県の記事が並ぶ。`?p=県id` でその県を直接開ける。下の「地方（都道府県）」を参照） / `pledges.html` 公約チェッカー（直近の衆院選で各党が約束したことと、その後の行動・達成率。`data/pledges.json` から `assets/pledges.js` + `pledges.css` で組み立てる。`#p=公約id` で詳細を直接開ける。3D の配色は `?v=a/b/c` の試作。いちばん下の「公約の一覧（文字だけで見る）」は検索用に build_pages.py が `<!-- STATIC-PLEDGES -->` のあいだに入れる） / `opinion.html` オピニオン（準備中） / `about.html` このサイトについて
   - `assets/home.js` + `home.css` トップの組み立て・スクロール演出 / `assets/hall.js` + `hall.css` 記事ビュー（`index.html#m=府省id`、`#a=記事id` で直接開ける）
   - 3D（Three.js r170 を CDN から。WebGL2 が使えない・読み込みに失敗・「動きを減らす」設定のときは CSS の明朝1文字のエンブレムに切り替わる）
     - `assets/scene3d.js` 全体のまとめ（カメラ・スクロールとの対応・クリック判定）
@@ -31,11 +31,34 @@
 Google が記事を1件ずつ検索に出せるように、記事ごとに本文の入ったふつうの HTML を置いている（`#a=記事id` のリーダーは JS で組み立てるので、検索には1件ずつ載らない）。
 - `a/<記事id>.html` 1記事1ページ（https://yukensha.com/a/<記事id>.html）。題名・要約・写真（確認済みのものだけ）・背景の説明・ポイント・出典、検索用の canonical・OGP・JSON-LD。「3Dの記事ビューで読む」で今までのリーダーへ
 - `a/index.html` 全記事の一覧（新しい順・月ごと）。全ページのフッターの「記事一覧」からリンク
-- `sitemap.xml` も同時に作り直す（決まった7ページ + `/a/` + 全記事）
-- 作るのは `tools/build_pages.py`（`data/news.json`・`data/local_news.json` を読むだけ）。見た目は `assets/style.css` + `assets/article.css`
-- **確認ページで公開・修正・非公開に戻すと自動で作り直して一緒にコミットする**。非公開にした記事のページは消える
-- 手で作り直すとき：`python tools/build_pages.py`（変わったファイルだけ書く）。確認：`python tools/test_build_pages.py`
+- 記事のページの下に「この記事に出てくる言葉」（用語集へのリンク）と「関連する記事」4件（同じ用語 ×3 + 同じタグ ×2 + 同じ府省・県 ×1 の点数。同点は新しい記事）。背景の説明の問いと「今回のポイント」は検索のために `<h2>`（見た目は前と同じ）
+- 作るのは `tools/build_pages.py`（`data/` の JSON を読むだけ。書き込まない）。見た目は `assets/style.css` + `assets/article.css`
+- **確認ページで公開・修正・非公開に戻すと自動で作り直して一緒にコミットする**（下の m/ p/ g/・feed・sitemap も）。非公開にした記事のページは消える
+- 手で作り直すとき：`python tools/build_pages.py`（変わったファイルだけ書く。続けて2回動かすと2回目は「書きかえ 0ファイル」）。確認：`python tools/test_build_pages.py`
 - 記事ビューの「リンクをコピー」はこのページの URL をコピーする
+- ホームへのリンクはどのページも `/`（`/index.html` にしない。同じページが2つの URL に分かれないように）
+
+## 府省別（`m/`）・都道府県別（`p/`）
+- `m/<府省id>.html` 記事が1件以上ある府省ごとに、その府省の記事を新しい順にすべて（`also` に入っている記事も）。`m/index.html` 府省の一覧（記事の数・いちばん新しい記事）
+- `p/<県id>.html` 記事が1件以上ある都道府県ごと（`pref_also` の記事も）。`p/index.html` 47都道府県を地方ごとに（記事のある県だけリンク）
+- 記事のページのパンくず・「〇〇の記事一覧」はここへ。`ministries.html?m=…`・`local.html?p=…` を開いたときは、JS が canonical をこのページに変える
+- `ministries.html`・`local.html` の下（フッターの上）の `<!-- STATIC-LIST:BEGIN -->`〜`<!-- STATIC-LIST:END -->` に、build_pages.py が文字だけの一覧を入れる（印のあいだは手で直さない。作り直すと消える）
+
+## 用語集（`g/`）
+- `g/<用語>.html` `data/glossary.json` の語のうち、公開中の記事（題名・要約・背景の説明・ポイント・発言）に1回以上出てくる語だけ。探し方は `assets/glossary.js` と同じ（長い語が先・英字の略語は前後が英数字でないときだけ）
+- ファイル名：英数字だけの語は小文字・空白はハイフン（JC-STAR → `jc-star.html`）、ほかは語のまま（`\/:*?"<>|#%&` と空白は消す）。重なったら `-2`。リンクは % で表す
+- 中身：よみ・短い説明（`short`）・「くわしく」の公式ページ・その語が出てくる記事・関連する言葉（同じ記事によく出てくる語 8つまで）。`g/index.html` はよみの最初の字で あ行〜わ行・英数字 に分ける
+- **`data/glossary_pages.json` は任意**（Hermes が書く、もっとくわしい説明）。形：`{"用語": {"intro": ["段落", …], "refs": [{"title", "site", "url"}]}}`。あれば説明文と参考リンクを足す。無くても作れる
+- glossary.json に無い語（例：JC-STAR）のページはできない。ページを作りたい語は glossary.json に足す
+
+## feed.xml・sitemap.xml
+- `feed.xml` 国と地方の新しい記事 50件（Atom 1.0。id は記事のページの URL）。どのページの `<head>` にも `<link rel="alternate" type="application/atom+xml" … href="/feed.xml">`
+- `sitemap.xml` 決まった7ページ + `/a/` + 全記事 + `/m/` `/p/` `/g/` とその中のページ（feed.xml は入れない）。lastmod はそのページに載っている記事のいちばん新しい更新日時。robots.txt はそのまま
+
+## IndexNow（Bing などにすぐ知らせる）
+- 鍵：`cd11b7311202af032809200bf75680c1`（公開してよいもの）。サイトの一番上の `cd11b7311202af032809200bf75680c1.txt` に鍵だけを書いてある（消さない）
+- 確認ページで公開・修正・非公開に戻して **push できたあと**に、その記事・その府省（県）の一覧・記事に出てくる用語のページ・`/`・`/a/`・`/feed.xml` と、作り直しで中身が変わったページを自動で送る（`tools/indexnow.py`）。送れなくても公開は止まらない（結果は確認ページのメッセージの最後に出る）
+- 手で送る：`python tools/indexnow.py --all`（sitemap.xml の全部）・`--urls URL …`（指定した URL）・`--dry-run`（送らずに表示だけ）
 
 ## 地方（都道府県）
 `local.html` は「日本地図（3D）→ 都道府県を押す → その県の記事の一覧 → 記事」のページ。記事を開くと国の記事と同じリーダー（`assets/hall.js`、`#a=記事id`）で、用語ポップアップ・写真・背景の説明・出典もそのまま出る。
@@ -54,7 +77,7 @@ Google が記事を1件ずつ検索に出せるように、記事ごとに本文
 - 見本：`local.html?sample=1` のときだけ `drafts/local_sample.json` の【サンプル】の記事も出す（drafts/ は git に入らないので公開サイトには出ない。確認サーバー 5600 は drafts/ を見せないので、見本を見るときは `python -m http.server 5655` で開いて http://localhost:5655/local.html?sample=1 。見本のファイルは PC の中だけにある）
 - 下書きは `"scope": "local"` が必須（`pref` だけでは国の記事として news.json に入る。管理ページの「地方・〇〇県」の印も scope で決まる）
 - 3D：`assets/map3d.js`（three.js r170 を CDN から。47都道府県を1つの形にまとめて描く）・`assets/prefmap.js`（地図データの読み込みと、押した点がどの県かの判定）・`assets/local.js` + `local.css`（ページの組み立て）。WebGL2 が使えないときは平らな SVG の地図、下に 47都道府県の一覧（キーボード・読み上げ用）
-- `sitemap.xml` には今は `local.html` だけ。記事のある県が増えたら `local.html?p=県id` を足す（ページを開くと canonical も `?p=` 付きに変わる）
+- 検索用には記事のある県ごとに `p/<県id>.html` を作る（上の「府省別・都道府県別」）。`local.html?p=県id` を開くと canonical はそのページに変わる（記事の無い県は `local.html?p=県id` のまま）
 
 ### 毎日の地方ニュース
 1. `python tools/collect_local.py` で47都道府県の新着を集める → `drafts/local_candidates.json`（`{pref, pref_name, title, url, date, source_label, site}`。既に見た URL は `drafts/local_seen.json` に残り、二度と出ない）
