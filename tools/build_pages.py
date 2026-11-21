@@ -13,6 +13,7 @@ import json
 import re
 import sys
 from pathlib import Path
+from urllib.parse import quote
 
 SITE = "https://yukensha.com"
 OG_DEFAULT = SITE + "/assets/og-image.png"
@@ -35,13 +36,56 @@ def read_json(p: Path, default):
     return json.loads(p.read_text(encoding="utf-8")) if p.exists() else default
 
 
+def read_raw(p: Path) -> str:
+    """改行を変えずに読む（手書きの HTML には CRLF の行が混ざっているものがある）。"""
+    with open(p, encoding="utf-8", newline="") as f:
+        return f.read()
+
+
 def write_if_changed(p: Path, text: str) -> bool:
-    if p.exists() and p.read_text(encoding="utf-8") == text:
+    if p.exists() and read_raw(p) == text:
         return False
     p.parent.mkdir(parents=True, exist_ok=True)
     with open(p, "w", encoding="utf-8", newline="") as f:
         f.write(text)
     return True
+
+
+class Out:
+    """書いたファイルを覚えておく（IndexNow に送る「変わったページの URL」を作るため）。"""
+
+    def __init__(self, root: Path):
+        self.root, self.written, self.changed = root, 0, []
+
+    def write(self, rel: str, text: str) -> bool:
+        if write_if_changed(self.root / rel, text):
+            self.written += 1
+            self.changed.append(rel)
+            return True
+        return False
+
+    def inject(self, rel: str, name: str, block: str) -> bool:
+        """手書きの HTML の <!-- name:BEGIN --> と <!-- name:END --> のあいだだけを書きかえる（ほかの部分は1文字も変えない）。"""
+        p = self.root / rel
+        if not p.exists():
+            return False
+        t = read_raw(p)
+        b, e = f"<!-- {name}:BEGIN -->", f"<!-- {name}:END -->"
+        i, j = t.find(b), t.find(e)
+        if i < 0 or j < i:
+            return False
+        nl = "\r\n" if t[i + len(b): i + len(b) + 2] == "\r\n" else "\n"
+        return self.write(rel, t[: i + len(b)] + nl + block.replace("\n", nl) + nl + t[j:])
+
+
+def page_url(rel: str) -> str:
+    """ファイルのパス（a/index.html）→ 公開の URL（https://yukensha.com/a/）。日本語のファイル名は % で表す。"""
+    rel = rel.replace("\\", "/")
+    if rel == "index.html":
+        return SITE + "/"
+    if rel.endswith("/index.html"):
+        rel = rel[: -len("index.html")]
+    return SITE + "/" + quote(rel)
 
 
 def photo_ok(p) -> bool:
@@ -155,6 +199,27 @@ def page(*, title, desc, canonical, og_type, og_image, ld, body, current="", glo
 
 # ── 記事の本文（app.js の Y.article と同じ並び・同じ文言） ──
 
+def crumbs_ld(crumbs) -> dict:
+    """パンくず [(名前, URL), …] の JSON-LD（BreadcrumbList）。"""
+    return {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [{"@type": "ListItem", "position": i + 1, "name": n, "item": u} for i, (n, u) in enumerate(crumbs)],
+    }
+
+
+def crumbs_nav(crumbs) -> str:
+    """見えるパンくず（最後の1つ＝このページはリンクにしない）。"""
+    lis = [f'<li><a href="{esc(u[len(SITE):] or "/")}">{esc(n)}</a></li>' for n, u in crumbs[:-1]]
+    lis.append(f'<li aria-current="page">{esc(crumbs[-1][0])}</li>')
+    return '<nav class="ap-crumbs" aria-label="現在地"><ol>' + "".join(lis) + "</ol></nav>"
+
+
+def latest(items) -> str:
+    """一覧の lastmod：載せている記事のうち、いちばん新しい更新日時。"""
+    return max((lastmod(it) for it in items), default="", key=lambda s: s[:10] + s)
+
+
 def photo_html(p) -> str:
     w, h = p.get("width"), p.get("height")
     size = f' width="{w}" height="{h}" style="aspect-ratio:{w}/{h}"' if isinstance(w, int) and isinstance(h, int) and w > 0 and h > 0 else ""
@@ -200,6 +265,8 @@ class Ctx:
     def __init__(self, sources, prefs):
         self.src = {s["id"]: s for s in sources}
         self.pref = {p["id"]: p for p in prefs}
+        self.sources, self.prefs = sources, prefs
+        self.m_pages, self.p_pages = set(), set()  # 一覧のページ（m/<id>.html・p/<id>.html）がある府省・都道府県
 
     def is_local(self, it):
         return "pref" in it
@@ -220,7 +287,19 @@ class Ctx:
         return g.get("name_short") or g.get("short") or g.get("name", "")
 
     def list_href(self, it, gid):
-        return f"/local.html?p={gid}" if self.is_local(it) else f"/ministries.html?m={gid}"
+        # 静的な一覧のページ（m/・p/）があればそちら。無ければ今までの JS のページ
+        if self.is_local(it):
+            return f"/p/{gid}.html" if gid in self.p_pages else f"/local.html?p={gid}"
+        return f"/m/{gid}.html" if gid in self.m_pages else f"/ministries.html?m={gid}"
+
+    def labels(self, it) -> str:
+        """記事の府省・都道府県の名前（一覧のページへのリンク）。"""
+        out = []
+        for x in self.ids(it):
+            n = self.name(it, x)
+            if n:
+                out.append(f'<a class="kicker-ministry" href="{esc(self.list_href(it, x))}">{esc(n)}</a>')
+        return '<span class="sep">・</span>'.join(out)
 
     def view_href(self, it):
         # 地方の記事は local.html のリーダー（トップの 3D は国の記事だけ）
@@ -256,17 +335,8 @@ def article_page(it, ctx: Ctx, newer, older) -> str:
     if gname:
         crumbs.append((gname, SITE + ctx.list_href(it, gid)))
     crumbs.append((it.get("title", ""), canonical))
-    crumb_ld = {
-        "@context": "https://schema.org",
-        "@type": "BreadcrumbList",
-        "itemListElement": [{"@type": "ListItem", "position": i + 1, "name": n, "item": u} for i, (n, u) in enumerate(crumbs)],
-    }
+    crumb_ld = crumbs_ld(crumbs)
 
-    labels = []
-    for x in ctx.ids(it):
-        n = ctx.name(it, x)
-        if n:
-            labels.append(f'<a class="kicker-ministry" href="{esc(ctx.list_href(it, x))}">{esc(n)}</a>')
     ph = [photo_html(p) for p in photos]
     pts = "".join(f"<li>{esc(p)}</li>" for p in it.get("points") or [])
     tags = "".join(f'<span class="tag">{esc(t)}</span>' for t in it.get("tags") or [])
@@ -288,7 +358,7 @@ def article_page(it, ctx: Ctx, newer, older) -> str:
     body = f"""<div class="ap">
 {crumb_nav}
 <article class="item" id="{esc(aid)}">
-  <p class="kicker"><time datetime="{esc(date)}">{fmt_date(date)}</time>{'<span class="sep">・</span>'.join(labels)}</p>
+  <p class="kicker"><time datetime="{esc(date)}">{fmt_date(date)}</time>{ctx.labels(it)}</p>
   <h1 class="headline">{esc(it.get("title"))}</h1>
   {ph[0] if ph else ""}
   <p class="summary">{esc(it.get("summary"))}</p>
@@ -326,11 +396,143 @@ def index_page(items, ctx: Ctx) -> str:
                     f'<small>{len(its)}件</small></h2>\n<ul class="rows">{rows}\n</ul>\n</section>')
     desc = "有権者に載せたすべての記事（官邸・各府省と都道府県の発表の要約）を、新しい順に月ごとに並べています。"
     body = (f'<h1 class="page-title">記事一覧</h1>\n<p class="lead">これまでに載せた記事 {len(items)}件を、新しい順に並べています。'
-            '府省ごとに見るときは<a href="/ministries.html">府省別の記事一覧</a>、都道府県は<a href="/local.html">地方</a>へ。</p>\n'
+            '府省ごとに見るときは<a href="/m/">府省別の記事一覧</a>、都道府県は<a href="/p/">都道府県別の記事一覧</a>へ。</p>\n'
             + "\n".join(secs))
     ld = {"@context": "https://schema.org", "@type": "CollectionPage", "name": "記事一覧｜有権者", "url": SITE + "/a/",
           "isPartOf": {"@type": "WebSite", "name": "有権者", "url": SITE + "/"}}
     return page(title="記事一覧｜有権者", desc=desc, canonical=SITE + "/a/", og_type="website", og_image=OG_DEFAULT, ld=[ld], body=body)
+
+
+# ── 府省ごと（m/）・都道府県ごと（p/）の一覧 ──
+
+REGIONS = ["北海道・東北", "関東", "中部", "近畿", "中国", "四国", "九州・沖縄"]
+
+
+def list_item(it, ctx: Ctx, h="h2", tags=True) -> str:
+    """一覧の1件：日付・府省（県）・題名（記事のページへ）・要約・タグ。"""
+    tg = "".join(f'<span class="tag">{esc(t)}</span>' for t in it.get("tags") or []) if tags else ""
+    return (f'\n<li class="ml-item"><p class="kicker"><time datetime="{esc(it["date"])}">{fmt_date(it["date"])}</time>{ctx.labels(it)}</p>'
+            f'<{h} class="ml-title"><a href="/a/{esc(it["id"])}.html">{esc(it.get("title"))}</a></{h}>'
+            f'<p class="ml-sum">{esc(it.get("summary"))}</p>' + (f'<p class="tags">{tg}</p>' if tg else "") + "</li>")
+
+
+def collection_ld(name, url, items) -> dict:
+    return {"@context": "https://schema.org", "@type": "CollectionPage", "name": name, "url": url,
+            "isPartOf": {"@type": "WebSite", "name": "有権者", "url": SITE + "/"},
+            "mainEntity": {"@type": "ItemList", "numberOfItems": len(items),
+                           "itemListElement": [{"@type": "ListItem", "position": i + 1, "url": f"{SITE}/a/{it['id']}.html"}
+                                               for i, it in enumerate(items)]}}
+
+
+def group_page(kind, g, its, ctx: Ctx, home_url="", home_label="") -> str:
+    """m/<府省id>.html・p/<県id>.html：その府省（県）の記事を新しい順にすべて。"""
+    local = kind == "p"
+    gid, name = g["id"], g["name"]
+    canonical = f"{SITE}/{kind}/{gid}.html"
+    title = f"{name}のニュース一覧（最新の発表をわかりやすく）｜有権者"
+    desc = short_desc(f"{name}の発表をもとにした記事{len(its)}件を、新しい順に要約で紹介。最新：{its[0].get('title', '')}")
+    if local:
+        lead = f"{name}の公式発表をもとにした記事（{len(its)}件）を、新しい順に並べています。"
+        views = f'<a class="ap-btn" href="/local.html?p={esc(gid)}">3Dの日本地図で見る</a>'
+        up = ("地方", SITE + "/p/")
+    else:
+        what = g["note"] + "を、元の言葉の引用と要約で載せています" if g.get("note") else name + "の発表を要約しています"
+        lead = f"{what}（{len(its)}件・新しい順）。"
+        views = (f'<a class="ap-btn" href="/#m={esc(gid)}">3Dの記事ビューで見る</a>'
+                 f'<a class="ap-btn" href="/ministries.html?m={esc(gid)}">府省別のページで見る</a>')
+        up = ("府省別", SITE + "/m/")
+    if home_url:
+        lead += f'元の情報：<a href="{esc(home_url)}" target="_blank" rel="noopener">{esc(home_label)}</a>'
+    crumbs = [("有権者", SITE + "/"), up, (name, canonical)]
+    body = f"""<div class="ap">
+{crumbs_nav(crumbs)}
+<h1 class="page-title">{esc(name)}</h1>
+<p class="lead">{lead}</p>
+<p class="ap-actions">{views}<a class="ap-btn" href="{esc(up[1][len(SITE):])}">{"ほかの都道府県" if local else "ほかの府省"}</a></p>
+<ol class="ml-list">{"".join(list_item(it, ctx) for it in its)}
+</ol>
+</div>"""
+    return page(title=title, desc=desc, canonical=canonical, og_type="website", og_image=OG_DEFAULT,
+                ld=[collection_ld(f"{name}のニュース一覧", canonical, its), crumbs_ld(crumbs)], body=body,
+                current="local" if local else "stream")
+
+
+def group_row(href, name, its) -> str:
+    top = its[0]
+    return (f'\n<li class="mg-item"><a class="mg-name" href="{esc(href)}">{esc(name)}<span class="count">{len(its)}件</span></a>'
+            f'<span class="mg-latest">最新：<a href="/a/{esc(top["id"])}.html">{esc(top.get("title"))}</a>'
+            f'（{fmt_date(top["date"], year=False)}）</span></li>')
+
+
+def m_index_page(groups, ctx: Ctx) -> str:
+    """m/index.html：府省の一覧（記事の数と、いちばん新しい記事）。"""
+    canonical = SITE + "/m/"
+    crumbs = [("有権者", SITE + "/"), ("府省別", canonical)]
+    n = sum(1 for _ in {it["id"] for _, its in groups for it in its})
+    rows = "".join(group_row(f"/m/{g['id']}.html", g["name"], its) for g, its in groups)
+    body = f"""<div class="ap">
+{crumbs_nav(crumbs)}
+<h1 class="page-title">府省別の記事一覧</h1>
+<p class="lead">官邸・各府省の発表をもとにした記事（{n}件）を、府省ごとにまとめています。1つの記事が2つ以上の府省に入ることがあります。</p>
+<ul class="mg-list">{rows}
+</ul>
+</div>"""
+    desc = short_desc(f"首相官邸・内閣府・各省など{len(groups)}の府省ごとに、発表をわかりやすく要約した記事の一覧です。")
+    ld = {"@context": "https://schema.org", "@type": "CollectionPage", "name": "府省別の記事一覧", "url": canonical,
+          "isPartOf": {"@type": "WebSite", "name": "有権者", "url": SITE + "/"}}
+    return page(title="府省別の記事一覧（官邸・各府省のニュース）｜有権者", desc=desc, canonical=canonical, og_type="website",
+                og_image=OG_DEFAULT, ld=[ld, crumbs_ld(crumbs)], body=body, current="stream")
+
+
+def region_blocks(ctx: Ctx, by_pref, h="h2", cls="section-title") -> str:
+    """都道府県を地方ごとに。記事のある県だけリンク（記事の数つき）。"""
+    out = []
+    for r in REGIONS:
+        lis = []
+        for p in (x for x in ctx.prefs if x.get("region") == r):
+            its = by_pref.get(p["id"])
+            lis.append(f'<li><a href="/p/{esc(p["id"])}.html">{esc(p["name"])}<span class="count">{len(its)}件</span></a></li>' if its
+                       else f'<li><span class="mg-none">{esc(p["name"])}</span></li>')
+        out.append(f'<section class="mg-region"><{h} class="{cls}">{esc(r)}</{h}><ul class="mg-prefs">{"".join(lis)}</ul></section>')
+    return "\n".join(out)
+
+
+def p_index_page(by_pref, ctx: Ctx) -> str:
+    """p/index.html：47都道府県（地方ごと）。記事のある県はリンク。"""
+    canonical = SITE + "/p/"
+    crumbs = [("有権者", SITE + "/"), ("地方", canonical)]
+    n = len({it["id"] for its in by_pref.values() for it in its})
+    body = f"""<div class="ap">
+{crumbs_nav(crumbs)}
+<h1 class="page-title">都道府県別の記事一覧</h1>
+<p class="lead">都道府県の公式発表をもとにした記事（{n}件・{len(by_pref)}の都道府県）を、地方ごとに並べています。数字は記事の数です。</p>
+<p class="ap-actions"><a class="ap-btn" href="/local.html">3Dの日本地図で選ぶ</a></p>
+{region_blocks(ctx, by_pref)}
+</div>"""
+    desc = "47都道府県の公式発表をもとにした記事を、地方ごとに並べた一覧です。知事の会見・予算・条例などを、出典つきでわかりやすく要約しています。"
+    ld = {"@context": "https://schema.org", "@type": "CollectionPage", "name": "都道府県別の記事一覧", "url": canonical,
+          "isPartOf": {"@type": "WebSite", "name": "有権者", "url": SITE + "/"}}
+    return page(title="都道府県別の記事一覧（地方のニュース）｜有権者", desc=desc, canonical=canonical, og_type="website",
+                og_image=OG_DEFAULT, ld=[ld, crumbs_ld(crumbs)], body=body, current="local")
+
+
+def static_ministries(groups) -> str:
+    """ministries.html に入れる、クロールできる府省の一覧（<!-- STATIC-LIST --> のあいだ）。"""
+    lis = "".join(f'\n    <li><a href="/m/{esc(g["id"])}.html">{esc(g["name"])}<span class="count">{len(its)}件</span></a></li>' for g, its in groups)
+    return (f'<section class="wrap static-list" aria-labelledby="static-list-title">\n  <h2 class="section-title" id="static-list-title">府省ごとの記事一覧'
+            f'<small><a href="/m/">すべての府省</a></small></h2>\n  <ul class="ministry-list">{lis}\n  </ul>\n</section>')
+
+
+def static_prefs(by_pref, ctx: Ctx) -> str:
+    """local.html に入れる、記事のある都道府県の一覧（地方ごと）。"""
+    secs = []
+    for r in REGIONS:
+        lis = "".join(f'<li><a href="/p/{esc(p["id"])}.html">{esc(p["name"])}<span class="count">{len(by_pref[p["id"]])}件</span></a></li>'
+                      for p in ctx.prefs if p.get("region") == r and p["id"] in by_pref)
+        if lis:
+            secs.append(f'\n  <section class="mg-region"><h3>{esc(r)}</h3><ul class="ministry-list">{lis}</ul></section>')
+    return (f'<section class="wrap static-list" aria-labelledby="static-list-title">\n  <h2 class="section-title" id="static-list-title">都道府県ごとの記事一覧'
+            f'<small><a href="/p/">47都道府県</a></small></h2>{"".join(secs)}\n</section>')
 
 
 def sitemap(items) -> str:
@@ -362,28 +564,67 @@ def build(root) -> dict:
         items.append(it)
     items.sort(key=sort_key, reverse=True)
 
+    # 府省ごと・都道府県ごとの一覧（記事が1件以上あるところだけ。also・pref_also の記事も入れる）
+    national = [it for it in items if not ctx.is_local(it)]
+    m_groups = []
+    for s in ctx.sources:
+        if s.get("hidden"):
+            continue
+        its = [it for it in national if s["id"] in ctx.ids(it)]
+        if its and SAFE_ID.match(s["id"]):
+            m_groups.append((s, its))
+    by_pref = {}
+    for p in ctx.prefs:
+        its = [it for it in items if ctx.is_local(it) and p["id"] in ctx.ids(it)]
+        if its and SAFE_ID.match(p["id"]):
+            by_pref[p["id"]] = its
+    ctx.m_pages = {s["id"] for s, _ in m_groups}
+    ctx.p_pages = set(by_pref)
+    pref_home = {s.get("id"): s.get("home") for s in read_json(root / "data" / "pref_sources.json", []) if isinstance(s, dict)}
+
     # 前・次：同じ府省（地方は同じ県）の中で日付順
     by_group = {}
     for it in items:
         by_group.setdefault((ctx.is_local(it), ctx.gid(it)), []).append(it)
 
-    out = root / "a"
-    out.mkdir(exist_ok=True)
-    written = 0
+    o = Out(root)
+    (root / "a").mkdir(exist_ok=True)
+    keep = {"a": {"index.html"}, "m": {"index.html"}, "p": {"index.html"}}
     for grp in by_group.values():
         for i, it in enumerate(grp):  # grp は新しい順
             newer = grp[i - 1] if i > 0 else None
             older = grp[i + 1] if i + 1 < len(grp) else None
-            written += write_if_changed(out / f"{it['id']}.html", article_page(it, ctx, newer, older))
-    written += write_if_changed(out / "index.html", index_page(items, ctx))
+            o.write(f"a/{it['id']}.html", article_page(it, ctx, newer, older))
+            keep["a"].add(f"{it['id']}.html")
+    o.write("a/index.html", index_page(items, ctx))
 
-    deleted = []
-    for f in sorted(out.glob("*.html")):
-        if f.name != "index.html" and f.stem not in seen:
-            f.unlink()
-            deleted.append(f.name)
-    written += write_if_changed(root / "sitemap.xml", sitemap(items))
-    return {"pages": len(items), "written": written, "deleted": deleted, "skipped": skipped}
+    for s, its in m_groups:
+        o.write(f"m/{s['id']}.html", group_page("m", s, its, ctx, s.get("home", ""), s.get("site", "")))
+        keep["m"].add(f"{s['id']}.html")
+    o.write("m/index.html", m_index_page(m_groups, ctx))
+    for pid, its in by_pref.items():
+        p = ctx.pref[pid]
+        home = pref_home.get(pid) or ""
+        o.write(f"p/{pid}.html", group_page("p", p, its, ctx, home, f"{p['name']}の公式ホームページ ↗" if home else ""))
+        keep["p"].add(f"{pid}.html")
+    o.write("p/index.html", p_index_page(by_pref, ctx))
+    o.inject("ministries.html", "STATIC-LIST", static_ministries(m_groups))
+    o.inject("local.html", "STATIC-LIST", static_prefs(by_pref, ctx))
+
+    # もう無い記事・府省・県のページは消す（index.html は残す）
+    deleted, removed = [], []
+    for d, names in keep.items():
+        for f in sorted((root / d).glob("*.html")):
+            if f.name not in names:
+                f.unlink()
+                removed.append(f"{d}/{f.name}")
+                if d == "a":
+                    deleted.append(f.name)
+    o.write("sitemap.xml", sitemap(items))
+    urls = [page_url(r) for r in o.changed + removed if r.endswith(".html")]
+    return {"pages": len(items), "written": o.written, "deleted": deleted, "removed": removed, "skipped": skipped,
+            "changed": o.changed, "urls": urls,
+            "counts": {"a": len(keep["a"]) - 1, "m": len(m_groups), "p": len(by_pref)}}
 
 
 if __name__ == "__main__":

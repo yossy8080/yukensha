@@ -37,3 +37,29 @@
 
 .ap-month { margin: 0 0 32px; }
 .ap-month .section-title small { margin-left: 8px; }
+
+/* 府省ごと（m/）・都道府県ごと（p/）・用語（g/）の一覧 */
+.ap .page-title { margin-top: 4px; }
+.ap .lead a { color: var(--text); }
+.ml-list { list-style: none; margin: 0; padding: 0; }
+.ml-item { padding: 18px 0 20px; border-bottom: 1px solid var(--rule); }
+.ml-item .kicker { margin-bottom: 4px; }
+.ml-title { font-family: var(--serif); font-size: 19px; line-height: 1.55; font-weight: 700; margin: 0 0 6px; letter-spacing: 0; text-wrap: pretty; }
+.ml-title a { text-decoration: none; }
+.ml-title a:hover { text-decoration: underline; }
+.ml-sum { margin: 0; font-size: 15.5px; line-height: 1.85; }
+.mg-list { list-style: none; margin: 0; padding: 0; }
+.mg-item { padding: 12px 0; border-bottom: 1px solid var(--rule); }
+.mg-name { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; font-weight: 700; text-decoration: none; min-height: 32px; }
+.mg-name:hover { color: var(--glow); }
+.mg-item .count, .mg-prefs .count { color: var(--muted); font-size: 13px; font-weight: 400; font-variant-numeric: tabular-nums; }
+.mg-latest { display: block; font-size: 14px; line-height: 1.7; color: var(--muted); }
+.mg-latest a { color: var(--text); text-decoration: none; }
+.mg-latest a:hover { text-decoration: underline; }
+.mg-region { margin: 0 0 26px; }
+.mg-region .section-title { margin-bottom: 8px; }
+.mg-prefs { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(9.5em, 1fr)); gap: 6px 14px; }
+.mg-prefs a, .mg-prefs .mg-none { display: flex; justify-content: space-between; align-items: center; min-height: 40px; padding: 0 2px; border-bottom: 1px solid var(--rule); }
+.mg-prefs a { text-decoration: none; font-weight: 700; }
+.mg-prefs a:hover { color: var(--glow); }
+.mg-prefs .mg-none { color: var(--muted); opacity: .7; }

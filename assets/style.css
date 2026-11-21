@@ -218,6 +218,13 @@ footer p { margin: 4px 0; }
 footer .footer-links { margin-top: 12px; }
 footer .footer-links a { color: var(--text); }
 
+/* 手書きのページに tools/build_pages.py が入れる、文字だけの一覧（ministries.html・local.html の下） */
+.static-list { padding-bottom: 56px; }
+.static-list .section-title small a { color: var(--text); }
+.static-list .ministry-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(15em, 1fr)); column-gap: 28px; }
+.static-list .mg-region { margin: 14px 0 0; }
+.static-list .mg-region h3 { margin: 0 0 2px; font-size: 13px; font-weight: 700; letter-spacing: .06em; color: var(--accent); }
+
 @media (prefers-reduced-motion: no-preference) { a { transition: color .15s; } }
 
 /* ── 印刷 ── */
