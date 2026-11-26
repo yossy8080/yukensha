@@ -54,11 +54,12 @@ def check(d: dict, slug: str):
             raise ValueError(f"{k} はリストにしてください")
 
 
-def merge(features: list, d: dict, now: str):
+def merge(features: list, d: dict, now: str, w3c=None):
     """同じ slug は置きかえ（published_at は最初のまま）。新しいものは published_at = now。(一覧, 書き直しか) を返す。"""
     old = next((f for f in features if isinstance(f, dict) and f.get("slug") == d["slug"]), None)
     d = dict(d)
-    d["published_at"] = old.get("published_at") or now if old else now
+    first = str(old.get("published_at") or "") if old else ""
+    d["published_at"] = first if w3c and w3c.match(first) else now  # 形のおかしい日時は引き継がない（ページが作られなくなる）
     d["updated_at"] = now
     rest = [f for f in features if f is not old]
     out = [d] + rest
@@ -83,17 +84,31 @@ def publish(slug: str, root=ROOT, push=True, now=None) -> str:
     features = read(path, [])
     if not isinstance(features, list):
         raise ValueError("data/features.json の形がおかしい（[…] ではない）")
-    features, updated = merge(features, d, now)
+    before = path.read_bytes() if path.exists() else None
+    features, updated = merge(features, d, now, bp.W3C)
     write(path, features)
-    result = bp.build(root)
+    try:
+        result = bp.build(root)
+    except Exception as e:  # 作り直せない特集は入れない（元の data/features.json に戻す。ほかの記事の公開を止めないため）
+        if before is None:
+            path.unlink()
+        else:
+            path.write_bytes(before)
+        bp.build(root)
+        raise ValueError(f"ページを作れませんでした（data/features.json は元に戻しました）: {type(e).__name__}: {e}")
+    if not (root / "t" / f"{slug}.html").is_file():
+        raise ValueError("t/ のページができませんでした（題名・published_at を確かめてください）")
     lines = [f"特集を{'書き直し' if updated else '公開'}しました：{d['title']}（t/{slug}.html）"]
 
     rs = load_tool("review_server")  # git の見つけ方（Hermes に付いている git も探す）と git() をそのまま使う
     rs.ROOT = root
     if not (root / ".git").exists():
         return "\n".join(lines + ["（git のフォルダではないので、コミットはしていません）"])
-    rs.git("add", "-A", "--", "data/features.json", "t", "sitemap.xml", "feed.xml")
-    code, out = rs.git("commit", "-m", f"特集を公開：{d['title']}")
+    paths = ("data/features.json", "t", "sitemap.xml", "feed.xml")
+    code, out = rs.git("add", "-A", "--", *paths)
+    if code != 0:
+        return "\n".join(lines + [f"（git add できませんでした：{out[-200:]}）"])
+    code, out = rs.git("commit", "-m", f"特集を公開：{d['title']}", "--", *paths)  # ほかにステージしてある変更は入れない
     if code != 0:
         return "\n".join(lines + [f"（コミットできませんでした：{out[-200:]}）"])
     lines.append("コミットしました。")

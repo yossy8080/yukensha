@@ -660,6 +660,30 @@ class TestFeatures(CopyCase):
         self.assertEqual(sorted(f.name for f in (self.tmp / "t").glob("*.html")), ["index.html", "ok-one.html"])
         self.assertFalse((self.tmp / "evil.html").exists())
 
+    def test_fmt_when(self):
+        self.assertEqual(bp.fmt_when("2026-12-中旬"), "2026年12月中旬")
+        self.assertEqual(bp.fmt_when("2026-12-19"), "2026年12月19日（土）")
+        self.assertEqual(bp.fmt_when("2026-1-5"), "2026年1月5日（月）")
+        self.assertEqual(bp.fmt_when("2027-01"), "2027年1月")
+        self.assertEqual(bp.fmt_when("2026-02-30"), "2026-02-30")  # 無い日はそのまま
+        self.assertEqual(bp.fmt_when("2026-13-01"), "2026-13-01")
+        self.assertEqual(bp.fmt_when("年末<b>"), "年末&lt;b&gt;")
+        self.assertEqual(bp.fmt_when(None), "")
+
+    def test_malformed_fields_do_not_crash(self):
+        """手で書いた特集の欄の形がおかしくても build は止まらない（その欄を出さないだけ）。"""
+        f = dict(sample_feature(), sections=[{"h2": "章", "paragraphs": 5, "points": "文字", "refs": {"url": "x"}}, "文字", 3],
+                 timeline=[{"date": "2026-02-30", "event": "無い日"}, {"date": 20261201, "event": "数字"}, "x"],
+                 faq="文字", related_article_ids=7, related_terms=1, tags="税")
+        (self.tmp / "data" / "features.json").write_text(json.dumps([f], ensure_ascii=False), encoding="utf-8")
+        r = bp.build(self.tmp)
+        self.assertEqual(r["counts"]["t"], 1)
+        t = (self.tmp / "t" / f"{SAMPLE_SLUG}.html").read_text(encoding="utf-8")
+        self.assertIn('<h2 class="tk-h2" id="s1">章</h2>', t)
+        self.assertIn("2026-02-30", t)
+        self.assertNotIn('datetime="2026-02-30"', t)
+        self.assertNotIn('id="tk-faq"', t)
+
     def test_publish_feature_no_push(self):
         pf = load("publish_feature", HERE / "publish_feature.py")
         rs = load("rs_pf", HERE / "review_server.py")

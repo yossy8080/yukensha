@@ -126,7 +126,7 @@ const TOKUSHU_MAX = 3;
 const SAFE_SLUG = /^[A-Za-z0-9][A-Za-z0-9_-]*$/;
 const ymd = (iso) => { const [y, m, d] = String(iso).slice(0, 10).split("-").map(Number); return `${y}年${m}月${d}日`; };
 function tokushuHTML(f) {
-  const up = f.updated_at || f.published_at;
+  const up = /^\d{4}-\d{2}-\d{2}/.test(String(f.updated_at || "")) ? f.updated_at : f.published_at;
   return `
       <li><a class="fresh-card" href="t/${encodeURIComponent(f.slug)}.html">
         <span class="fresh-body">
@@ -139,7 +139,7 @@ function renderTokushu(features) {
   const sec = $("#tokushu");
   if (!sec) return;
   const list = (Array.isArray(features) ? features : [])
-    .filter((f) => f && SAFE_SLUG.test(f.slug || "") && f.slug.toLowerCase() !== "index" && f.title && /^\d{4}-\d{2}-\d{2}/.test(f.published_at || ""))
+    .filter((f) => f && typeof f.slug === "string" && typeof f.title === "string" && SAFE_SLUG.test(f.slug) && f.slug.toLowerCase() !== "index" && f.title && /^\d{4}-\d{2}-\d{2}/.test(f.published_at || ""))
     .sort((a, b) => String(b.published_at).localeCompare(String(a.published_at)))
     .slice(0, TOKUSHU_MAX);
   if (!list.length) return;

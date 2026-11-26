@@ -866,6 +866,11 @@ def static_pledges(data) -> str:
 WHEN = re.compile(r"^(\d{4})-(\d{1,2})(?:-(.+))?$")
 
 
+def lst(v) -> list:
+    """特集の JSON は手で書くので、リストのはずの欄がほかの形でも止まらないように（リストでなければ空）。"""
+    return v if isinstance(v, list) else []
+
+
 def is_url(u) -> bool:
     return bool(re.match(r"^https?://", str(u or "")))
 
@@ -877,7 +882,8 @@ def clean_features(raw) -> list:
         if not isinstance(f, dict):
             continue
         slug = str(f.get("slug") or "")
-        if not SAFE_ID.match(slug) or slug.lower() == "index" or slug.lower() in seen or not f.get("title") \
+        if not isinstance(f.get("slug"), str) or not SAFE_ID.match(slug) or slug.lower() == "index" or slug.lower() in seen \
+                or not isinstance(f.get("title"), str) or not f["title"].strip() \
                 or not W3C.match(str(f.get("published_at") or "")):
             continue
         seen.add(slug.lower())
@@ -908,8 +914,8 @@ def fmt_when(s) -> str:
             if rest and re.fullmatch(r"\d{1,2}", rest):
                 try:
                     return fmt_date(f"{y:04d}-{mo:02d}-{int(rest):02d}")
-                except ValueError:
-                    pass
+                except ValueError:  # 2026-02-30 のような無い日は、そのまま出す
+                    return esc(s)
             return f"{y}年{mo}月" + esc(rest or "")
     return esc(s)
 
@@ -920,14 +926,14 @@ def ref_link(url, label="出典 ↗") -> str:
 
 def feature_sections(f):
     """章（h2 のあるものだけ）に、目次のアンカー（s1, s2, …）をつける。"""
-    secs = [s for s in f.get("sections") or [] if isinstance(s, dict) and str(s.get("h2") or "").strip()]
+    secs = [s for s in lst(f.get("sections")) if isinstance(s, dict) and str(s.get("h2") or "").strip()]
     return [(f"s{i + 1}", s) for i, s in enumerate(secs)]
 
 
 def section_html(sid, s) -> str:
-    paras = "".join(f"<p>{esc(p)}</p>" for p in s.get("paragraphs") or [] if isinstance(p, str) and p.strip())
-    pts = "".join(f"<li>{esc(p)}</li>" for p in s.get("points") or [] if isinstance(p, str) and p.strip())
-    refs = [r for r in s.get("refs") or [] if isinstance(r, dict) and is_url(r.get("url"))]
+    paras = "".join(f"<p>{esc(p)}</p>" for p in lst(s.get("paragraphs")) if isinstance(p, str) and p.strip())
+    pts = "".join(f"<li>{esc(p)}</li>" for p in lst(s.get("points")) if isinstance(p, str) and p.strip())
+    refs = [r for r in lst(s.get("refs")) if isinstance(r, dict) and is_url(r.get("url"))]
     links = "、".join(f'<a href="{esc(r["url"])}" target="_blank" rel="noopener">「{esc(r.get("title") or r["url"])}」'
                      + (f'（{esc(r["site"])}）' if r.get("site") else "") + "</a>" for r in refs)
     return (f'<section class="tk-sec" aria-labelledby="{sid}"><h2 class="tk-h2" id="{sid}">{esc(s["h2"])}</h2>{paras}'
@@ -937,14 +943,17 @@ def section_html(sid, s) -> str:
 
 def timeline_html(rows) -> str:
     """これからの予定（表）。fixed が true でないものは「予定・未確定」。スマホでは1行ずつ縦に積む（CSS）。"""
-    rows = [r for r in rows or [] if isinstance(r, dict) and (r.get("date") or r.get("event"))]
+    rows = [r for r in lst(rows) if isinstance(r, dict) and (r.get("date") or r.get("event"))]
     if not rows:
         return ""
     trs = []
     for r in rows:
         fixed = r.get("fixed") is True
         d = str(r.get("date") or "")
-        dt_attr = d if re.fullmatch(r"\d{4}-\d{2}-\d{2}", d) else ""
+        try:
+            dt_attr = d if re.fullmatch(r"\d{4}-\d{2}-\d{2}", d) and dt.date.fromisoformat(d) else ""
+        except ValueError:
+            dt_attr = ""
         when = f'<time datetime="{dt_attr}">{fmt_when(d)}</time>' if dt_attr else fmt_when(d)
         label, cls = ("", "") if fixed else ('<span class="tk-plan">予定・未確定</span>', ' class="is-plan"')
         ref = " " + ref_link(r.get("ref_url")) if is_url(r.get("ref_url")) else ""
@@ -955,7 +964,7 @@ def timeline_html(rows) -> str:
 
 
 def faq_html(rows) -> str:
-    rows = [r for r in rows or [] if isinstance(r, dict) and r.get("q") and r.get("a")]
+    rows = [r for r in lst(rows) if isinstance(r, dict) and r.get("q") and r.get("a")]
     if not rows:
         return ""
     qa = "".join(f'<div class="tk-qa"><h3 class="tk-q">{esc(r["q"])}</h3><p class="tk-a">{esc(r["a"])}'
@@ -992,10 +1001,10 @@ def feature_page(f, ctx: Ctx, related=(), words=()) -> str:
         toc.append(("tk-faq", "よくある質問"))
     toc_html = ('<nav class="tk-toc" aria-label="目次"><p class="tk-toc-h" data-no-gloss>目次</p><ol>'
                 + "".join(f'<li><a href="#{sid}">{esc(h)}</a></li>' for sid, h in toc) + "</ol></nav>") if toc else ""
-    tags = "".join(f'<span class="tag">{esc(t)}</span>' for t in f.get("tags") or [])
+    tags = "".join(f'<span class="tag">{esc(t)}</span>' for t in lst(f.get("tags")))
     body = f"""<div class="ap tk">
 {crumbs_nav(crumbs)}
-<article class="item tk-body" id="{esc(slug)}">
+<article class="item tk-body">
   <p class="kicker"><span class="tk-label">特集</span><span>最終更新 <time datetime="{esc(up)}">{ymd(up)}</time></span></p>
   <h1 class="headline">{esc(f.get("title"))}</h1>
   <p class="summary tk-lead">{esc(f.get("lead"))}</p>
@@ -1212,9 +1221,9 @@ def build(root) -> dict:
     # 特集（t/）：関連する記事は公開中のものだけ・言葉は g/ のページがあるものだけ
     by_id = {it["id"]: it for it in items}
     for f in features:
-        rel = [by_id[x] for x in dict.fromkeys(str(x) for x in f.get("related_article_ids") or []) if x in by_id]
+        rel = [by_id[x] for x in dict.fromkeys(str(x) for x in lst(f.get("related_article_ids"))) if x in by_id]
         words = []
-        for t in f.get("related_terms") or []:
+        for t in lst(f.get("related_terms")):
             e = gl.by_key.get(t) if isinstance(t, str) else None
             if e and e["term"] in slugs and (e["term"], slugs[e["term"]]) not in words:
                 words.append((e["term"], slugs[e["term"]]))
