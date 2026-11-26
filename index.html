@@ -57,6 +57,7 @@
     <nav class="site-nav" aria-label="メニュー">
       <ul>
         <li><a href="#new">新着</a></li>
+        <li><a href="t/">特集</a></li>
         <li><a href="#stream">府省</a></li>
         <li><a href="#opinion">オピニオン</a></li>
         <li><a href="#local">地方</a></li>
@@ -102,6 +103,16 @@
     <ul class="fresh-grid" id="new-list"></ul>
     <p class="fresh-more" hidden><button type="button" class="ch-open" id="new-more" aria-expanded="false" aria-controls="new-list"></button></p>
     <noscript><p class="fresh-meta">新しい記事は <a href="a/">記事一覧</a> で読めます。</p></noscript>
+  </section>
+
+  <section class="tokushu" id="tokushu" aria-labelledby="tokushu-title" hidden>
+    <header class="fresh-head reveal">
+      <p class="eyebrow">Feature</p>
+      <h2 class="fresh-title" id="tokushu-title">特集</h2>
+      <p class="fresh-meta">1つのテーマを、背景・これからの予定・よくある質問までまとめて解説</p>
+    </header>
+    <ul class="fresh-grid tokushu-grid" id="tokushu-list"></ul>
+    <p class="fresh-more"><a class="ch-open" href="t/">特集をすべて見る <span aria-hidden="true">→</span></a></p>
   </section>
 
   <section class="stream" id="stream" aria-labelledby="stream-title">

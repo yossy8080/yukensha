@@ -148,8 +148,20 @@ html.js .reveal.is-in { opacity: 1; filter: none; transform: none; transition: o
 @media (max-width: 1024px) { .fresh-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 600px) { .fresh-grid { grid-template-columns: minmax(0, 1fr); gap: 14px; } .fresh-head { margin-bottom: 28px; } }
 @media (prefers-reduced-motion: reduce) { .fresh-card { transition: none; } .fresh-card:hover { transform: none; } }
-/* トップだけメニューが6つ（新着を足した）。スマホ（390px）でも全部収まるように少し詰める */
-@media (max-width: 420px) { body.home .site-nav a { padding: 0 6px; } }
+/* トップだけメニューが7つ（新着・特集を足した）。スマホ（390px）でも全部収まるように、ほかのページより少し詰める */
+@media (max-width: 420px) { body.home .site-nav a { padding: 0 4px; } body.home .site-nav ul { gap: 0; } }
+
+/* ── 特集の入口（新着のすぐ下・府省の流れの前。特集が0件なら hidden のまま） ── */
+.tokushu {
+  position: relative; padding: 6vh clamp(16px, 4vw, 64px) 10vh;
+  background: linear-gradient(180deg, rgba(4, 8, 15, 0), rgba(4, 8, 15, .86) 6vh, rgba(4, 8, 15, .86) calc(100% - 9vh), rgba(4, 8, 15, 0));
+}
+.tokushu[hidden] { display: none; }
+.tokushu-grid { display: flex; flex-wrap: wrap; justify-content: center; }
+.tokushu-grid li { flex: 1 1 300px; max-width: 420px; }
+.tokushu .fresh-badge { background: var(--glow-2); color: var(--night-0); }
+.tokushu .fresh-sum { -webkit-line-clamp: 3; line-clamp: 3; }
+@media (max-width: 600px) { .tokushu-grid li { max-width: none; } }
 
 /* ── 府省の流れ ── */
 .eyebrow { margin: 0 0 10px; font-size: 12px; letter-spacing: .32em; color: var(--glow-2); }

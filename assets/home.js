@@ -1,5 +1,6 @@
 /* 有権者 — 新しいトップ（index.html）の組み立てと演出（ES module）
    0. ヒーローのすぐ下に「新着ニュース」（news.json と local_news.json の、いちばん新しい公開日の記事）
+      その下に「特集」の入口（data/features.json の新しい3件。0件なら出さない）
    1. news.json から「府省の章」を作る（記事が1件以上ある府省を sources.json の順に。0件の府省は最後に名前だけ）
    2. スクロール位置から「章の位置 f」（-1=ヒーロー, 0..n-1=各章, 小数=章のあいだ）を計算し、背面の WebGL（scene3d.js）に渡す
       （スクロールの乗っ取りはしない）。3D の物体は画面に貼り付いた1つだけで、f に合わせて府省の物体どうしが変形する
@@ -120,6 +121,32 @@ function freshHTML(it, i, srcMap, prefMap) {
         </span></a></li>`;
 }
 
+/* ── 特集の入口（data/features.json の新しい順に最大3件。0件ならセクションごと隠したまま） ── */
+const TOKUSHU_MAX = 3;
+const SAFE_SLUG = /^[A-Za-z0-9][A-Za-z0-9_-]*$/;
+const ymd = (iso) => { const [y, m, d] = String(iso).slice(0, 10).split("-").map(Number); return `${y}年${m}月${d}日`; };
+function tokushuHTML(f) {
+  const up = f.updated_at || f.published_at;
+  return `
+      <li><a class="fresh-card" href="t/${encodeURIComponent(f.slug)}.html">
+        <span class="fresh-body">
+          <span class="fresh-kicker"><span class="fresh-badge">特集</span><span>最終更新 <time datetime="${Y.esc(up)}">${ymd(up)}</time></span></span>
+          <span class="fresh-headline">${Y.esc(f.title)}</span>
+          <span class="fresh-sum">${Y.esc(f.lead)}</span>
+        </span></a></li>`;
+}
+function renderTokushu(features) {
+  const sec = $("#tokushu");
+  if (!sec) return;
+  const list = (Array.isArray(features) ? features : [])
+    .filter((f) => f && SAFE_SLUG.test(f.slug || "") && f.slug.toLowerCase() !== "index" && f.title && /^\d{4}-\d{2}-\d{2}/.test(f.published_at || ""))
+    .sort((a, b) => String(b.published_at).localeCompare(String(a.published_at)))
+    .slice(0, TOKUSHU_MAX);
+  if (!list.length) return;
+  $("#tokushu-list").innerHTML = list.map(tokushuHTML).join("");
+  sec.hidden = false;
+}
+
 /* ── 光の流れ（ページ全長を貫く1本の線） ── */
 const flow = { svg: null, glow: null, core: null, spark: null, len: 0, samples: [] };
 function buildFlow(chapterEls) {
@@ -139,6 +166,8 @@ function buildFlow(chapterEls) {
   // 新着のカードの上は横切らない（左の余白を通す）
   const fresh = $("#new");
   if (fresh && !fresh.hidden) pts.push([side, yOf(fresh) + fresh.offsetHeight * 0.5]);
+  const tokushu = $("#tokushu");
+  if (tokushu && !tokushu.hidden) pts.push([side, yOf(tokushu) + tokushu.offsetHeight * 0.5]);
   const head = $(".stream-head");
   if (head) pts.push([W / 2, yOf(head) + head.offsetHeight * 0.5]);
   for (const ch of chapterEls) {
@@ -219,9 +248,10 @@ function webglAvailable() {
 
 /* ── 組み立て ── */
 async function main() {
-  const [sources, news, prefs, localNews] = await Promise.all([
+  const [sources, news, prefs, localNews, features] = await Promise.all([
     Y.load("data/sources.json"), Y.load("data/news.json"),
     Y.load("data/prefectures.json").catch(() => []), Y.load("data/local_news.json").catch(() => []),
+    Y.load("data/features.json").catch(() => []),
   ]);
   const srcMap = Object.fromEntries(sources.map((s) => [s.id, s]));
   const prefMap = Object.fromEntries((Array.isArray(prefs) ? prefs : []).map((p) => [p.id, p]));
@@ -258,6 +288,9 @@ async function main() {
       freshMore.parentElement.hidden = false;
     }
   } else freshSec.hidden = true;
+
+  // 特集の入口（新着のすぐ下。府省の流れ #stream より前なので、3D の変形の始まりは今までどおり #stream）
+  renderTokushu(features);
 
   // 府省の章
   $("#stream-meta").textContent = `${chapters.length}の府省 · ${news.length}件の記事`;
@@ -304,7 +337,7 @@ async function main() {
       stage = { x: r.left + r.width / 2, y: vh / 2 + hh / 2, size: size * 0.95 };
     }
     const k = [[pageY(hero) + hero.offsetHeight / 2 - vh / 2, -1]];
-    // 新着の欄はヒーローの続き（f = -1 のまま）。その分だけ後ろへずらしてから、府省の流れ（#stream）で物体が集まり始める
+    // 新着・特集の欄はヒーローの続き（f = -1 のまま）。その分だけ後ろへずらしてから、府省の流れ（#stream）で物体が集まり始める
     const gap = pageY(stream) - (pageY(hero) + hero.offsetHeight);
     if (gap > 1) k.push([k[0][0] + gap, -1]);
     chapterEls.forEach((ch, i) => {
@@ -396,7 +429,7 @@ async function main() {
 
 /* 3D の物体をホバー・クリック（Raycaster）。今表示している府省の記事ビューを開く。文字や操作部品の上では何もしない */
 function setupPicking(scene, chapters, hall) {
-  const blocked = (t) => t.closest && t.closest("a, button, input, .ch-card, .site-header, .hero-inner, .fresh, .later, footer, .hall");
+  const blocked = (t) => t.closest && t.closest("a, button, input, .ch-card, .site-header, .hero-inner, .fresh, .tokushu, .later, footer, .hall");
   let hover = -1, pending = null;
   addEventListener("pointermove", (e) => {
     if (e.pointerType === "touch") return;
