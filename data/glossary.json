@@ -362,5 +362,8 @@
   {"term": "セーフティネット保証4号", "aliases": [], "yomi": "せーふてぃねっとほしょうよんごう", "short": "自然災害など突発的な災害で売上が減った中小企業のために、信用保証協会が一般の保証とは別枠で融資を保証する制度。中小企業庁が地域を指定する。", "src_name": "中小企業庁", "src_url": "https://www.chusho.meti.go.jp/kinyu/sefu_net_4gou.html"},
   {"term": "学習指導要領", "aliases": [], "yomi": "がくしゅうしどうようりょう", "short": "全国どこの学校でも一定の水準の教育が受けられるように、文部科学省が定める教育課程（何をどう教えるか）の基準。", "src_name": "文部科学省", "src_url": "https://www.mext.go.jp/a_menu/shotou/new-cs/index.htm"},
   {"term": "予算編成の基本方針", "aliases": [], "yomi": "よさんへんせいのきほんほうしん", "short": "次の年度の国の予算をどんな考え方でつくるかを政府が示す方針。経済財政諮問会議で議論され、予算案づくりの前提になる。", "src_name": "内閣府（経済財政諮問会議）", "src_url": "https://www5.cao.go.jp/keizai-shimon/"},
-  {"term": "拉致問題", "aliases": [], "yomi": "らちもんだい", "short": "北朝鮮が日本人を連れ去った問題。政府は17人を拉致被害者と認定し、2002年に5人が帰国した。残る被害者の即時帰国を求めている。", "src_name": "政府拉致問題対策本部", "src_url": "https://www.rachi.go.jp/jp/ratimondai/index.html"}
+  {"term": "拉致問題", "aliases": [], "yomi": "らちもんだい", "short": "北朝鮮が日本人を連れ去った問題。政府は17人を拉致被害者と認定し、2002年に5人が帰国した。残る被害者の即時帰国を求めている。", "src_name": "政府拉致問題対策本部", "src_url": "https://www.rachi.go.jp/jp/ratimondai/index.html"},
+  {"term": "防災基本計画", "aliases": [], "yomi": "ぼうさいきほんけいかく", "short": "災害対策基本法にもとづいて中央防災会議が作る、国の防災の最も基本となる計画。国・自治体・公共機関の役割や対策を定め、必要に応じて見直されます。", "src_name": "防災庁", "src_url": "https://www.bousai.go.jp/taisaku/keikaku/kihon.html"},
+  {"term": "規制改革推進会議", "aliases": [], "yomi": "きせいかいかくすいしんかいぎ", "short": "国の規制や制度の見直しを話し合い、総理大臣に意見（答申）を出す内閣府の会議。民間の有識者が委員を務めます。", "src_name": "内閣府", "src_url": "https://www8.cao.go.jp/kisei-kaikaku/kisei/meeting/meeting.html"},
+  {"term": "政治資金収支報告書", "aliases": [], "yomi": "せいじしきんしゅうしほうこくしょ", "short": "政党や政治団体が1年間の収入と支出を書いて毎年提出する報告書。政治資金規正法にもとづき、要旨が公表されます。", "src_name": "総務省", "src_url": "https://www.soumu.go.jp/senkyo/seiji_s/"}
 ]

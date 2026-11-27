@@ -90,7 +90,7 @@ a:focus-visible, button:focus-visible, summary:focus-visible { outline: 2px soli
   .site-nav .nav-long { display: none; }
   .site-nav .nav-short { display: inline; }
 }
-@media (max-width: 420px) { .site-nav a { padding: 0 6px; } } /* 特集を足して6つ。390px でも収まるように */
+@media (max-width: 420px) { .site-nav a { padding: 0 4px; } .site-nav ul { gap: 0; } } /* 新着・特集を足して7つ。390px でも収まるように（トップと同じ詰め方） */
 @media (max-width: 359px) { .site-nav a { padding: 0 6px; font-size: 12px; } }
 .nav-short { display: none; }
 

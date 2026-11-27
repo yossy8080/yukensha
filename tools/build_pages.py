@@ -141,6 +141,7 @@ def header(current="") -> str:
     <a class="site-logo" href="/">有権者</a>
     <nav class="site-nav" aria-label="メニュー">
       <ul>
+        <li><a href="/#new">新着</a></li>
         <li><a href="/t/"{cur("tokushu")}>特集</a></li>
         <li><a href="/#stream"{cur("stream")}>府省</a></li>
         <li><a href="/#opinion">オピニオン</a></li>
