@@ -5,9 +5,10 @@
 - m/<府省id>.html・m/index.html 府省ごとの記事一覧 / p/<県id>.html・p/index.html 都道府県ごとの記事一覧
 - g/<用語>.html・g/index.html 用語集（data/glossary.json の語のうち、記事に出てくるものだけ。
   data/glossary_pages.json があれば説明文 intro と参考リンク refs も出す。無くてもよい）
-- feed.xml（Atom・新しい記事 50件）と sitemap.xml（決まったページ + /a/ + 全記事 + m/ p/ g/）
+- t/<slug>.html・t/index.html 特集（data/features.json。無ければ []。背景の章・これからの予定・よくある質問・関連する記事）
+- feed.xml（Atom・新しい記事 50件 + 特集）と sitemap.xml（決まったページ + /a/ + 全記事 + m/ p/ g/ + 特集があれば t/）
 - ministries.html・local.html の <!-- STATIC-LIST --> と pledges.html の <!-- STATIC-PLEDGES --> のあいだに、文字だけの一覧を入れる
-- 公開をやめた記事・記事の無くなった府省・県・用語のページは消す。index.html は消さない
+- 公開をやめた記事・記事の無くなった府省・県・用語・data/features.json から消えた特集のページは消す。index.html は消さない
 - 入力の JSON には書き込まない。確認ページ（tools/review_server.py）で公開・修正すると自動で呼ばれる
 - 書くのは中身が変わったファイルだけ（git の差分が出ないように）。build() は変わったページの URL も返す（IndexNow 用）
 """
@@ -140,6 +141,7 @@ def header(current="") -> str:
     <a class="site-logo" href="/">有権者</a>
     <nav class="site-nav" aria-label="メニュー">
       <ul>
+        <li><a href="/t/"{cur("tokushu")}>特集</a></li>
         <li><a href="/#stream"{cur("stream")}>府省</a></li>
         <li><a href="/#opinion">オピニオン</a></li>
         <li><a href="/#local"{cur("local")}>地方</a></li>
@@ -160,8 +162,9 @@ FOOTER = f"""<footer>
 </footer>"""
 
 
-def page(*, title, desc, canonical, og_type, og_image, ld, body, current="", glossary=False) -> str:
+def page(*, title, desc, canonical, og_type, og_image, ld, body, current="", glossary=False, noindex=False) -> str:
     lds = "".join(f'<script type="application/ld+json">\n{json_ld(x)}\n</script>\n' for x in ld)
+    robots = '<meta name="robots" content="noindex">\n' if noindex else ""
     gl_css = '<link rel="stylesheet" href="/assets/glossary.css">\n' if glossary else ""
     # 用語ポップアップ：glossary.js の初期値は相対パス（data/glossary.json）なので、/ からのパスで先に読み込む
     gl_js = ('<script src="/assets/glossary.js"></script>\n'
@@ -174,7 +177,7 @@ def page(*, title, desc, canonical, og_type, og_image, ld, body, current="", glo
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{esc(title)}</title>
 <meta name="description" content="{esc(desc)}">
-<link rel="canonical" href="{esc(canonical)}">
+{robots}<link rel="canonical" href="{esc(canonical)}">
 <meta property="og:type" content="{og_type}">
 <meta property="og:site_name" content="有権者">
 <meta property="og:title" content="{esc(title)}">
@@ -318,11 +321,11 @@ class Ctx:
         return f"/local.html?p={it['pref']}#a={it['id']}" if self.is_local(it) else f"/#a={it['id']}"
 
 
-def words_html(words) -> str:
+def words_html(words, label="この記事に出てくる言葉") -> str:
     """この記事に出てくる言葉（用語集のページがあるものだけ）。"""
     if not words:
         return ""
-    return ('<section class="ap-sec ap-words" aria-labelledby="ap-words"><h2 class="ap-h2" id="ap-words">この記事に出てくる言葉</h2><ul class="g-terms">'
+    return (f'<section class="ap-sec ap-words" aria-labelledby="ap-words"><h2 class="ap-h2" id="ap-words">{label}</h2><ul class="g-terms">'
             + "".join(f'<li><a href="{esc(g_href(s))}">{esc(t)}</a></li>' for t, s in words) + "</ul></section>")
 
 
@@ -858,6 +861,195 @@ def static_pledges(data) -> str:
             f'{"".join(secs)}\n</div>\n</details>\n</section>')
 
 
+# ── 特集（t/）：data/features.json の1件 = 1ページ。背景（章）・これからの予定・よくある質問・関連する記事 ──
+
+WHEN = re.compile(r"^(\d{4})-(\d{1,2})(?:-(.+))?$")
+
+
+def lst(v) -> list:
+    """特集の JSON は手で書くので、リストのはずの欄がほかの形でも止まらないように（リストでなければ空）。"""
+    return v if isinstance(v, list) else []
+
+
+def is_url(u) -> bool:
+    return bool(re.match(r"^https?://", str(u or "")))
+
+
+def clean_features(raw) -> list:
+    """公開してよい形の特集だけ（slug がファイル名に使える・題名と published_at がある・重ならない）。published_at の新しい順。"""
+    out, seen = [], set()
+    for f in raw if isinstance(raw, list) else []:
+        if not isinstance(f, dict):
+            continue
+        slug = str(f.get("slug") or "")
+        if not isinstance(f.get("slug"), str) or not SAFE_ID.match(slug) or slug.lower() == "index" or slug.lower() in seen \
+                or not isinstance(f.get("title"), str) or not f["title"].strip() \
+                or not W3C.match(str(f.get("published_at") or "")):
+            continue
+        seen.add(slug.lower())
+        out.append(f)
+    out.sort(key=lambda f: (str(f["published_at"]), f["slug"]), reverse=True)
+    return out
+
+
+def updated_of(f) -> str:
+    """最終更新の日時（updated_at が無ければ published_at）。"""
+    v = str(f.get("updated_at") or "")
+    return v if W3C.match(v) else str(f.get("published_at") or "")
+
+
+def ymd(iso) -> str:
+    """2026-11-27… → 2026年11月27日（最終更新の表示）。"""
+    y, m, d = (int(x) for x in str(iso)[:10].split("-"))
+    return f"{y}年{m}月{d}日"
+
+
+def fmt_when(s) -> str:
+    """予定表の時期：2026-12-19 → 2026年12月19日（土）、2026-12-中旬 → 2026年12月中旬、2026-12 → 2026年12月。ほかはそのまま（エスケープ済みで返す）。"""
+    s = str(s or "").strip()
+    m = WHEN.match(s)
+    if m:
+        y, mo, rest = int(m.group(1)), int(m.group(2)), m.group(3)
+        if 1 <= mo <= 12:
+            if rest and re.fullmatch(r"\d{1,2}", rest):
+                try:
+                    return fmt_date(f"{y:04d}-{mo:02d}-{int(rest):02d}")
+                except ValueError:  # 2026-02-30 のような無い日は、そのまま出す
+                    return esc(s)
+            return f"{y}年{mo}月" + esc(rest or "")
+    return esc(s)
+
+
+def ref_link(url, label="出典 ↗") -> str:
+    return f'<a class="tk-ref" href="{esc(url)}" target="_blank" rel="noopener">{label}</a>' if is_url(url) else ""
+
+
+def feature_sections(f):
+    """章（h2 のあるものだけ）に、目次のアンカー（s1, s2, …）をつける。"""
+    secs = [s for s in lst(f.get("sections")) if isinstance(s, dict) and str(s.get("h2") or "").strip()]
+    return [(f"s{i + 1}", s) for i, s in enumerate(secs)]
+
+
+def section_html(sid, s) -> str:
+    paras = "".join(f"<p>{esc(p)}</p>" for p in lst(s.get("paragraphs")) if isinstance(p, str) and p.strip())
+    pts = "".join(f"<li>{esc(p)}</li>" for p in lst(s.get("points")) if isinstance(p, str) and p.strip())
+    refs = [r for r in lst(s.get("refs")) if isinstance(r, dict) and is_url(r.get("url"))]
+    links = "、".join(f'<a href="{esc(r["url"])}" target="_blank" rel="noopener">「{esc(r.get("title") or r["url"])}」'
+                     + (f'（{esc(r["site"])}）' if r.get("site") else "") + "</a>" for r in refs)
+    return (f'<section class="tk-sec" aria-labelledby="{sid}"><h2 class="tk-h2" id="{sid}">{esc(s["h2"])}</h2>{paras}'
+            + (f'<ul class="points">{pts}</ul>' if pts else "")
+            + (f'<p class="source source-refs">参考：{links}</p>' if links else "") + "</section>")
+
+
+def timeline_html(rows) -> str:
+    """これからの予定（表）。fixed が true でないものは「予定・未確定」。スマホでは1行ずつ縦に積む（CSS）。"""
+    rows = [r for r in lst(rows) if isinstance(r, dict) and (r.get("date") or r.get("event"))]
+    if not rows:
+        return ""
+    trs = []
+    for r in rows:
+        fixed = r.get("fixed") is True
+        d = str(r.get("date") or "")
+        try:
+            dt_attr = d if re.fullmatch(r"\d{4}-\d{2}-\d{2}", d) and dt.date.fromisoformat(d) else ""
+        except ValueError:
+            dt_attr = ""
+        when = f'<time datetime="{dt_attr}">{fmt_when(d)}</time>' if dt_attr else fmt_when(d)
+        label, cls = ("", "") if fixed else ('<span class="tk-plan">予定・未確定</span>', ' class="is-plan"')
+        ref = " " + ref_link(r.get("ref_url")) if is_url(r.get("ref_url")) else ""
+        trs.append(f'\n<tr{cls}><td class="tk-tl-date">{when}{label}</td><td class="tk-tl-event">{esc(r.get("event"))}{ref}</td></tr>')
+    return ('<section class="tk-sec tk-timeline" aria-labelledby="tk-timeline"><h2 class="tk-h2" id="tk-timeline">これからの予定</h2>'
+            '<table class="tk-tl"><thead><tr><th scope="col">時期</th><th scope="col">できごと</th></tr></thead><tbody>'
+            + "".join(trs) + '\n</tbody></table><p class="tk-note">「予定・未確定」は、日付がまだ正式に決まっていないもの（例年の時期など）です。決まりしだい書きかえます。</p></section>')
+
+
+def faq_html(rows) -> str:
+    rows = [r for r in lst(rows) if isinstance(r, dict) and r.get("q") and r.get("a")]
+    if not rows:
+        return ""
+    qa = "".join(f'<div class="tk-qa"><h3 class="tk-q">{esc(r["q"])}</h3><p class="tk-a">{esc(r["a"])}'
+                 + (" " + ref_link(r.get("ref_url")) if is_url(r.get("ref_url")) else "") + "</p></div>" for r in rows)
+    return f'<section class="tk-sec tk-faq" aria-labelledby="tk-faq"><h2 class="tk-h2" id="tk-faq">よくある質問</h2>{qa}</section>'
+
+
+def feature_page(f, ctx: Ctx, related=(), words=()) -> str:
+    """t/<slug>.html：特集のページ（記事のページと同じ見た目の系統）。"""
+    slug = f["slug"]
+    canonical = f"{SITE}/t/{slug}.html"
+    title = f"{f.get('title', '')}｜有権者"
+    desc = short_desc(f.get("lead") or f.get("title"))
+    up = updated_of(f)
+    crumbs = [("有権者", SITE + "/"), ("特集", SITE + "/t/"), (f.get("title", ""), canonical)]
+    art_ld = {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": f.get("title", ""),
+        "description": desc,
+        "datePublished": f["published_at"],
+        "dateModified": up,
+        "image": [OG_DEFAULT],
+        "author": PUBLISHER,
+        "publisher": PUBLISHER,
+        "mainEntityOfPage": {"@type": "WebPage", "@id": canonical},
+    }
+    secs = feature_sections(f)
+    tl, faq = timeline_html(f.get("timeline")), faq_html(f.get("faq"))
+    toc = [(sid, s["h2"]) for sid, s in secs]
+    if tl:
+        toc.append(("tk-timeline", "これからの予定"))
+    if faq:
+        toc.append(("tk-faq", "よくある質問"))
+    toc_html = ('<nav class="tk-toc" aria-label="目次"><p class="tk-toc-h" data-no-gloss>目次</p><ol>'
+                + "".join(f'<li><a href="#{sid}">{esc(h)}</a></li>' for sid, h in toc) + "</ol></nav>") if toc else ""
+    tags = "".join(f'<span class="tag">{esc(t)}</span>' for t in lst(f.get("tags")))
+    body = f"""<div class="ap tk">
+{crumbs_nav(crumbs)}
+<article class="item tk-body">
+  <p class="kicker"><span class="tk-label">特集</span><span>最終更新 <time datetime="{esc(up)}">{ymd(up)}</time></span></p>
+  <h1 class="headline">{esc(f.get("title"))}</h1>
+  <p class="summary tk-lead">{esc(f.get("lead"))}</p>
+  {toc_html}
+  {"".join(section_html(sid, s) for sid, s in secs)}
+  {tl}
+  {faq}
+  <p class="source tk-source">出典はすべて公式ページ。各章の「参考」と予定表・よくある質問の「出典」の公式ページをもとに有権者がまとめて作成（最終更新 {ymd(up)}）</p>
+  {f'<p class="tags">{tags}</p>' if tags else ""}
+</article>
+{related_html(related, ctx)}
+{words_html(words, "この特集に出てくる言葉")}
+<nav class="ap-links" aria-label="ほかのページ">
+  <p class="ap-actions"><a class="ap-btn" href="/t/">ほかの特集</a><a class="ap-btn" href="/a/">すべての記事</a></p>
+</nav>
+</div>"""
+    return page(title=title, desc=desc, canonical=canonical, og_type="article", og_image=OG_DEFAULT,
+                ld=[art_ld, crumbs_ld(crumbs)], body=body, current="tokushu", glossary=True)
+
+
+def t_index_page(features) -> str:
+    """t/index.html：特集の一覧（新しい順）。まだ1件も無いときは検索に出さない（noindex）。"""
+    canonical = SITE + "/t/"
+    crumbs = [("有権者", SITE + "/"), ("特集", canonical)]
+    lis = "".join(f'\n<li class="ml-item"><p class="kicker"><span class="tk-label">特集</span><span>最終更新 <time datetime="{esc(updated_of(f))}">{ymd(updated_of(f))}</time></span></p>'
+                  f'<h2 class="ml-title"><a href="/t/{esc(f["slug"])}.html">{esc(f.get("title"))}</a></h2>'
+                  f'<p class="ml-sum">{esc(f.get("lead"))}</p></li>' for f in features)
+    listing = f'<ol class="ml-list">{lis}\n</ol>' if features else '<p class="empty">特集はまだありません。準備ができたらここに並びます。</p>'
+    body = f"""<div class="ap">
+{crumbs_nav(crumbs)}
+<h1 class="page-title">特集</h1>
+<p class="lead">1つのテーマについて、背景・これからの予定・よくある質問・関連する記事を1ページにまとめています（新しい順）。出典はすべて公式ページです。</p>
+{listing}
+<p class="ap-actions"><a class="ap-btn" href="/a/">すべての記事</a><a class="ap-btn" href="/g/">用語集</a></p>
+</div>"""
+    desc = "予算・税制改正など、検索の多いテーマを1ページにまとめた有権者の特集です。背景・これからの予定・よくある質問を、公式ページの出典つきで解説しています。"
+    ld = {"@context": "https://schema.org", "@type": "CollectionPage", "name": "特集｜有権者", "url": canonical,
+          "isPartOf": {"@type": "WebSite", "name": "有権者", "url": SITE + "/"},
+          "mainEntity": {"@type": "ItemList", "numberOfItems": len(features),
+                         "itemListElement": [{"@type": "ListItem", "position": i + 1, "url": f"{SITE}/t/{f['slug']}.html"}
+                                             for i, f in enumerate(features)]}}
+    return page(title="特集（予算・税制などのテーマ解説）｜有権者", desc=desc, canonical=canonical, og_type="website",
+                og_image=OG_DEFAULT, ld=[ld, crumbs_ld(crumbs)], body=body, current="tokushu", noindex=not features)
+
+
 FEED_MAX = 50
 
 
@@ -875,14 +1067,28 @@ def published3339(it) -> str:
     return rfc3339({"published_at": it.get("published_at"), "date": it.get("date")})
 
 
-def feed(items, ctx: Ctx) -> str:
-    """feed.xml（Atom 1.0）：国と地方の新しい記事 50件。id はページの URL（変わらない）。"""
+def feature_entry(f) -> dict:
+    """特集を feed の1件の形に（日付は published_at の日）。"""
+    return {"title": f.get("title"), "summary": f.get("lead"), "published_at": f["published_at"],
+            "updated_at": f.get("updated_at"), "date": str(f["published_at"])[:10], "_url": f"{SITE}/t/{f['slug']}.html"}
+
+
+def feed(items, ctx: Ctx, features=()) -> str:
+    """feed.xml（Atom 1.0）：国と地方の新しい記事 50件 + 特集（記事のあいだに published_at の順で入れる）。id はページの URL（変わらない）。"""
     top = items[:FEED_MAX]
-    updated = max((rfc3339(it) for it in top), default="2026-01-01T00:00:00+09:00")
-    entries = []
+    feats = sorted((feature_entry(f) for f in features), key=published3339, reverse=True)
+    rows, k = [], 0
     for it in top:
-        url = f"{SITE}/a/{it['id']}.html"
-        cat = ctx.name(it, ctx.gid(it))
+        while k < len(feats) and published3339(feats[k]) >= published3339(it):
+            rows.append(feats[k])
+            k += 1
+        rows.append(it)
+    rows += feats[k:]
+    updated = max((rfc3339(it) for it in rows), default="2026-01-01T00:00:00+09:00")
+    entries = []
+    for it in rows:
+        url = it.get("_url") or f"{SITE}/a/{it['id']}.html"
+        cat = "特集" if it.get("_url") else ctx.name(it, ctx.gid(it))
         entries.append(f"""  <entry>
     <title>{esc(it.get("title"))}</title>
     <link rel="alternate" type="text/html" href="{esc(url)}"/>
@@ -977,7 +1183,8 @@ def build(root) -> dict:
 
     o = Out(root)
     (root / "a").mkdir(exist_ok=True)
-    keep = {"a": {"index.html"}, "m": {"index.html"}, "p": {"index.html"}, "g": {"index.html"}}
+    keep = {"a": {"index.html"}, "m": {"index.html"}, "p": {"index.html"}, "g": {"index.html"}, "t": {"index.html"}}
+    features = clean_features(read_json(root / "data" / "features.json", []))
     for grp in by_group.values():
         for i, it in enumerate(grp):  # grp は新しい順
             newer = grp[i - 1] if i > 0 else None
@@ -1010,6 +1217,19 @@ def build(root) -> dict:
         o.write(f"p/{pid}.html", group_page("p", p, its, ctx, home, f"{p['name']}の公式ホームページ ↗" if home else ""))
         keep["p"].add(f"{pid}.html")
     o.write("p/index.html", p_index_page(by_pref, ctx))
+
+    # 特集（t/）：関連する記事は公開中のものだけ・言葉は g/ のページがあるものだけ
+    by_id = {it["id"]: it for it in items}
+    for f in features:
+        rel = [by_id[x] for x in dict.fromkeys(str(x) for x in lst(f.get("related_article_ids"))) if x in by_id]
+        words = []
+        for t in lst(f.get("related_terms")):
+            e = gl.by_key.get(t) if isinstance(t, str) else None
+            if e and e["term"] in slugs and (e["term"], slugs[e["term"]]) not in words:
+                words.append((e["term"], slugs[e["term"]]))
+        o.write(f"t/{f['slug']}.html", feature_page(f, ctx, rel, words))
+        keep["t"].add(f"{f['slug']}.html")
+    o.write("t/index.html", t_index_page(features))
     o.inject("ministries.html", "STATIC-LIST", static_ministries(m_groups))
     o.inject("local.html", "STATIC-LIST", static_prefs(by_pref, ctx))
     pledges = read_json(root / "data" / "pledges.json", None)
@@ -1028,12 +1248,15 @@ def build(root) -> dict:
     extra = [("/m/", latest(national))] + [(f"/m/{s['id']}.html", latest(its)) for s, its in m_groups]
     extra += [("/p/", latest([it for its in by_pref.values() for it in its]))] + [(f"/p/{pid}.html", latest(its)) for pid, its in by_pref.items()]
     extra += [("/g/", latest([it for its in by_term.values() for it in its]))] + [(g_href(slugs[e["term"]]), latest(by_term[e["term"]])) for e in g_terms]
+    if features:  # 特集が1件も無いうちは /t/ を載せない（中身の無いページ）
+        extra += [("/t/", max((updated_of(f) for f in features), key=lambda s: s[:10] + s))]
+        extra += [(f"/t/{f['slug']}.html", updated_of(f)) for f in features]
     o.write("sitemap.xml", sitemap(items, extra))
-    o.write("feed.xml", feed(items, ctx))
+    o.write("feed.xml", feed(items, ctx, features))
     urls = [page_url(r) for r in o.changed + removed if r.endswith(".html")]
     return {"pages": len(items), "written": o.written, "deleted": deleted, "removed": removed, "skipped": skipped,
             "changed": o.changed, "urls": urls,
-            "counts": {"a": len(keep["a"]) - 1, "m": len(m_groups), "p": len(by_pref), "g": len(g_terms)},
+            "counts": {"a": len(keep["a"]) - 1, "m": len(m_groups), "p": len(by_pref), "g": len(g_terms), "t": len(features)},
             "terms": {aid: [slugs[t] for t in ts if t in slugs] for aid, ts in terms_of.items()}}
 
 
@@ -1044,7 +1267,7 @@ if __name__ == "__main__":
         pass
     r = build(Path(__file__).resolve().parent.parent)
     c = r["counts"]
-    print(f"記事ページ {r['pages']}件・府省 {c['m']}・都道府県 {c['p']}・用語 {c['g']}（書きかえ {r['written']}ファイル）")
+    print(f"記事ページ {r['pages']}件・府省 {c['m']}・都道府県 {c['p']}・用語 {c['g']}・特集 {c['t']}（書きかえ {r['written']}ファイル）")
     if r["deleted"]:
         print("消したページ（公開をやめた記事）:", ", ".join(r["deleted"]))
     if r["skipped"]:

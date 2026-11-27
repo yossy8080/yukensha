@@ -22,7 +22,7 @@
   - `assets/glossary.js` + `glossary.css` + `data/glossary.json` 用語ポップアップ（難しい用語の簡単な説明。語を足すときは glossary.json に追加）
   - `assets/glyphs.json` 象徴の1文字の字形（`python tools/make_glyphs.py フォント.ttf` で作る。今のトップの 3D では使っていない）
 - `data/sources.json` 集める発表元の一覧（府省を足すときはここに追加。`emblem` = フォールバック用の1文字、`model` = トップの 3D の物体。下の表を参照）
-- `data/news.json` 公開済みの記事
+- `data/news.json` 公開済みの記事 / `data/features.json` 公開済みの特集（下の「特集」）
 - `drafts/` 下書き・候補（gitに入れない）
 - `assets/photos/` 記事の写真（下の「写真」を参照）
 - `tools/collect.py` 新着集め / `tools/collect_local.py` 地方（47都道府県）の新着集め（下の「毎日の地方ニュース」） / `tools/fetch_page.py` 本文の取り出し / `tools/fetch_photo.py` 写真の取り込み / `tools/review_server.py` + `tools/review.html` 確認ページ（`python tools/check_review_local.py` で地方の振り分けを一時フォルダのコピーで確認できる）
@@ -51,9 +51,28 @@ Google が記事を1件ずつ検索に出せるように、記事ごとに本文
 - **`data/glossary_pages.json` は任意**（Hermes が書く、もっとくわしい説明）。形：`{"用語": {"intro": ["段落", …], "refs": [{"title", "site", "url"}]}}`。あれば説明文と参考リンクを足す。無くても作れる
 - glossary.json に無い語（例：JC-STAR）のページはできない。ページを作りたい語は glossary.json に足す
 
+## 特集（`t/`）
+検索が増える時期（12月の税制改正大綱・予算案など）の前に出す、1テーマ1ページのまとめ。記事より長く、背景・これからの予定・よくある質問・関連する記事を1ページに入れる。
+- `data/features.json` 公開中の特集（最初は `[]`）。1件の形：
+  `{slug, title, lead, peak, status, published_at, updated_at, sections: [{h2, paragraphs: [], points: [], refs: [{title, site, url}]}], timeline: [{date, event, fixed, ref_url}], faq: [{q, a, ref_url}], related_article_ids: [], related_terms: [], tags: []}`
+  - `timeline` の `date` は `2026-12-19`・`2026-12`・`2026-12-中旬` のどれでもよい（2026年12月19日（土）・2026年12月・2026年12月中旬 と出る）。`fixed` が `true` でないものは「予定・未確定」の印がつく
+  - `related_article_ids` のうち公開中でない id は出さない。`related_terms` は用語集のページ（`g/`）がある言葉だけ「この特集に出てくる言葉」に出る
+  - `peak`（検索が増える時期のメモ）と `status` はページには出ない
+- 下書き：`drafts/features/<slug>.json`（同じ形。`published_at`・`updated_at` は無くてよい）
+- **公開（Roy の OK のあと）**：`python tools/publish_feature.py <slug>` → data/features.json に入れる（同じ slug は置きかえ。`published_at` は最初のまま、`updated_at` は今）→ ページを作り直す → `data/features.json t sitemap.xml feed.xml` をコミット「特集を公開：<題名>」→ push → IndexNow。`--no-push` ならコミットまで。下書きの形がおかしいときは何も変えずに止まる
+- できるページ：`t/<slug>.html`（題名・リード・目次・章・これからの予定の表・よくある質問（h2/h3。FAQPage の schema は付けない）・関連する記事・この特集に出てくる言葉・最終更新・出典の注意書き。JSON-LD は Article と BreadcrumbList（有権者 › 特集 › 題名）。用語ポップアップも効く）と `t/index.html`（新しい順の一覧。特集が0件のあいだは noindex）
+- feed.xml に特集も入る（記事のあいだに published_at の順）。sitemap.xml には特集が1件以上あるときだけ `/t/` と各特集が入る。data/features.json から消した特集のページは作り直しで消える
+- トップの「新着」のすぐ下に「特集」の入口（`#tokushu`。新しい3件。0件なら出ない）。どのページのメニューにも「特集」（`/t/`）
+- 見た目は `assets/article.css` の `.tk-…`（スマホでは予定の表を縦に積む・印刷では目次を消してリンクの URL を出す）
+
+### 特集の見た目をサンプルで確かめる
+1. `python tools/test_build_pages.py --sample` … data/features.json にサンプルの特集（【サンプル】…）を1件入れて作り直す（ほかの特集には触らない）
+2. `python -m http.server 5655` → http://localhost:5655/t/sample-tokushu.html ・ http://localhost:5655/t/ ・ http://localhost:5655/ （トップの「特集」の欄）。スマホの幅は開発者ツールで 390px にする。印刷は Ctrl+P
+3. 見終わったら **必ず** `python tools/test_build_pages.py --sample-off`（サンプルを消して作り直す）→ `git status` でサンプルが残っていないことを確かめる（コミットしない）
+
 ## feed.xml・sitemap.xml
-- `feed.xml` 国と地方の新しい記事 50件（Atom 1.0。id は記事のページの URL）。どのページの `<head>` にも `<link rel="alternate" type="application/atom+xml" … href="/feed.xml">`
-- `sitemap.xml` 決まった7ページ + `/a/` + 全記事 + `/m/` `/p/` `/g/` とその中のページ（feed.xml は入れない）。lastmod はそのページに載っている記事のいちばん新しい更新日時。robots.txt はそのまま
+- `feed.xml` 国と地方の新しい記事 50件 + 特集（Atom 1.0。id は記事・特集のページの URL）。どのページの `<head>` にも `<link rel="alternate" type="application/atom+xml" … href="/feed.xml">`
+- `sitemap.xml` 決まった7ページ + `/a/` + 全記事 + `/m/` `/p/` `/g/` とその中のページ + 特集があれば `/t/` と各特集（feed.xml は入れない）。lastmod はそのページに載っている記事のいちばん新しい更新日時（特集は updated_at）。robots.txt はそのまま
 
 ## IndexNow（Bing などにすぐ知らせる）
 - 鍵：`cd11b7311202af032809200bf75680c1`（公開してよいもの）。サイトの一番上の `cd11b7311202af032809200bf75680c1.txt` に鍵だけを書いてある（消さない）

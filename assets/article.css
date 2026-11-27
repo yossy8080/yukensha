@@ -100,6 +100,54 @@
 .g-list a:hover { text-decoration: underline; }
 .g-count { color: var(--muted); font-size: 13px; align-self: center; }
 .g-sum { grid-column: 1 / -1; font-size: 14px; line-height: 1.7; color: var(--muted); }
+/* 特集（t/）：記事のページと同じ1本の列。章の見出し・目次・予定表・よくある質問 */
+.tk-label { padding: 0 8px; border-radius: 4px; background: var(--shu); color: #fff; font-weight: 700; font-size: 12px; letter-spacing: .1em; line-height: 1.8; }
+.tk .tk-lead { font-size: 18px; }
+.tk-toc { margin: 0 0 28px; padding: 14px 18px; border-radius: 12px; background: rgba(143, 208, 255, .05); border: 1px solid rgba(143, 208, 255, .18); }
+.tk-toc-h { margin: 0 0 4px; font-size: 13px; font-weight: 700; letter-spacing: .06em; color: var(--accent); }
+.tk-toc ol { margin: 0; padding-left: 1.4em; }
+.tk-toc li { margin: 2px 0; line-height: 1.7; }
+.tk-toc a { color: var(--text); }
+.tk-sec { margin: 0 0 30px; }
+.tk-h2 {
+  font-family: var(--serif); font-size: clamp(20px, 4.4vw, 24px); font-weight: 700; line-height: 1.5; letter-spacing: .02em;
+  margin: 0 0 12px; padding: 0 0 8px; border-bottom: 1px solid var(--rule); scroll-margin-top: calc(var(--header-h) + 16px); text-wrap: pretty;
+}
+.tk-sec > p { margin: 0 0 14px; }
+.tk-ref { white-space: nowrap; font-size: 14px; color: var(--text); }
+.tk-tl { width: 100%; border-collapse: collapse; margin: 0 0 10px; font-size: 16px; line-height: 1.7; }
+.tk-tl th { text-align: left; font-size: 13px; font-weight: 700; color: var(--muted); padding: 6px 10px 6px 0; border-bottom: 1px solid var(--rule); }
+.tk-tl td { vertical-align: top; padding: 10px 10px 10px 0; border-bottom: 1px solid var(--rule); }
+.tk-tl-date { width: 12.5em; font-weight: 700; }
+.tk-plan {
+  display: inline-block; margin-left: 6px; padding: 0 7px; border: 1px dashed var(--accent); border-radius: 4px;
+  font-size: 12px; font-weight: 700; color: var(--accent); line-height: 1.7; white-space: nowrap;
+}
+.tk-tl .is-plan .tk-tl-date time, .tk-tl .is-plan .tk-tl-date { color: var(--sub); }
+.tk-note { margin: 0; font-size: 13px; color: var(--muted); line-height: 1.7; }
+.tk-qa { padding: 12px 0; border-bottom: 1px solid var(--rule); }
+.tk-q { margin: 0 0 4px; font-family: var(--serif); font-size: 17px; font-weight: 700; line-height: 1.6; display: flex; gap: 10px; align-items: baseline; }
+.tk-q::before { content: "問"; flex: none; color: var(--accent); font-size: 14px; }
+.tk-a { margin: 0; padding-left: 1.6em; line-height: 1.85; }
+.tk-source { margin-top: 20px; }
+/* スマホ：予定表は横にスクロールさせず、1行ずつ「時期 → できごと」の縦積み */
+@media (max-width: 560px) {
+  .tk-tl thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .tk-tl, .tk-tl tbody, .tk-tl tr, .tk-tl td { display: block; width: auto; }
+  .tk-tl tr { padding: 10px 0; border-bottom: 1px solid var(--rule); }
+  .tk-tl td { padding: 0; border: 0; }
+  .tk-tl-date { margin-bottom: 2px; }
+  .tk-a { padding-left: 0; }
+}
+@media print {
+  .tk-toc { background: none; border-color: #ccc; }
+  .tk-label { background: none; color: #000; border: 1px solid #000; }
+  .tk-h2 { break-after: avoid; }
+  .tk-qa, .tk-tl tr { break-inside: avoid; }
+  .tk-ref::after, .tk .source a::after { content: " (" attr(href) ")"; font-size: 11px; overflow-wrap: anywhere; white-space: normal; }
+  .tk .ap-links, .tk-toc { display: none; }
+}
+
 /* 記事の下の見出し（この記事に出てくる言葉・関連する記事）：section-title と同じ小さな見出し */
 .ap-h2 {
   font-family: var(--serif); font-size: 15px; font-weight: 700; letter-spacing: .1em; line-height: 1.6;

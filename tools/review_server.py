@@ -9,7 +9,7 @@
      すでに公開中の記事と同じ id の下書きは「書き直し」として、その記事を置きかえる
      地方の下書き（"scope": "local" と "pref": 都道府県id）は data/local_news.json に入れる（news.json には入れない）
   2. 「公開しない」を選んだものは drafts/rejected.json に移す
-  3. 記事ごとのページ（a/）・府省別（m/）・都道府県別（p/）・用語（g/）・feed.xml・sitemap.xml を作り直す
+  3. 記事ごとのページ（a/）・府省別（m/）・都道府県別（p/）・用語（g/）・特集（t/）・feed.xml・sitemap.xml を作り直す
      （tools/build_pages.py。公開済みの記事の修正・非公開に戻すときも）
   4. git にコミットする（記事が使っている写真 assets/photos/ と作り直したページも一緒に。GitHubとつながっていれば push もする）
   5. push できたら、変わったページを IndexNow で検索エンジンに知らせる（tools/indexnow.py。失敗しても公開は止めない）
@@ -254,7 +254,7 @@ def rebuild_pages():
 
 
 # build_pages.py が作る・書きかえるもの（公開・修正のときに一緒にコミットする）
-PAGE_PATHS = ("a", "m", "p", "g", "feed.xml", "sitemap.xml", "ministries.html", "local.html", "pledges.html")
+PAGE_PATHS = ("a", "m", "p", "g", "t", "feed.xml", "sitemap.xml", "ministries.html", "local.html", "pledges.html")
 SITE = "https://yukensha.com"
 
 

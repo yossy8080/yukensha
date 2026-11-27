@@ -11,9 +11,14 @@
 - data/ が main から変わっていない（入力の JSON に触っていない）
 - 一時フォルダのコピーで：作り直しても差分が出ない・非公開にした記事のページは消える（a/index.html は残る）・
   review_server の「非公開に戻す」で a/ と sitemap.xml もコミットされる
+- 特集（t/）：サンプルの特集で t/ のページ・一覧・sitemap・feed・存在しない関連記事 id・「予定・未確定」・消えた特集の削除、
+  tools/publish_feature.py（一時フォルダの git で --no-push）
+- 見た目の確認用：python tools/test_build_pages.py --sample で data/features.json にサンプルを入れて作り直す（--sample-off で消す）
 """
+import contextlib
 import html
 import importlib.util
+import io
 import json
 import re
 import shutil
@@ -77,9 +82,9 @@ class Page(HTMLParser):
 
 
 def generated_pages(root=None):
-    """build_pages.py が作る HTML（a/・m/・p/・g/）。"""
+    """build_pages.py が作る HTML（a/・m/・p/・g/・t/）。"""
     root = root or ROOT
-    return sorted(f for d in ("a", "m", "p", "g") for f in (root / d).glob("*.html"))
+    return sorted(f for d in ("a", "m", "p", "g", "t") for f in (root / d).glob("*.html"))
 
 
 def public_html(root=None):
@@ -90,6 +95,53 @@ def public_html(root=None):
 def articles(root=ROOT):
     return (json.loads((root / "data" / "news.json").read_text(encoding="utf-8")),
             json.loads((root / "data" / "local_news.json").read_text(encoding="utf-8")))
+
+
+SAMPLE_SLUG = "sample-tokushu"
+
+
+def sample_feature(related_ids=(), terms=()):
+    """テスト・見た目の確認用の特集（中身は仮。公開しない）。"""
+    return {
+        "slug": SAMPLE_SLUG,
+        "title": "【サンプル】税制改正大綱ってなに？<いつ・だれが決める>",
+        "lead": "これは見た目を確かめるためのサンプルの特集です。税制改正大綱がいつ・どのように決まるのか、これからの予定とよくある質問をまとめます。",
+        "peak": "12月中旬",
+        "status": "ready",
+        "published_at": "2026-11-20T10:00:00+09:00",
+        "updated_at": "2026-11-25T18:30:00+09:00",
+        "sections": [
+            {"h2": "税制改正大綱ってなに？", "paragraphs": ["毎年の税のしくみの見直しを、与党がまとめた文書です（サンプルの文）。", "二つ目の段落。"],
+             "points": ["ポイント1", "ポイント2"], "refs": [{"title": "税制改正の概要", "site": "財務省", "url": "https://www.mof.go.jp/tax_policy/"}]},
+            {"h2": "去年の大綱で決まったこと", "paragraphs": ["段落。"], "points": [], "refs": []},
+            {"h2": "", "paragraphs": ["見出しの無い章は出さない"]},
+        ],
+        "timeline": [
+            {"date": "2026-12-中旬", "event": "与党の税制改正大綱", "fixed": False, "ref_url": "https://www.mof.go.jp/"},
+            {"date": "2026-12-19", "event": "（サンプル）閣議", "fixed": True, "ref_url": ""},
+            {"date": "2027-01", "event": "通常国会に法案", "fixed": False, "ref_url": "javascript:alert(1)"},
+        ],
+        "faq": [{"q": "大綱はいつ決まる？", "a": "例年は12月中旬です（サンプル）。", "ref_url": "https://www.mof.go.jp/"},
+                {"q": "答えの無い質問は出さない", "a": ""}],
+        "related_article_ids": [*related_ids, "no-such-article-id"],
+        "related_terms": [*terms, "用語集に無い言葉"],
+        "tags": ["税", "予算"],
+    }
+
+
+def put_sample(root, on=True):
+    """data/features.json にサンプルの特集を入れる（on=False なら消す）→ 作り直す。ほかの特集には触らない。"""
+    path = Path(root) / "data" / "features.json"
+    feats = [f for f in bp.read_json(path, []) if f.get("slug") != SAMPLE_SLUG]
+    if on:
+        news = bp.read_json(Path(root) / "data" / "news.json", [])
+        r0 = bp.build(root)  # 用語集のページがある言葉を1つ選ぶ
+        terms = [t for ts in r0["terms"].values() for t in ts][:1]
+        gl = {bp.term_slug(e["term"]): e["term"] for e in bp.read_json(Path(root) / "data" / "glossary.json", [])}
+        feats.insert(0, sample_feature([n["id"] for n in news[:2]], [gl.get(t, t) for t in terms]))
+    with open(path, "w", encoding="utf-8", newline="") as f:
+        f.write(json.dumps(feats, ensure_ascii=False, indent=1) + "\n")
+    return bp.build(root)
 
 
 class TestBuiltSite(unittest.TestCase):
@@ -246,7 +298,8 @@ class TestBuiltSite(unittest.TestCase):
         ns = {"s": "http://www.sitemaps.org/schemas/sitemap/0.9"}
         locs = [e.text for e in tree.getroot().findall("s:url/s:loc", ns)]
         m, p, g = self.expected_counts()
-        self.assertEqual(len(locs), len(bp.FIXED_PAGES) + 1 + len(self.items) + 3 + len(m) + len(p) + len(g))
+        nf = len(bp.clean_features(bp.read_json(ROOT / "data" / "features.json", [])))
+        self.assertEqual(len(locs), len(bp.FIXED_PAGES) + 1 + len(self.items) + 3 + len(m) + len(p) + len(g) + (1 + nf if nf else 0))
         self.assertEqual(len(set(locs)), len(locs))
         for u in ("https://yukensha.com/a/", "https://yukensha.com/m/", "https://yukensha.com/p/", "https://yukensha.com/g/"):
             self.assertIn(u, locs)
@@ -264,7 +317,7 @@ class TestBuiltSite(unittest.TestCase):
     def test_feed(self):
         tree = ET.parse(ROOT / "feed.xml")
         a = "{http://www.w3.org/2005/Atom}"
-        entries = tree.getroot().findall(a + "entry")
+        entries = [e for e in tree.getroot().findall(a + "entry") if "/a/" in e.find(a + "id").text]  # 特集（/t/）はのぞいて記事だけ
         self.assertEqual(len(entries), min(50, len(self.items)))
         newest = sorted(self.items, key=bp.sort_key, reverse=True)[:50]
         for e, it in zip(entries, newest):
@@ -362,14 +415,36 @@ class TestBuiltSite(unittest.TestCase):
         git = load("rs_git", HERE / "review_server.py").GIT or "git"
         run = lambda *a: subprocess.run([git, "-C", str(ROOT), *a], capture_output=True, text=True, encoding="utf-8")
         base = run("merge-base", "main", "HEAD").stdout.strip() or "main"
-        r = run("diff", base, "--stat", "--", "data/")
+        # data/features.json（特集。このブランチで足した空の [] ）だけは別
+        r = run("diff", base, "--stat", "--", "data/", ":(exclude)data/features.json")
         self.assertEqual(r.returncode, 0, r.stderr)
         self.assertEqual(r.stdout.strip(), "")
-        r = run("status", "--porcelain", "--", "data/")  # まだコミットしていない変更も無い
+        r = run("status", "--porcelain", "--", "data/", ":(exclude)data/features.json")  # まだコミットしていない変更も無い
         self.assertEqual(r.stdout.strip(), "")
 
 
-class TestInCopy(unittest.TestCase):
+    def test_t_index_and_nav(self):
+        """t/index.html はいつもある（特集が0件なら noindex）。どのページのナビにも「特集」。"""
+        t = (ROOT / "t" / "index.html").read_text(encoding="utf-8")
+        n = len(bp.clean_features(bp.read_json(ROOT / "data" / "features.json", [])))
+        self.assertEqual('<meta name="robots" content="noindex">' in t, n == 0)
+        for f in [*public_html(), *generated_pages()]:
+            self.assertRegex(f.read_text(encoding="utf-8"), r'<li><a href="/?t/"( aria-current="page")?>特集</a></li>', f.name)
+
+    def test_home_tokushu_section(self):
+        """トップ：#tokushu は #new のすぐ後・#stream の前、最初は hidden。home.js は 3D のクリック判定から外す。"""
+        t = (ROOT / "index.html").read_text(encoding="utf-8")
+        i_new, i_t, i_s = t.find('id="new"'), t.find('id="tokushu"'), t.find('id="stream"')
+        self.assertTrue(0 < i_new < i_t < i_s)
+        self.assertRegex(t, r'<section class="tokushu" id="tokushu"[^>]*\bhidden>')
+        self.assertNotRegex(t[t.find("</section>", i_new) + 10:t.find('<section class="tokushu"')], r"<section")  # あいだにほかのセクションが無い
+        self.assertLess(t.find('href="#new">新着'), t.find('href="t/">特集'))
+        js = (ROOT / "assets" / "home.js").read_text(encoding="utf-8")
+        self.assertRegex(js, r'const blocked = .*\.tokushu')
+        self.assertIn('const gap = pageY(stream) - (pageY(hero) + hero.offsetHeight);', js)  # 3D の変形は今までどおり #stream から
+
+
+class CopyCase(unittest.TestCase):
     """一時フォルダのコピーで試す（本物の a/・data/ には触らない）。"""
 
     def setUp(self):
@@ -384,13 +459,16 @@ class TestInCopy(unittest.TestCase):
     def tearDown(self):
         shutil.rmtree(self.tmp, ignore_errors=True)
 
+
+class TestInCopy(CopyCase):
+
     def test_idempotent_and_delete_stale(self):
         r1 = bp.build(self.tmp)
         self.assertGreater(r1["written"], 0)
         self.assertEqual(bp.build(self.tmp)["written"], 0)  # 2回目は何も書きかえない
         for f in ("ministries.html", "local.html", "pledges.html"):  # 手書きのページは本物と同じ（印のあいだも含めて）
             self.assertEqual((self.tmp / f).read_bytes(), (ROOT / f).read_bytes(), f)
-        self.assertEqual(set(r1["counts"]), {"a", "m", "p", "g"})
+        self.assertEqual(set(r1["counts"]), {"a", "m", "p", "g", "t"})
         self.assertIn("https://yukensha.com/a/", r1["urls"])
         self.assertNotIn("https://yukensha.com/sitemap.xml", r1["urls"])
         news = json.loads((self.tmp / "data" / "news.json").read_text(encoding="utf-8"))
@@ -453,10 +531,223 @@ class TestInCopy(unittest.TestCase):
         self.assertEqual(rs.git("status", "--porcelain", "--", *rs.PAGE_PATHS)[1], "")
 
 
+class TestFeatures(CopyCase):
+    """特集（t/）：一時フォルダのコピーにサンプルの特集を入れて試す。"""
+
+    def ld_blocks(self, t):
+        return [json.loads(x) for x in re.findall(r'<script type="application/ld\+json">\n(.*?)\n</script>', t, re.S)]
+
+    def test_feature_page(self):
+        r = put_sample(self.tmp)
+        self.assertEqual(r["counts"]["t"], 1)
+        f = json.loads((self.tmp / "data" / "features.json").read_text(encoding="utf-8"))[0]
+        path = self.tmp / "t" / f"{SAMPLE_SLUG}.html"
+        t = path.read_text(encoding="utf-8")
+        p = Page()
+        p.feed(t)
+        p.close()
+        self.assertEqual(p.h1_count, 1)
+        self.assertEqual(p.h1, f["title"])
+        self.assertIn("&lt;いつ・だれが決める&gt;", t)  # エスケープ
+        self.assertEqual(p.canonical, f"https://yukensha.com/t/{SAMPLE_SLUG}.html")
+        self.assertIn(f["lead"], t)
+        # 目次 → 章の h2（見出しの無い章は出さない）・予定・よくある質問
+        toc = re.search(r'<nav class="tk-toc".*?</nav>', t).group(0)
+        anchors = re.findall(r'href="#([^"]+)"', toc)
+        self.assertEqual(anchors, ["s1", "s2", "tk-timeline", "tk-faq"])
+        for a in anchors:
+            self.assertRegex(t, rf'<h2 class="tk-h2" id="{a}">')
+        self.assertNotIn("見出しの無い章は出さない", t)
+        self.assertIn('<ul class="points"><li>ポイント1</li><li>ポイント2</li></ul>', t)
+        self.assertIn('参考：<a href="https://www.mof.go.jp/tax_policy/" target="_blank" rel="noopener">「税制改正の概要」（財務省）</a>', t)
+        # 予定表：fixed=false だけ「予定・未確定」・日付の書き方・http でないリンクは出さない
+        self.assertEqual(t.count('<span class="tk-plan">予定・未確定</span>'), 2)
+        self.assertEqual(t.count('<tr class="is-plan">'), 2)
+        self.assertIn("2026年12月中旬", t)
+        self.assertIn('<time datetime="2026-12-19">2026年12月19日（土）</time></td>', t)
+        self.assertIn("2027年1月", t)
+        self.assertNotIn("javascript:", t)
+        # よくある質問：h2 の下に h3 の問い。答えの無いものは出さない。FAQPage は付けない
+        self.assertIn('<h3 class="tk-q">大綱はいつ決まる？</h3>', t)
+        self.assertNotIn("答えの無い質問は出さない", t)
+        self.assertNotIn("FAQPage", t)
+        # 関連する記事：存在しない id は無視
+        news = json.loads((self.tmp / "data" / "news.json").read_text(encoding="utf-8"))
+        rel = re.search(r'id="ap-related">関連する記事</h2><ul class="ap-rel">(.*?)</ul>', t).group(1)
+        self.assertEqual(re.findall(r'href="/a/([^"]+)\.html"', rel), [n["id"] for n in news[:2]])
+        self.assertNotIn("no-such-article-id", t)
+        # この特集に出てくる言葉：g/ のページがある言葉だけ
+        words = re.search(r'id="ap-words">この特集に出てくる言葉</h2><ul class="g-terms">(.*?)</ul>', t).group(1)
+        hrefs = re.findall(r'href="(/g/[^"]+)"', words)
+        self.assertEqual(len(hrefs), 1)
+        self.assertTrue((self.tmp / unquote(hrefs[0]).lstrip("/")).is_file())
+        self.assertNotIn("用語集に無い言葉", t)
+        # 最終更新・出典の注意書き・フッター・GoatCounter・用語ポップアップ
+        self.assertIn("最終更新 <time datetime=\"2026-11-25T18:30:00+09:00\">2026年11月25日</time>", t)
+        self.assertIn("出典はすべて公式ページ。", t)
+        self.assertIn("をもとに有権者がまとめて作成", t)
+        self.assertIn("誤りに気づいたら", t)
+        self.assertIn('<a href="/a/">記事一覧</a>', t)
+        self.assertIn(bp.GOATCOUNTER, t)
+        self.assertIn('YG.apply(document.querySelector("article.item"))', t)
+        self.assertIn('<article class="item tk-body"', t)
+        self.assertIn('<li><a href="/t/" aria-current="page">特集</a></li>', t)
+        # JSON-LD：Article と BreadcrumbList（トップ › 特集 › 題名）
+        ld = self.ld_blocks(t)
+        art = next(x for x in ld if x["@type"] == "Article")
+        self.assertEqual(art["headline"], f["title"])
+        self.assertEqual(art["datePublished"], f["published_at"])
+        self.assertEqual(art["dateModified"], f["updated_at"])
+        self.assertEqual(art["publisher"]["name"], "有権者")
+        crumbs = next(x for x in ld if x["@type"] == "BreadcrumbList")
+        self.assertEqual([c["name"] for c in crumbs["itemListElement"]], ["有権者", "特集", f["title"]])
+        self.assertEqual(crumbs["itemListElement"][1]["item"], "https://yukensha.com/t/")
+        desc = re.search(r'<meta name="description" content="([^"]*)">', t).group(1)
+        self.assertLessEqual(len(html.unescape(desc)), bp.DESC_MAX)
+        self.assertIn('<meta property="og:type" content="article">', t)
+        self.assertNotIn('name="robots"', t)
+
+    def test_index_sitemap_feed(self):
+        put_sample(self.tmp)
+        idx = (self.tmp / "t" / "index.html").read_text(encoding="utf-8")
+        self.assertIn(f'href="/t/{SAMPLE_SLUG}.html"', idx)
+        self.assertIn("最終更新 <time", idx)
+        self.assertNotIn('name="robots"', idx)
+        # 2件目（古い方）を足すと、一覧は新しい順
+        feats = json.loads((self.tmp / "data" / "features.json").read_text(encoding="utf-8"))
+        old = dict(feats[0], slug="older-one", title="古い特集", published_at="2026-10-01T09:00:00+09:00", updated_at="")
+        (self.tmp / "data" / "features.json").write_text(json.dumps(feats + [old], ensure_ascii=False), encoding="utf-8")
+        bp.build(self.tmp)
+        idx = (self.tmp / "t" / "index.html").read_text(encoding="utf-8")
+        self.assertLess(idx.find(f"/t/{SAMPLE_SLUG}.html"), idx.find("/t/older-one.html"))
+        self.assertIn("2026年10月1日", idx)  # updated_at が無ければ published_at
+        tree = ET.parse(self.tmp / "sitemap.xml")
+        ns = {"s": "http://www.sitemaps.org/schemas/sitemap/0.9"}
+        lm = {e.find("s:loc", ns).text: e.findtext("s:lastmod", None, ns) for e in tree.getroot().findall("s:url", ns)}
+        self.assertEqual(lm["https://yukensha.com/t/"], "2026-11-25T18:30:00+09:00")
+        self.assertEqual(lm[f"https://yukensha.com/t/{SAMPLE_SLUG}.html"], "2026-11-25T18:30:00+09:00")
+        self.assertEqual(lm["https://yukensha.com/t/older-one.html"], "2026-10-01T09:00:00+09:00")
+        a = "{http://www.w3.org/2005/Atom}"
+        entries = ET.parse(self.tmp / "feed.xml").getroot().findall(a + "entry")
+        ids = [e.find(a + "id").text for e in entries]
+        self.assertIn(f"https://yukensha.com/t/{SAMPLE_SLUG}.html", ids)
+        self.assertEqual(len([u for u in ids if "/a/" in u]), 50)
+        pubs = [e.find(a + "published").text for e in entries if "/t/" in e.find(a + "id").text]
+        self.assertEqual(pubs, sorted(pubs, reverse=True))
+
+    def test_removed_feature_deleted(self):
+        r = put_sample(self.tmp)
+        self.assertIn(f"https://yukensha.com/t/{SAMPLE_SLUG}.html", r["urls"])
+        page = self.tmp / "t" / f"{SAMPLE_SLUG}.html"
+        self.assertTrue(page.exists())
+        self.assertEqual(bp.build(self.tmp)["written"], 0)  # 2回目は何も書きかえない
+        r = put_sample(self.tmp, on=False)
+        self.assertFalse(page.exists())
+        self.assertIn(f"t/{SAMPLE_SLUG}.html", r["removed"])
+        self.assertTrue((self.tmp / "t" / "index.html").exists())
+        self.assertIn('<meta name="robots" content="noindex">', (self.tmp / "t" / "index.html").read_text(encoding="utf-8"))
+        sm = (self.tmp / "sitemap.xml").read_text(encoding="utf-8")
+        self.assertNotIn("/t/", sm)
+        self.assertNotIn("/t/", (self.tmp / "feed.xml").read_text(encoding="utf-8"))
+
+    def test_bad_features_skipped(self):
+        bad = [{"slug": "../evil", "title": "x", "published_at": "2026-11-01"}, {"slug": "index", "title": "x", "published_at": "2026-11-01"},
+               {"slug": "no-date", "title": "x"}, {"slug": "no-title", "published_at": "2026-11-01"}, "文字だけ",
+               {"slug": "ok-one", "title": "OK", "published_at": "2026-11-01"}, {"slug": "OK-ONE", "title": "重複", "published_at": "2026-11-02"}]
+        (self.tmp / "data" / "features.json").write_text(json.dumps(bad, ensure_ascii=False), encoding="utf-8")
+        r = bp.build(self.tmp)
+        self.assertEqual(r["counts"]["t"], 1)
+        self.assertEqual(sorted(f.name for f in (self.tmp / "t").glob("*.html")), ["index.html", "ok-one.html"])
+        self.assertFalse((self.tmp / "evil.html").exists())
+
+    def test_fmt_when(self):
+        self.assertEqual(bp.fmt_when("2026-12-中旬"), "2026年12月中旬")
+        self.assertEqual(bp.fmt_when("2026-12-19"), "2026年12月19日（土）")
+        self.assertEqual(bp.fmt_when("2026-1-5"), "2026年1月5日（月）")
+        self.assertEqual(bp.fmt_when("2027-01"), "2027年1月")
+        self.assertEqual(bp.fmt_when("2026-02-30"), "2026-02-30")  # 無い日はそのまま
+        self.assertEqual(bp.fmt_when("2026-13-01"), "2026-13-01")
+        self.assertEqual(bp.fmt_when("年末<b>"), "年末&lt;b&gt;")
+        self.assertEqual(bp.fmt_when(None), "")
+
+    def test_malformed_fields_do_not_crash(self):
+        """手で書いた特集の欄の形がおかしくても build は止まらない（その欄を出さないだけ）。"""
+        f = dict(sample_feature(), sections=[{"h2": "章", "paragraphs": 5, "points": "文字", "refs": {"url": "x"}}, "文字", 3],
+                 timeline=[{"date": "2026-02-30", "event": "無い日"}, {"date": 20261201, "event": "数字"}, "x"],
+                 faq="文字", related_article_ids=7, related_terms=1, tags="税")
+        (self.tmp / "data" / "features.json").write_text(json.dumps([f], ensure_ascii=False), encoding="utf-8")
+        r = bp.build(self.tmp)
+        self.assertEqual(r["counts"]["t"], 1)
+        t = (self.tmp / "t" / f"{SAMPLE_SLUG}.html").read_text(encoding="utf-8")
+        self.assertIn('<h2 class="tk-h2" id="s1">章</h2>', t)
+        self.assertIn("2026-02-30", t)
+        self.assertNotIn('datetime="2026-02-30"', t)
+        self.assertNotIn('id="tk-faq"', t)
+
+    def test_publish_feature_no_push(self):
+        pf = load("publish_feature", HERE / "publish_feature.py")
+        rs = load("rs_pf", HERE / "review_server.py")
+        if not rs.GIT:
+            self.skipTest("git が見つからない")
+        bp.build(self.tmp)
+        rs.ROOT = self.tmp
+        for args in (("init", "-q"), ("config", "user.email", "t@example.com"), ("config", "user.name", "t"),
+                     ("config", "core.autocrlf", "false"), ("add", "-A"), ("commit", "-q", "-m", "init")):
+            rs.git(*args)
+        d = sample_feature()
+        d.pop("published_at")
+        d.pop("updated_at")
+        (self.tmp / "drafts" / "features").mkdir(parents=True)
+        draft = self.tmp / "drafts" / "features" / f"{SAMPLE_SLUG}.json"
+        draft.write_text(json.dumps(d, ensure_ascii=False), encoding="utf-8")
+        with mock.patch.object(pf, "load_tool", wraps=pf.load_tool) as lt, contextlib.redirect_stdout(io.StringIO()):
+            self.assertEqual(pf.main([SAMPLE_SLUG, "--no-push"], root=self.tmp), 0)
+            self.assertNotIn(mock.call("indexnow"), lt.call_args_list)  # --no-push なら IndexNow もしない
+        feats = json.loads((self.tmp / "data" / "features.json").read_text(encoding="utf-8"))
+        self.assertEqual([f["slug"] for f in feats], [SAMPLE_SLUG])
+        first = feats[0]["published_at"]
+        self.assertTrue(bp.W3C.match(first))
+        self.assertTrue((self.tmp / "t" / f"{SAMPLE_SLUG}.html").is_file())
+        code, out = rs.git("log", "-1", "--format=%s")
+        self.assertEqual(out, f"特集を公開：{d['title']}")
+        code, out = rs.git("show", "--name-status", "--format=", "HEAD")
+        for x in ("A\tdata/features.json", f"A\tt/{SAMPLE_SLUG}.html", "M\tt/index.html", "M\tsitemap.xml", "M\tfeed.xml"):
+            self.assertIn(x, out)
+        self.assertNotIn("\ta/", out)
+        self.assertEqual(rs.git("remote")[1], "")
+        # 書き直し：同じ slug は置きかえ。published_at は最初のまま、updated_at は新しく
+        d["title"] = "【サンプル】書き直した題名"
+        draft.write_text(json.dumps(d, ensure_ascii=False), encoding="utf-8")
+        msg = pf.publish(SAMPLE_SLUG, self.tmp, push=False, now="2099-01-02T03:04:05+09:00")
+        self.assertIn("書き直し", msg)
+        feats = json.loads((self.tmp / "data" / "features.json").read_text(encoding="utf-8"))
+        self.assertEqual(len(feats), 1)
+        self.assertEqual(feats[0]["published_at"], first)
+        self.assertEqual(feats[0]["updated_at"], "2099-01-02T03:04:05+09:00")
+        self.assertIn("書き直した題名", (self.tmp / "t" / f"{SAMPLE_SLUG}.html").read_text(encoding="utf-8"))
+        self.assertIn(b"\n", (self.tmp / "data" / "features.json").read_bytes())
+        self.assertNotIn(b"\r\n", (self.tmp / "data" / "features.json").read_bytes())
+        # おかしい下書き・無い下書きは何も変えずに止まる
+        before = (self.tmp / "data" / "features.json").read_bytes()
+        draft.write_text(json.dumps(dict(d, sections=[]), ensure_ascii=False), encoding="utf-8")
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out):
+            self.assertEqual(pf.main([SAMPLE_SLUG, "--no-push"], root=self.tmp), 1)
+            self.assertEqual(pf.main(["nai-slug", "--no-push"], root=self.tmp), 1)
+            self.assertEqual(pf.main(["../evil", "--no-push"], root=self.tmp), 1)
+        self.assertEqual(out.getvalue().count("公開しませんでした"), 3)
+        self.assertEqual((self.tmp / "data" / "features.json").read_bytes(), before)
+
+
 if __name__ == "__main__":
     try:
         sys.stdout.reconfigure(encoding="utf-8")
         sys.stderr.reconfigure(encoding="utf-8")
     except Exception:
         pass
+    if sys.argv[1:] in (["--sample"], ["--sample-off"]):
+        # 見た目の確認用：data/features.json にサンプルの特集を入れて（--sample-off で消して）作り直す
+        r = put_sample(ROOT, on=sys.argv[1] == "--sample")
+        print(f"特集 {r['counts']['t']}件で作り直しました。" + (f" → http://localhost:5655/t/{SAMPLE_SLUG}.html" if sys.argv[1] == "--sample" else ""))
+        sys.exit(0)
     unittest.main(verbosity=2)
