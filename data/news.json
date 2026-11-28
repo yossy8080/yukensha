@@ -562,8 +562,8 @@
     "page_url": "https://www.kantei.go.jp/jp/105/actions/202611/27chijikaigi.html",
     "license": "PDL1.0",
     "people": true,
-    "ok_license": false,
-    "ok_people": false,
+    "ok_license": true,
+    "ok_people": true,
     "width": 1600,
     "height": 1067
    },
@@ -574,13 +574,14 @@
     "page_url": "https://www.kantei.go.jp/jp/105/actions/202611/27chijikaigi.html",
     "license": "PDL1.0",
     "people": true,
-    "ok_license": false,
-    "ok_people": false,
+    "ok_license": true,
+    "ok_people": true,
     "width": 1600,
     "height": 1067
    }
   ],
-  "published_at": "2026-11-28T23:21:00+09:00"
+  "published_at": "2026-11-28T23:21:00+09:00",
+  "updated_at": "2026-11-28T23:21:31+09:00"
  },
  {
   "id": "2026-11-27-kantei-keizai-doyukai-80",
@@ -631,13 +632,14 @@
     "page_url": "https://www.kantei.go.jp/jp/105/actions/202611/27keizaidoyukai80.html",
     "license": "PDL1.0",
     "people": true,
-    "ok_license": false,
-    "ok_people": false,
+    "ok_license": true,
+    "ok_people": true,
     "width": 1600,
     "height": 1067
    }
   ],
-  "published_at": "2026-11-28T23:21:00+09:00"
+  "published_at": "2026-11-28T23:21:00+09:00",
+  "updated_at": "2026-11-28T23:21:31+09:00"
  },
  {
   "id": "2026-11-27-meti-mongolia-kanmin-kyogikai",
